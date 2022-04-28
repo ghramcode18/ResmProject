@@ -1,0 +1,13 @@
+package The.Geeks.ResmProject;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
+class ResmProjectApplicationTests {
+
+	@Test
+	void contextLoads() {
+	}
+
+}
