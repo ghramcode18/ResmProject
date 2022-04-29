@@ -9,6 +9,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Table;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.util.Date;
 
 import javax.persistence.CascadeType;
@@ -39,12 +41,13 @@ public class User {
     private String bio;
     private String email_address;
     private String phone_number; 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date confirmed_date;
 
     
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
-    private AccountEntity account;
+    private Account account;
 
     // @ManyToMany(fetch = FetchType.EAGER)
     // private Collection<Role> roles = new ArrayList<>();

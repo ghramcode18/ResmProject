@@ -9,6 +9,9 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Table;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,7 +29,7 @@ import javax.persistence.PrimaryKeyJoinColumn;
 
 @Table(name = "accounts")
 
-public class AccountEntity {
+public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
@@ -34,6 +37,7 @@ public class AccountEntity {
     private String user_name;
     private String password;
     private String is_confirmed;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date Date_in;
 
     @OneToOne
