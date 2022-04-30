@@ -27,7 +27,7 @@ import javax.persistence.OneToMany;
 @Table(name = "chates")
 
 public class Chat {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")

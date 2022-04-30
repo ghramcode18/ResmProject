@@ -30,7 +30,7 @@ import javax.persistence.OneToMany;
 @Table(name = "proprties")
 
 public class Proprty {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
@@ -38,7 +38,7 @@ public class Proprty {
 
     @Column(nullable = true)
     private String proprty_name;
-  
+
     @Column(nullable = true)
     private double price;
 
@@ -58,24 +58,24 @@ public class Proprty {
     private boolean available;
 
     @Column(nullable = true)
-    private String  cladding_type  ;
+    private String cladding_type;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date date_in;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User user ;
+    private User user;
 
     @OneToMany
-    @JoinColumn(name = "proprties_id") 
-    private List<Image> images= new ArrayList<>();
+    @JoinColumn(name = "proprties_id")
+    private List<Image> images = new ArrayList<>();
 
     @OneToMany
-    @JoinColumn(name = "proprties_id") 
-    private List<Category> categories= new ArrayList<>();
+    @JoinColumn(name = "proprties_id")
+    private List<Category> categories = new ArrayList<>();
 
     @OneToMany
-    @JoinColumn(name = "proprties_id") 
+    @JoinColumn(name = "proprties_id")
     private List<proprty_type> proprty_type = new ArrayList<>();
 }

@@ -1,8 +1,9 @@
 package The.Geeks.ResmProject.Entities;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
+import java.util.List;
+
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -38,7 +39,7 @@ public class Account {
 
     @Column(nullable = true)
     private String user_name;
-    
+
     @Column(nullable = true)
 
     private String password;
@@ -55,6 +56,6 @@ public class Account {
     private User user;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    private Collection<Role> roles = new ArrayList<>();
+    private List<Role> roles = new ArrayList<>();
 
 }

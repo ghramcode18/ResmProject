@@ -1,8 +1,9 @@
 package The.Geeks.ResmProject.Entities;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
+import java.util.List;
+
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,13 +16,11 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.MapsId;
-import javax.persistence.OneToOne;
 
 @Entity
 @Data
@@ -32,7 +31,7 @@ import javax.persistence.OneToOne;
 @Table(name = "comments")
 
 public class Comment {
-   
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
@@ -47,5 +46,9 @@ public class Comment {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-    
+
+    @ManyToMany(targetEntity = User.class)
+    @JoinTable(name = "tags_comments", joinColumns = @JoinColumn(name = "comments_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private List<Tag> list_comments = new ArrayList<>();
+
 }

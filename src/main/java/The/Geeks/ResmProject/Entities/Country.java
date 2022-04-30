@@ -25,7 +25,7 @@ import javax.persistence.OneToMany;
 @Table(name = "countries")
 
 public class Country {
- 
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
@@ -36,9 +36,9 @@ public class Country {
 
     @Column(nullable = true)
     private String international_number;
-    
+
     @OneToMany
-    @JoinColumn(name = "countries_id")   
-     private List<City> city = new ArrayList<>();
+    @JoinColumn(name = "countries_id")
+    private List<City> city = new ArrayList<>();
 
 }

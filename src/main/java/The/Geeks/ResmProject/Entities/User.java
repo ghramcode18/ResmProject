@@ -11,7 +11,6 @@ import javax.persistence.Table;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -64,15 +63,15 @@ public class User {
     private Address address;
 
     @OneToMany
-    @JoinColumn(name = "user_id") // we need to duplicate the physical information
+    @JoinColumn(name = "user_id")
     private List<Proprty> proprties = new ArrayList<>();
 
     @OneToMany
-    @JoinColumn(name = "user_id") // we need to duplicate the physical information
+    @JoinColumn(name = "user_id")
     private List<Image> images = new ArrayList<>();
 
     @OneToMany
-    @JoinColumn(name = "user_id") // we need to duplicate the physical information
+    @JoinColumn(name = "user_id")
     private List<Chat> chat = new ArrayList<>();
 
     @OneToMany
@@ -84,12 +83,10 @@ public class User {
     private List<Comment> comments = new ArrayList<>();
 
     @ManyToMany(mappedBy = "list_tags")
-    private Collection<Tag> tags = new ArrayList<>();
+    private List<Tag> tags = new ArrayList<>();
 
-    // @ManyToMany(fetch = FetchType.EAGER)
-    // private Collection<Role> roles = new ArrayList<>();
-
-    // @ManyToMany(mappedBy = "list_Estate")
-    // private Collection<EstatesEntity> estates = new ArrayList<>();
+    @OneToMany
+    @JoinColumn(name = "notifications_id")
+    private List<Notification> notification = new ArrayList<>();
 
 }

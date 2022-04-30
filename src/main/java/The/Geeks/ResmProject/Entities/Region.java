@@ -18,7 +18,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
-
 @Entity
 @Data
 @Setter
@@ -28,7 +27,6 @@ import javax.persistence.OneToMany;
 @Table(name = "regions")
 
 public class Region {
-    
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -37,7 +35,7 @@ public class Region {
 
     @Column(nullable = true)
     private String name;
-    
+
     @Column(nullable = true)
     private Long latitude;
 
@@ -47,11 +45,9 @@ public class Region {
     @ManyToOne
     @JoinColumn(name = "cities_id")
     private City city;
-    
 
     @OneToMany
-    @JoinColumn(name = "regions_id") // we need to duplicate the physical information
+    @JoinColumn(name = "regions_id")
     private List<Address> addresses = new ArrayList<>();
-
 
 }
