@@ -7,17 +7,13 @@ import lombok.Setter;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Table;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-
+import javax.persistence.MapsId;
+import javax.persistence.OneToOne;
 
 @Entity
 @Data
@@ -25,33 +21,20 @@ import javax.persistence.OneToMany;
 @Getter
 @NoArgsConstructor
 
-@Table(name = "regions")
+@Table(name = "proprty_type")
 
-public class Region {
+public class proprty_type {
     
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Integer id;
 
     @Column(nullable = true)
-    private String name;
-    
-    @Column(nullable = true)
-    private Long latitude;
-
-    @Column(nullable = true)
-    private Long longitude;
+    private String type;
 
     @ManyToOne
-    @JoinColumn(name = "cities_id")
-    private City city;
-    
-
-    @OneToMany
-    @JoinColumn(name = "regions_id") // we need to duplicate the physical information
-    private List<Address> addresses = new ArrayList<>();
-
+    @JoinColumn(name = "proprties_id")
+    private Proprty proprty;
 
 }

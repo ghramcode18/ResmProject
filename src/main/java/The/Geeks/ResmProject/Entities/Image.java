@@ -1,5 +1,6 @@
 package The.Geeks.ResmProject.Entities;
 
+
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,7 +9,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Table;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -18,18 +22,16 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
-
 @Entity
 @Data
 @Setter
 @Getter
 @NoArgsConstructor
 
-@Table(name = "regions")
+@Table(name = "images")
 
-public class Region {
+public class Image {
     
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
@@ -37,21 +39,20 @@ public class Region {
 
     @Column(nullable = true)
     private String name;
-    
-    @Column(nullable = true)
-    private Long latitude;
 
-    @Column(nullable = true)
-    private Long longitude;
+    @Column(columnDefinition = "TEXT", length = 43333000)
+    private String image_url;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date date_in;
 
     @ManyToOne
-    @JoinColumn(name = "cities_id")
-    private City city;
-    
+    @JoinColumn(name = "proprties_id")
+    private Proprty proprty;
 
-    @OneToMany
-    @JoinColumn(name = "regions_id") // we need to duplicate the physical information
-    private List<Address> addresses = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
 
 }
