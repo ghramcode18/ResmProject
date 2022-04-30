@@ -6,7 +6,7 @@ import java.util.List;
 
 import lombok.Data;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -26,7 +26,7 @@ import javax.persistence.ManyToOne;
 @Data
 @Setter
 @Getter
-@NoArgsConstructor
+@RequiredArgsConstructor
 
 @Table(name = "comments")
 
