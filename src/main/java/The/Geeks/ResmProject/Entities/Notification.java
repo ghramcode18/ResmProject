@@ -1,7 +1,5 @@
 package The.Geeks.ResmProject.Entities;
 
-import java.util.ArrayList;
-import java.util.List;
 
 import lombok.Data;
 import lombok.Getter;
@@ -15,7 +13,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 
 @Entity
 @Data
@@ -31,8 +28,6 @@ public class Notification {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Integer id;
-
-
 
     @ManyToOne
     @JoinColumn(name = "user_id")

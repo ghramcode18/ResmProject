@@ -40,7 +40,7 @@ public class City {
     private String national_number;
 
     @ManyToOne
-    @JoinColumn(name = "Countries_id")
+    @JoinColumn(name = "countries_id")
     private Country country;
 
     @OneToMany
