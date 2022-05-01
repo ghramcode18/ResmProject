@@ -10,7 +10,7 @@ import The.Geeks.ResmProject.Entities.Proprty;
 @Service
 public interface ProprtyService {
    
-    public List<Proprty> fetch_proprty ();
+    public List<ProprtyDto> fetch_proprty ();
 
 
 

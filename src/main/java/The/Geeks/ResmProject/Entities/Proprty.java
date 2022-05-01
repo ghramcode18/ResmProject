@@ -1,9 +1,12 @@
 package The.Geeks.ResmProject.Entities;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
+
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Table;
@@ -22,11 +25,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 @Entity
-@Data
 @Setter
 @Getter
-@RequiredArgsConstructor
-
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
+@Data
 @Table(name = "proprties")
 
 public class Proprty {
