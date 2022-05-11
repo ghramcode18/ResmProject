@@ -2,7 +2,6 @@ package The.Geeks.ResmProject.Entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
@@ -26,7 +25,6 @@ import javax.persistence.OneToMany;
 
 @Entity
 @Setter
-@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
@@ -82,4 +80,75 @@ public class Proprty {
     @OneToMany
     @JoinColumn(name = "proprties_id")
     private List<proprty_type> proprty_type = new ArrayList<>();
+
+    public Proprty id(Integer id) {
+        setId(id);
+        return this;
+    }
+
+    public Proprty proprty_name(String proprty_name) {
+        setProprty_name(proprty_name);
+        return this;
+    }
+
+    public Proprty price(double price) {
+        setPrice(price);
+        return this;
+    }
+
+    public Proprty space(double space) {
+        setSpace(space);
+        return this;
+    }
+
+    public Proprty num_rooms(Integer num_rooms) {
+        setNum_rooms(num_rooms);
+        return this;
+    }
+
+    public Proprty num_bathrooms(Integer num_bathrooms) {
+        setNum_bathrooms(num_bathrooms);
+        return this;
+    }
+
+    public Proprty description(String description) {
+        setDescription(description);
+        return this;
+    }
+
+    public Proprty available(boolean available) {
+        setAvailable(available);
+        return this;
+    }
+
+    public Proprty cladding_type(String cladding_type) {
+        setCladding_type(cladding_type);
+        return this;
+    }
+
+    public Proprty date_in(Date date_in) {
+        setDate_in(date_in);
+        return this;
+    }
+
+    public Proprty user(User user) {
+        setUser(user);
+        return this;
+    }
+
+    public Proprty images(List<Image> images) {
+        setImages(images);
+        return this;
+    }
+
+    public Proprty categories(List<Category> categories) {
+        setCategories(categories);
+        return this;
+    }
+
+    public Proprty proprty_type(List<proprty_type> proprty_type) {
+        setProprty_type(proprty_type);
+        return this;
+    }
+
 }

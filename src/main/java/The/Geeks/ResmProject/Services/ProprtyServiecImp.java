@@ -7,9 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import The.Geeks.ResmProject.Dto.ProprtyDto;
+import The.Geeks.ResmProject.Dto.Proprty_typeDto;
 import The.Geeks.ResmProject.Entities.Proprty;
 import The.Geeks.ResmProject.Repo.ProprtyRepo;
-import The.Geeks.ResmProject.mapstruct.MapStructMapper;
+// import The.Geeks.ResmProject.mapstruct.MapStructMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 @Service
 public class ProprtyServiecImp implements ProprtyService {
@@ -17,8 +22,8 @@ public class ProprtyServiecImp implements ProprtyService {
     @Autowired
     ProprtyRepo proprtyRepo;
 
-    @Autowired
-    MapStructMapper mapstruct;
+    // @Autowired
+    // MapStructMapper mapstruct;
 
     @Override
     public List<ProprtyDto> fetch_proprty() {
@@ -34,23 +39,23 @@ public class ProprtyServiecImp implements ProprtyService {
         if (result.size() > 0) {
             for (Proprty proprty : result) {
 
-                ProprtyDto proprtyDto =new ProprtyDto().withId(proprty.getId())
-                .withProprty_name(proprty.getProprty_name())
-                .withPrice(proprty.getPrice())
-                .withSpace(proprty.getSpace())
-                .withAvailable(proprty.isAvailable())
-                .withNum_rooms(proprty.getNum_rooms())
-                .withNum_bathrooms(proprty.getNum_bathrooms())
-                .withDescription(proprty.getDescription())
-                .withAvailable(proprty.isAvailable())
-                .withCladding_type(proprty.getCladding_type())
-                .withDate_in(proprty.getDate_in());
-
-               // .withProprty_type(proprty.getProprty_type());
-               // .withImage_url(proprty.getImages())
-                //.withCategory(proprty.getCategories());
-                //.withUser(proprty.getUser());
-
+                ProprtyDto proprtyDto =new ProprtyDto().id(proprty.getId())
+                .proprty_name(proprty.getProprty_name())
+                .price(proprty.getPrice())
+                .space(proprty.getSpace())
+                .available(proprty.isAvailable())
+                .num_rooms(proprty.getNum_rooms())
+                .num_bathrooms(proprty.getNum_bathrooms())
+                .description(proprty.getDescription())
+                .available(proprty.isAvailable())
+                .cladding_type(proprty.getCladding_type())
+                .date_in(proprty.getDate_in());
+               //.proprty_type(Proprty_typeDto.valueOf(proprty.getProprty_type() != null ));
+               //.proprty_type(Proprty_typeDto.valueOf(proprty.getProprty_type() != null ? proprty.getProprty_type().get(0) : "sell"));
+               //.withProprty_type(proprty.getProprty_type());
+               //.withImage_url(proprty.getImages())
+              //.withCategory(proprty.getCategories());
+              //.withUser(proprty.getUser());
                 list_proprties.add(proprtyDto);
 
             }
@@ -59,6 +64,35 @@ public class ProprtyServiecImp implements ProprtyService {
         else
             return new ArrayList<ProprtyDto>();
 
+        
+    }
+    
+    public List<ProprtyDto> fetchAll_proprty(int pageNo, int pageSize) {
+
+        return proprtyRepo.findAll(
+                PageRequest.of(pageNo, pageSize, Sort.by("proprty_name"))).toList().stream().map(
+                        (e) -> {
+                            return ProprtyToProprtyDto(e);
+                        })
+                .toList();
+
+    }
+
+    private ProprtyDto ProprtyToProprtyDto(Proprty proprty) {
+
+
+        ProprtyDto proprtyDto = new ProprtyDto().id(proprty.getId())
+                .proprty_name(proprty.getProprty_name())
+                .price(proprty.getPrice())
+                .space(proprty.getSpace())
+                .available(proprty.isAvailable())
+                .num_rooms(proprty.getNum_rooms())
+                .num_bathrooms(proprty.getNum_bathrooms())
+                .description(proprty.getDescription())
+                .available(proprty.isAvailable())
+                .cladding_type(proprty.getCladding_type())
+                .date_in(proprty.getDate_in());
+        return proprtyDto;
     }
 
 }

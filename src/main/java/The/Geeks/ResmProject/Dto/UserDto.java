@@ -11,7 +11,7 @@ import java.util.Date;
 import java.util.List;
 
 import The.Geeks.ResmProject.Entities.Image;
-import The.Geeks.ResmProject.Dto.proprty_typeDto;
+import The.Geeks.ResmProject.Dto.Proprty_typeDto;
 import The.Geeks.ResmProject.Dto.CategoryDto;
 
 import The.Geeks.ResmProject.Entities.User;
