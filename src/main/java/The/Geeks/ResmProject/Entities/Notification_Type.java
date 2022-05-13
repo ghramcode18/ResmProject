@@ -8,7 +8,6 @@ import lombok.Setter;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Table;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -16,7 +15,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
 
 @Entity
 @Data
@@ -24,24 +22,20 @@ import javax.persistence.PrimaryKeyJoinColumn;
 @Getter
 @RequiredArgsConstructor
 
-@Table(name = "notifications")
+@Table(name = "notification_Type")
 
-public class Notification {
-   
+public class Notification_Type {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Integer id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
-
     @Column(nullable = false)
-    private String description;
+    private String type;
 
-    @OneToOne(mappedBy = "notification", cascade = CascadeType.ALL)
-    @PrimaryKeyJoinColumn
-    private Notification_Type notification_Type;
-    
+    @OneToOne
+    @MapsId
+    @JoinColumn(name = "notifications_id")
+    private Notification notification;
 }

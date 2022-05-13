@@ -40,20 +40,14 @@ public class User {
     private Integer id;
 
     @Column(nullable = true)
-    private String full_name;
+    private String first_name;
 
     @Column(nullable = true)
-    private String bio;
-
-    @Column(nullable = true)
-    private String email_address;
+    private String last_name;
 
     @Column(nullable = true)
     private String phone_number;
-
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date confirmed_date;
-
+    
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     private Account account;
