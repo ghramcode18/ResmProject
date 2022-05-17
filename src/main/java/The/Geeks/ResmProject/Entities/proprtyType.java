@@ -19,9 +19,9 @@ import javax.persistence.ManyToOne;
 @Getter
 @RequiredArgsConstructor
 
-@Table(name = "proprty_type")
+@Table(name = "proprtyType")
 
-public class proprty_type {
+public class proprtyType {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

@@ -31,10 +31,10 @@ public class Address {
     private Integer id;
 
     @Column(nullable = true)
-    private String city_name;
+    private String cityName;
 
     @Column(nullable = true)
-    private String region_name;
+    private String regionName;
 
     @Column(nullable = true)
     private Long latitude;

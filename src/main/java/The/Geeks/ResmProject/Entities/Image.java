@@ -37,10 +37,10 @@ public class Image {
     private String name;
 
     @Column(columnDefinition = "TEXT", length = 43333000)
-    private String image_url;
+    private String imageUrl;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date date_in;
+    private Date dateIn;
 
     @ManyToOne
     @JoinColumn(name = "proprties_id")

@@ -41,7 +41,7 @@ public class Comment {
     private String text;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date date_in;
+    private Date dateIn;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

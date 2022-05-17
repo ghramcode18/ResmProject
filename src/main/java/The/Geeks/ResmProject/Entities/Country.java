@@ -35,7 +35,7 @@ public class Country {
     private String name;
 
     @Column(nullable = true)
-    private String international_number;
+    private String internationalNumber;
 
     @OneToMany
     @JoinColumn(name = "countries_id")

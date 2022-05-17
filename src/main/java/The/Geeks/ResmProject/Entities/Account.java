@@ -39,17 +39,17 @@ public class Account {
     private Integer id;
 
     @Column(nullable = true)
-    private String user_name;
+    private String userName;
 
     @Column(nullable = true)
 
     private String password;
 
     @Column(nullable = true)
-    private String is_confirmed;
+    private String isConfirmed;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date date_in;
+    private Date dateIn;
 
     @OneToOne
     @MapsId

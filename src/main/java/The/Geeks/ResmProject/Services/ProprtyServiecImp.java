@@ -2,6 +2,8 @@ package The.Geeks.ResmProject.Services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,75 +26,77 @@ public class ProprtyServiecImp implements ProprtyService {
 
     // @Autowired
     // MapStructMapper mapstruct;
+    final ExecutorService executorService = Executors.newFixedThreadPool(1);
 
     @Override
     public List<ProprtyDto> fetch_proprty() {
 
         List<Proprty> result = proprtyRepo.findAll();
 
-        return ListProprtyToListProprtyDto(result);
+       // return ListProprtyToListProprtyDto(result);
+       return null;
     }
 
-    private List<ProprtyDto> ListProprtyToListProprtyDto(List<Proprty> result) {
+    // private List<ProprtyDto> ListProprtyToListProprtyDto(List<Proprty> result) {
 
-        List<ProprtyDto> list_proprties = new ArrayList<>();
-        if (result.size() > 0) {
-            for (Proprty proprty : result) {
+    //     List<ProprtyDto> list_proprties = new ArrayList<>();
+    //     if (result.size() > 0) {
+    //         for (Proprty proprty : result) {
 
-                ProprtyDto proprtyDto =new ProprtyDto().id(proprty.getId())
-                .proprty_name(proprty.getProprty_name())
-                .price(proprty.getPrice())
-                .space(proprty.getSpace())
-                .available(proprty.isAvailable())
-                .num_rooms(proprty.getNum_rooms())
-                .num_bathrooms(proprty.getNum_bathrooms())
-                .description(proprty.getDescription())
-                .available(proprty.isAvailable())
-                .cladding_type(proprty.getCladding_type())
-                .date_in(proprty.getDate_in());
-               //.proprty_type(Proprty_typeDto.valueOf(proprty.getProprty_type() != null ));
-               //.proprty_type(Proprty_typeDto.valueOf(proprty.getProprty_type() != null ? proprty.getProprty_type().get(0) : "sell"));
-               //.withProprty_type(proprty.getProprty_type());
-               //.withImage_url(proprty.getImages())
-              //.withCategory(proprty.getCategories());
-              //.withUser(proprty.getUser());
-                list_proprties.add(proprtyDto);
+    //             ProprtyDto proprtyDto =new ProprtyDto().id(proprty.getId())
+    //             .proprty_name(proprty.getProprty_name())
+    //             .price(proprty.getPrice())
+    //             .space(proprty.getSpace())
+    //             .available(proprty.isAvailable())
+    //             .num_rooms(proprty.getNum_rooms())
+    //             .num_bathrooms(proprty.getNum_bathrooms())
+    //             .description(proprty.getDescription())
+    //             .available(proprty.isAvailable())
+    //             .cladding_type(proprty.getCladding_type())
+    //             .date_in(proprty.getDate_in());
+    //            //.proprty_type(Proprty_typeDto.valueOf(proprty.getProprty_type() != null ));
+    //            //.proprty_type(Proprty_typeDto.valueOf(proprty.getProprty_type() != null ? proprty.getProprty_type().get(0) : "sell"));
+    //            //.withProprty_type(proprty.getProprty_type());
+    //            //.withImage_url(proprty.getImages())
+    //           //.withCategory(proprty.getCategories());
+    //           //.withUser(proprty.getUser());
+    //             list_proprties.add(proprtyDto);
 
-            }
-          return list_proprties;
-        } 
-        else
-            return new ArrayList<ProprtyDto>();
+    //         }
+    //       return list_proprties;
+    //     } 
+    //     else
+    //         return new ArrayList<ProprtyDto>();
 
         
-    }
+    // }
     
-    public List<ProprtyDto> fetchAll_proprty(int pageNo, int pageSize) {
+    // public List<ProprtyDto> fetchAll_proprty(int pageNo, int pageSize) {
 
-        return proprtyRepo.findAll(
-                PageRequest.of(pageNo, pageSize, Sort.by("proprty_name"))).toList().stream().map(
-                        (e) -> {
-                            return ProprtyToProprtyDto(e);
-                        })
-                .toList();
+    //     return proprtyRepo.findAll(
+    //             PageRequest.of(pageNo, pageSize, Sort.by("proprty_name"))).toList().stream().map(
+    //                     (e) -> {
+    //                         return ProprtyToProprtyDto(e);
+    //                     })
+    //             .toList();
 
-    }
+    // }
 
-    private ProprtyDto ProprtyToProprtyDto(Proprty proprty) {
+    // private ProprtyDto ProprtyToProprtyDto(Proprty proprty) {
 
 
-        ProprtyDto proprtyDto = new ProprtyDto().id(proprty.getId())
-                .proprty_name(proprty.getProprty_name())
-                .price(proprty.getPrice())
-                .space(proprty.getSpace())
-                .available(proprty.isAvailable())
-                .num_rooms(proprty.getNum_rooms())
-                .num_bathrooms(proprty.getNum_bathrooms())
-                .description(proprty.getDescription())
-                .available(proprty.isAvailable())
-                .cladding_type(proprty.getCladding_type())
-                .date_in(proprty.getDate_in());
-        return proprtyDto;
-    }
+    //     ProprtyDto proprtyDto = new ProprtyDto().id(proprty.getId())
+    //             .proprty_name(proprty.getProprty_name())
+    //             .price(proprty.getPrice())
+    //             .space(proprty.getSpace())
+    //             .available(proprty.isAvailable())
+    //             .num_rooms(proprty.getNum_rooms())
+    //             .num_bathrooms(proprty.getNum_bathrooms())
+    //             .description(proprty.getDescription())
+    //             .available(proprty.isAvailable())
+    //             .cladding_type(proprty.getCladding_type())
+    //             .date_in(proprty.getDate_in());
+    //     return proprtyDto;
+    // }
 
 }

@@ -22,9 +22,9 @@ import javax.persistence.OneToOne;
 @Getter
 @RequiredArgsConstructor
 
-@Table(name = "notification_Type")
+@Table(name = "notificationType")
 
-public class Notification_Type {
+public class NotificationType {
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

@@ -39,7 +39,7 @@ public class Proprty {
     private Integer id;
 
     @Column(nullable = true)
-    private String proprty_name;
+    private String proprtyName;
 
     @Column(nullable = true)
     private double price;
@@ -48,10 +48,10 @@ public class Proprty {
     private double space;
 
     @Column(nullable = true)
-    private Integer num_rooms;
+    private Integer numRooms;
 
     @Column(nullable = true)
-    private Integer num_bathrooms;
+    private Integer numBathrooms;
 
     @Column(nullable = true)
     private String description;
@@ -60,7 +60,7 @@ public class Proprty {
     private boolean available;
 
     @Column(nullable = true)
-    private String cladding_type;
+    private String claddingType;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date date_in;
@@ -79,76 +79,7 @@ public class Proprty {
 
     @OneToMany
     @JoinColumn(name = "proprties_id")
-    private List<proprty_type> proprty_type = new ArrayList<>();
+    private List<proprtyType> proprtyType = new ArrayList<>();
 
-    public Proprty id(Integer id) {
-        setId(id);
-        return this;
-    }
-
-    public Proprty proprty_name(String proprty_name) {
-        setProprty_name(proprty_name);
-        return this;
-    }
-
-    public Proprty price(double price) {
-        setPrice(price);
-        return this;
-    }
-
-    public Proprty space(double space) {
-        setSpace(space);
-        return this;
-    }
-
-    public Proprty num_rooms(Integer num_rooms) {
-        setNum_rooms(num_rooms);
-        return this;
-    }
-
-    public Proprty num_bathrooms(Integer num_bathrooms) {
-        setNum_bathrooms(num_bathrooms);
-        return this;
-    }
-
-    public Proprty description(String description) {
-        setDescription(description);
-        return this;
-    }
-
-    public Proprty available(boolean available) {
-        setAvailable(available);
-        return this;
-    }
-
-    public Proprty cladding_type(String cladding_type) {
-        setCladding_type(cladding_type);
-        return this;
-    }
-
-    public Proprty date_in(Date date_in) {
-        setDate_in(date_in);
-        return this;
-    }
-
-    public Proprty user(User user) {
-        setUser(user);
-        return this;
-    }
-
-    public Proprty images(List<Image> images) {
-        setImages(images);
-        return this;
-    }
-
-    public Proprty categories(List<Category> categories) {
-        setCategories(categories);
-        return this;
-    }
-
-    public Proprty proprty_type(List<proprty_type> proprty_type) {
-        setProprty_type(proprty_type);
-        return this;
-    }
 
 }

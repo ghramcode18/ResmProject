@@ -42,6 +42,6 @@ public class Notification {
 
     @OneToOne(mappedBy = "notification", cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
-    private Notification_Type notification_Type;
+    private NotificationType notificationType;
     
 }

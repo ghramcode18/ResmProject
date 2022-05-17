@@ -34,13 +34,13 @@ public class Message {
     private Integer id;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date date_in;
+    private Date dateIn;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date sent_date;
+    private Date sentDate;
 
     @Column(nullable = true)
-    private String message_sent;
+    private String messageSent;
 
     @ManyToOne
     @JoinColumn(name = "chates_id")

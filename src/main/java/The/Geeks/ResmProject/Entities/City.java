@@ -36,9 +36,6 @@ public class City {
     @Column(nullable = true)
     private String name;
 
-    @Column(nullable = true)
-    private String national_number;
-
     @ManyToOne
     @JoinColumn(name = "countries_id")
     private Country country;
