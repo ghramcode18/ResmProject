@@ -1,9 +1,9 @@
-package collage.project1.resm.repo;
+package The.Geeks.ResmProject.repo;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import collage.project1.resm.domain.User;
+import The.Geeks.ResmProject.domain.User;
 
 @Repository
 public interface UserRepo extends JpaRepository<User,Long>{
