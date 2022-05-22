@@ -1,8 +1,8 @@
-package collage.project1.resm.repo;
+package The.Geeks.ResmProject.repo;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import collage.project1.resm.domain.Region;
+import The.Geeks.ResmProject.domain.Region;
 
 public interface RegionRepo extends JpaRepository<Region,Long>{
     

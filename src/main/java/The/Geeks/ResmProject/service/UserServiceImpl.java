@@ -1,12 +1,11 @@
-package collage.project1.resm.service;
+package The.Geeks.ResmProject.service;
 
 import java.util.regex.Pattern;
 
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-import collage.project1.resm.domain.User;
-import collage.project1.resm.repo.UserRepo;
+import The.Geeks.ResmProject.domain.User;
 import lombok.RequiredArgsConstructor;
 
 @Service @RequiredArgsConstructor @Component

@@ -1,6 +1,6 @@
-package collage.project1.resm.service;
+package The.Geeks.ResmProject.service;
 
-import collage.project1.resm.domain.User;
+import The.Geeks.ResmProject.domain.User;
 
 public interface UserService {
     void singUp(User user) throws Exception;
