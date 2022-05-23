@@ -12,14 +12,23 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity @Table(name = "properties") @Data @NoArgsConstructor @AllArgsConstructor @Setter @Getter
+@Entity
+@Table(name = "properties")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Setter
+@Getter
+@Builder
 public class Property {
-    @Id @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     Long propertyId;
     String description;
     Integer numBathrooms;
@@ -28,13 +37,13 @@ public class Property {
     Float space;
     Float price;
     Date dateAdded;
-    @ManyToOne(fetch = FetchType.LAZY,optional = false)
-    @JoinColumn(name = "userID" , nullable = false)
-    private User user; 
-    @ManyToOne(fetch = FetchType.LAZY,optional = false)
-    @JoinColumn(name = "propertyCategoryID" , nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "userID", nullable = false)
+    private User user;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "propertyCategoryID", nullable = false)
     private PropertyCategory propertyCategory;
-    @ManyToOne(fetch = FetchType.LAZY,optional = false)
-    @JoinColumn(name = "propertyStatusID" , nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "propertyStatusID", nullable = false)
     private PropertyStatus propertyStatus;
 }

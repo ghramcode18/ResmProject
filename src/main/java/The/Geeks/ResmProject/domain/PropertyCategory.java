@@ -12,9 +12,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity @Table(name = "propertiesCategory") @Data @NoArgsConstructor @AllArgsConstructor @Setter @Getter
+@Entity
+@Table(name = "propertiesCategory")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Setter
+@Getter
 public class PropertyCategory {
-    @Id @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     Long propertyCategoryId;
     String category;
 }
