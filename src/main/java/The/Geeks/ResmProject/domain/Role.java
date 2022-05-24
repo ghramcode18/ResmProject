@@ -12,9 +12,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity @Table(name  = "permissions") @Data @NoArgsConstructor @AllArgsConstructor @Setter @Getter
+@Entity @Table(name  = "roles") @Data @NoArgsConstructor @AllArgsConstructor @Setter @Getter
 public class Role {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
-    private long permissionId;
-    private String permissionTitle;
+    private long roleId;
+    private String roleTitle;
 }

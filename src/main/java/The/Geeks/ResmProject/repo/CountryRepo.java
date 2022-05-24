@@ -3,9 +3,9 @@ package The.Geeks.ResmProject.repo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import The.Geeks.ResmProject.domain.User;
+import The.Geeks.ResmProject.domain.Country;
 
 @Repository
-public interface UserRepo extends JpaRepository<User,Long>{
-    User findByUsername (String username);
+public interface CountryRepo extends JpaRepository<Country,Long>{
+    Country findByname (String name);
 }
