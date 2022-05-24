@@ -1,7 +1,7 @@
 package The.Geeks.ResmProject.domain;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -21,7 +21,7 @@ public class Address {
     String addressDescription;
     Float longitutde;
     Float lattitude;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY,optional = false)
     @JoinColumn(name = "regionID", nullable = false)
     private Region region;
 }

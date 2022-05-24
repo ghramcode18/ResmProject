@@ -1,6 +1,5 @@
 package The.Geeks.ResmProject.domain;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -29,10 +28,10 @@ public class User {
     String firstName;
     String lastName;
     String phoneNumber;
-    @ManyToOne(targetEntity=Role.class, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY,optional = false)
     @JoinColumn(name = "roleID" , nullable = false)
     private Role role;
-    @ManyToOne(targetEntity=Address.class, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY,optional = false)
     @JoinColumn(name = "addressID" , nullable = false)
     private Address address;
 }
