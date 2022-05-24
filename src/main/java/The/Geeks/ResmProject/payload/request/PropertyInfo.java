@@ -2,6 +2,8 @@ package The.Geeks.ResmProject.payload.request;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
 
 import The.Geeks.ResmProject.domain.PropertyCategory;
@@ -18,6 +20,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @Setter
 @Getter
+@JsonIgnoreProperties
+
 @Builder
 public class PropertyInfo {
     private Long propertyId;
@@ -27,8 +31,10 @@ public class PropertyInfo {
     private Integer numRooms;
     private Float space;
     private Float price;
+    @JsonFormat(pattern = "yyyy-MM-dd")
+
     private Date dateAdded;
     private Long property_categoryid;
-    private String propertyStatus;
+    private Long property_statusid;
 
 }
