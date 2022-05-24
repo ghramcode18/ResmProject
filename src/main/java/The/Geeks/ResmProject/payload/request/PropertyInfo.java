@@ -20,9 +20,10 @@ import lombok.Setter;
 @AllArgsConstructor
 @Setter
 @Getter
-@JsonIgnoreProperties
 
 @Builder
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
+
 public class PropertyInfo {
     private Long propertyId;
     private String description;
@@ -36,5 +37,6 @@ public class PropertyInfo {
     private Date dateAdded;
     private Long property_categoryid;
     private Long property_statusid;
+    private Long  userId;
 
 }

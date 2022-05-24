@@ -12,6 +12,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,6 +29,8 @@ import lombok.Setter;
 @Setter
 @Getter
 @Builder
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
+
 public class Property {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

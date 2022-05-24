@@ -14,10 +14,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@JsonIgnoreProperties
-@Entity @Table(name  = "permissions") @Data @NoArgsConstructor @AllArgsConstructor @Setter @Getter
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
+@Entity @Table(name  = "roles") @Data @NoArgsConstructor @AllArgsConstructor @Setter @Getter
 public class Role {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
-    private long permissionId;
-    private String permissionTitle;
+    private long roleId;
+    private String roleTitle;
 }

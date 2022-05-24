@@ -16,10 +16,11 @@ import lombok.Data;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIgnoreProperties
 
 @Setter
 @Getter
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
+
 @Builder
 public class PropertyRequest {
       private String token;

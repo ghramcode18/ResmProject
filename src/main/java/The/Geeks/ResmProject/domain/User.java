@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity @Table(name = "users") @Data @NoArgsConstructor @AllArgsConstructor @Setter @Getter
-@JsonIgnoreProperties
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 
 public class User {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
