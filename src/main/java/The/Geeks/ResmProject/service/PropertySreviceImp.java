@@ -1,9 +1,14 @@
 package The.Geeks.ResmProject.service;
 
 import java.io.UnsupportedEncodingException;
+import java.net.http.HttpHeaders;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import org.aspectj.bridge.Message;
 import org.hibernate.validator.internal.engine.messageinterpolation.parser.MessageState;
@@ -12,18 +17,30 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 // import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import The.Geeks.ResmProject.domain.Image;
+import The.Geeks.ResmProject.domain.ImageStatus;
 import The.Geeks.ResmProject.domain.Property;
 import The.Geeks.ResmProject.domain.PropertyCategory;
+import The.Geeks.ResmProject.domain.PropertyImage;
 import The.Geeks.ResmProject.domain.PropertyStatus;
 import The.Geeks.ResmProject.domain.User;
+import The.Geeks.ResmProject.domain.UserImage;
+import The.Geeks.ResmProject.message.ResponseFile;
+import The.Geeks.ResmProject.message.ResponseMessage;
 import The.Geeks.ResmProject.payload.request.PropertyRequest;
 import The.Geeks.ResmProject.repo.PropertyCategoryRepo;
+import The.Geeks.ResmProject.repo.PropertyImageRepo;
 import The.Geeks.ResmProject.repo.PropertyRepo;
 import The.Geeks.ResmProject.repo.PropertyStatusRepo;
 import The.Geeks.ResmProject.repo.UserRepo;
@@ -37,51 +54,79 @@ import javax.validation.Valid;
 @Service
 public class PropertySreviceImp implements PropertyService {
 
-    @Autowired
-    UserRepo userRepository;
+        @Autowired
+        UserRepo userRepository;
 
-    @Autowired
-    PropertyRepo propertyRepo;
+        @Autowired
+        PropertyImageRepo propertyImageRepo;
 
-    @Autowired
-    PropertyCategoryRepo propertyCategoryRepo;
+        @Autowired
+        PropertyRepo propertyRepo;
 
-    @Autowired
-    PropertyStatusRepo propertyStatusRepo;
+        @Autowired
+        PropertyCategoryRepo propertyCategoryRepo;
 
-    @Override
-    public HttpStatus addProperty(@Valid @RequestBody PropertyRequest propertyRequest)
-            throws UnsupportedEncodingException, Exception {
+        @Autowired
+        PropertyStatusRepo propertyStatusRepo;
 
-        String token = propertyRequest.getToken();
+        @Override
+        public ResponseEntity<ResponseMessage> addProperty(
+                        @RequestPart("file") @Valid @NotNull @NotBlank MultipartFile file,
+                        @RequestPart("propertyRequest") PropertyRequest propertyRequest)
+                        throws UnsupportedEncodingException, Exception {
 
-        DecodeToken dtoken = DecodeToken.getDecoded(token);
+                String token = propertyRequest.getToken();
 
-        System.out.println(dtoken);
+                DecodeToken dtoken = DecodeToken.getDecoded(token);
 
-        User user = userRepository.findByUsername(
-                dtoken.getSub())
-                .orElseThrow(() -> new RuntimeException("Error: user is not found."));
+                System.out.println(dtoken);
 
-        Property newProperty = new Property();
-        newProperty.setDateAdded(propertyRequest.getPropertyInfo().getDateAdded());
-        newProperty.setDescription(propertyRequest.getPropertyInfo().getDescription());
-        newProperty.setNumBathrooms(propertyRequest.getPropertyInfo().getNumBathrooms());
-        newProperty.setNumRooms(propertyRequest.getPropertyInfo().getNumRooms());
-        newProperty.setNumStoreys(propertyRequest.getPropertyInfo().getNumStoreys());
-        newProperty.setPrice(propertyRequest.getPropertyInfo().getPrice());
-        newProperty.setSpace(propertyRequest.getPropertyInfo().getSpace());
-        Optional<PropertyCategory> propertyCategory = propertyCategoryRepo
-                .findById(propertyRequest.getPropertyInfo().getProperty_categoryid());
-        newProperty.setPropertyCategory(propertyCategory.get());
-        Optional<PropertyStatus> propertyStatus = propertyStatusRepo
-                .findById(propertyRequest.getPropertyInfo().getProperty_statusid());
-        newProperty.setPropertyStatus(propertyStatus.get());
+                User user = userRepository.findByUsername(
+                                dtoken.getSub())
+                                .orElseThrow(() -> new RuntimeException("Error: user is not found."));
 
-        newProperty.setUser(user);
-        propertyRepo.save(newProperty);
-        return ResponseEntity.ok().build().getStatusCode();
+                Property newProperty = new Property();
+                newProperty.setDateAdded(propertyRequest.getPropertyInfo().getDateAdded());
+                newProperty.setDescription(propertyRequest.getPropertyInfo().getDescription());
+                newProperty.setNumBathrooms(propertyRequest.getPropertyInfo().getNumBathrooms());
+                newProperty.setNumRooms(propertyRequest.getPropertyInfo().getNumRooms());
+                newProperty.setNumStoreys(propertyRequest.getPropertyInfo().getNumStoreys());
+                newProperty.setPrice(propertyRequest.getPropertyInfo().getPrice());
+                newProperty.setSpace(propertyRequest.getPropertyInfo().getSpace());
+                Optional<PropertyCategory> propertyCategory = propertyCategoryRepo
+                                .findById(propertyRequest.getPropertyInfo().getProperty_categoryid());
+                newProperty.setPropertyCategory(propertyCategory.get());
+                Optional<PropertyStatus> propertyStatus = propertyStatusRepo
+                                .findById(propertyRequest.getPropertyInfo().getProperty_statusid());
+                newProperty.setPropertyStatus(propertyStatus.get());
 
-    }
+                newProperty.setUser(user);
+                propertyRepo.save(newProperty);
+
+                uploadFile(file);
+                ImageStatus imageStatus = new ImageStatus();
+                long x = 1;
+                PropertyImage propertyImge = new PropertyImage(x, newProperty, file.getBytes(), imageStatus);
+                propertyImageRepo.save(propertyImge);
+
+                return ResponseEntity.ok().build();
+
+        }
+
+        @Autowired
+        private FileStorageService storageService;
+
+        public ResponseEntity<ResponseMessage> uploadFile(MultipartFile file) {
+                String message = "";
+                try {
+                        storageService.store(file);
+
+                        message = "Uploaded the file successfully: " + file.getOriginalFilename();
+                        return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
+                } catch (Exception e) {
+                        message = "Could not upload the file: " + file.getOriginalFilename() + "!";
+                        return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(message));
+                }
+        }
 
 }

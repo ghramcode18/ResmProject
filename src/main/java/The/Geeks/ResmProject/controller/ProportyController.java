@@ -4,6 +4,8 @@ import java.io.UnsupportedEncodingException;
 import java.util.Optional;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import The.Geeks.ResmProject.domain.Property;
@@ -26,6 +29,29 @@ import The.Geeks.ResmProject.service.DecodeToken;
 import The.Geeks.ResmProject.service.PropertySreviceImp;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import The.Geeks.ResmProject.domain.Image;
+import The.Geeks.ResmProject.message.ResponseFile;
+import The.Geeks.ResmProject.message.ResponseMessage;
+import The.Geeks.ResmProject.service.FileStorageService;
+
 @RestController
 @RequestMapping("/api/v1")
 @Slf4j
@@ -34,19 +60,37 @@ public class ProportyController {
     // @Autowired
     // PasswordEncoder encoder;
 
-   
+    /*
+     * @RequestMapping(value = "/executesampleservice", method = RequestMethod.POST,
+     * consumes = {"multipart/form-data"})
+     * 
+     * @ResponseBody
+     * public boolean executeSampleService(
+     * 
+     * @RequestPart("properties") @Valid ConnectionProperties properties,
+     * 
+     * @RequestPart("file") @Valid @NotNull @NotBlank MultipartFile file) {
+     * return projectService.executeSampleService(properties, file);
+     */
     @Autowired
     PropertySreviceImp proertyserviceImp;
 
-    @PostMapping("/addProperty")
-    public Object addProperty(@RequestBody PropertyRequest propertyRequest)
+    @RequestMapping(value="/addProperty",method=RequestMethod.POST,consumes=
+    {"multipart/form-data"})
+
+    @ResponseBody
+    public Object addProperty(
+            @RequestPart("file") @Valid @NotNull @NotBlank MultipartFile file,
+            @RequestPart("propertyRequest") @Valid PropertyRequest propertyRequest
+           )
             throws UnsupportedEncodingException, Exception {
         try {
-            return proertyserviceImp.addProperty(propertyRequest);
+            return proertyserviceImp.addProperty(file,propertyRequest);
 
         } catch (Exception e) {
-         return e.getMessage();
+            return e.getMessage();
 
         }
     }
+
 }

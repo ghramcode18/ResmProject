@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import The.Geeks.ResmProject.domain.PropertyCategory;
 import The.Geeks.ResmProject.domain.PropertyStatus;
 import lombok.AllArgsConstructor;
@@ -38,5 +40,5 @@ public class PropertyInfo {
     private Long property_categoryid;
     private Long property_statusid;
     private Long  userId;
-
+    private MultipartFile file ;
 }

@@ -32,4 +32,46 @@ public class PropertyImage {
     @ManyToOne(fetch = FetchType.LAZY,optional = false)
     @JoinColumn(name = "imageStatusID" , nullable = false)
     private ImageStatus imageStatus;
+
+    public Long getPropertyImageId() {
+        return this.propertyImageId;
+    }
+
+    public void setPropertyImageId(Long propertyImageId) {
+        this.propertyImageId = propertyImageId;
+    }
+
+    public Property getProperty() {
+        return this.property;
+    }
+
+    public void setProperty(Property property) {
+        this.property = property;
+    }
+
+    public Image getImage() {
+        return this.image;
+    }
+
+    public void setImage(Image image) {
+        this.image = image;
+    }
+
+    public ImageStatus getImageStatus() {
+        return this.imageStatus;
+    }
+
+    public void setImageStatus(ImageStatus imageStatus) {
+        this.imageStatus = imageStatus;
+    }
+
+    public PropertyImage(Long i, Property newProperty, byte[] bytes, ImageStatus imageStatus2) 
+    { this.propertyImageId = i;
+        this.property = newProperty;
+        this.image.setData(bytes);
+        this.imageStatus = imageStatus2;
+    }
+
+    
+
 }
