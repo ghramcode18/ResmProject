@@ -39,6 +39,7 @@ import The.Geeks.ResmProject.domain.UserImage;
 import The.Geeks.ResmProject.message.ResponseFile;
 import The.Geeks.ResmProject.message.ResponseMessage;
 import The.Geeks.ResmProject.payload.request.PropertyRequest;
+import The.Geeks.ResmProject.repo.ImageStatusRepo;
 import The.Geeks.ResmProject.repo.PropertyCategoryRepo;
 import The.Geeks.ResmProject.repo.PropertyImageRepo;
 import The.Geeks.ResmProject.repo.PropertyRepo;
@@ -69,6 +70,8 @@ public class PropertySreviceImp implements PropertyService {
         @Autowired
         PropertyStatusRepo propertyStatusRepo;
 
+        @Autowired
+        ImageStatusRepo imageStatusRepo;
         @Override
         public ResponseEntity<ResponseMessage> addProperty(
                         @RequestPart("file") @Valid @NotNull @NotBlank MultipartFile file,
@@ -101,13 +104,28 @@ public class PropertySreviceImp implements PropertyService {
                 newProperty.setPropertyStatus(propertyStatus.get());
 
                 newProperty.setUser(user);
-                propertyRepo.save(newProperty);
 
+                // PropertyImage propertyImage = new PropertyImage();
+                // propertyImage.setProperty(newProperty);
+                // ImageStatus imageStatus = new ImageStatus();
+                
+                // imageStatus.setStatus("var");   
+
+                // propertyImage.setImageStatus(imageStatus);
+
+
+                // Image image = new Image();
+                // image.setData(file.getBytes());
+                // image.setName(file.getName());
+                // image.setType(file.getContentType());
+                // propertyImage.setImage(image);
+
+                // imageStatusRepo.save(imageStatus);
+
+                propertyRepo.save(newProperty);
+                // propertyImageRepo.save(propertyImage);
+                // storageService.store(file);
                 uploadFile(file);
-                ImageStatus imageStatus = new ImageStatus();
-                long x = 1;
-                PropertyImage propertyImge = new PropertyImage(x, newProperty, file.getBytes(), imageStatus);
-                propertyImageRepo.save(propertyImge);
 
                 return ResponseEntity.ok().build();
 

@@ -29,6 +29,7 @@ import lombok.Setter;
 @Setter
 @Getter
 @Builder
+
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 
 public class Property {
@@ -47,9 +48,9 @@ public class Property {
     @JoinColumn(name = "userID", nullable = false)
     private User user;
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "propertyCategoryID", nullable = false)
+    @JoinColumn(name = "propertyCategoryID", nullable = true)
     private PropertyCategory propertyCategory;
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "propertyStatusID", nullable = false)
+    @JoinColumn(name = "propertyStatusID", nullable = true)
     private PropertyStatus propertyStatus;
 }
