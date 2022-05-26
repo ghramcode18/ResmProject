@@ -9,6 +9,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -16,6 +18,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity @Table(name = "propertiesImage") @Data @NoArgsConstructor @AllArgsConstructor @Setter @Getter
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
+
 public class PropertyImage {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     Long propertyImageId;
@@ -28,4 +32,46 @@ public class PropertyImage {
     @ManyToOne(fetch = FetchType.LAZY,optional = false)
     @JoinColumn(name = "imageStatusID" , nullable = false)
     private ImageStatus imageStatus;
+
+    public Long getPropertyImageId() {
+        return this.propertyImageId;
+    }
+
+    public void setPropertyImageId(Long propertyImageId) {
+        this.propertyImageId = propertyImageId;
+    }
+
+    public Property getProperty() {
+        return this.property;
+    }
+
+    public void setProperty(Property property) {
+        this.property = property;
+    }
+
+    public Image getImage() {
+        return this.image;
+    }
+
+    public void setImage(Image image) {
+        this.image = image;
+    }
+
+    public ImageStatus getImageStatus() {
+        return this.imageStatus;
+    }
+
+    public void setImageStatus(ImageStatus imageStatus) {
+        this.imageStatus = imageStatus;
+    }
+
+    public PropertyImage(Long i, Property newProperty, byte[] bytes, ImageStatus imageStatus2) 
+    { this.propertyImageId = i;
+        this.property = newProperty;
+        this.image.setData(bytes);
+        this.imageStatus = imageStatus2;
+    }
+
+    
+
 }

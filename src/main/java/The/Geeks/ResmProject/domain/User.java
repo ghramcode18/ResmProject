@@ -11,6 +11,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -18,6 +20,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity @Table(name = "users") @Data @NoArgsConstructor @AllArgsConstructor @Setter @Getter
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
+
 public class User {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     Long userId;
