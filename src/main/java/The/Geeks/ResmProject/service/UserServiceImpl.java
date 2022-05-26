@@ -27,7 +27,7 @@ public class UserServiceImpl implements UserService
     private final CountryRepo countryRepo;
 
     @Override
-    public void singUp(UserModel user) throws Exception 
+    public void singUp(User user) throws Exception 
     {
         if(checkIfUserExist(user.getUsername()))
         {
@@ -35,29 +35,44 @@ public class UserServiceImpl implements UserService
         }
         else
         {
+            // User Euser = new User();
+            // Address address = new Address();
+            // Region region = new Region();
+            // City city = new City();
+            // Country country = new Country();
+            // Role role = new Role();
+            // Euser.setUsername(user.getUsername());
+            // Euser.setHashedPassword(user.getHashedPassword());
+            // Euser.setFirstName(user.getFirstName());
+            // Euser.setLastName(user.getLastName());
+            // address.setLattitude(user.getLattitude());
+            // address.setLongitutde(user.getLongitutde());
+            // region = regionRepo.findByname(user.getRegionname());
+            // city = cityRepo.findByname(user.getCityname());
+            // country = countryRepo.findByname(user.getCountryname());
+            // role.setRoleId(1);
+            // Euser.setAddress(address);
+            // Euser.getAddress().setRegion(region);
+            // Euser.getAddress().getRegion().setCity(city);
+            // Euser.getAddress().getRegion().getCity().setCountry(country);
+            // Euser.setRole(role);
+            // userRepo.save(Euser);
+            // addressRepo.save(address);
             User Euser = new User();
             Address address = new Address();
-            Region region = new Region();
-            City city = new City();
-            Country country = new Country();
-            Role role = new Role();
             Euser.setUsername(user.getUsername());
             Euser.setHashedPassword(user.getHashedPassword());
             Euser.setFirstName(user.getFirstName());
             Euser.setLastName(user.getLastName());
-            address.setLattitude(user.getLattitude());
-            address.setLongitutde(user.getLongitutde());
-            region = regionRepo.findByname(user.getRegionname());
-            city = cityRepo.findByname(user.getCityname());
-            country = countryRepo.findByname(user.getCountryname());
-            role.setRoleId(1);
+            address.setLattitude(user.getAddress().getLattitude());
+            address.setLongitutde(user.getAddress().getLongitutde());
             Euser.setAddress(address);
-            Euser.getAddress().setRegion(region);
-            Euser.getAddress().getRegion().setCity(city);
-            Euser.getAddress().getRegion().getCity().setCountry(country);
-            Euser.setRole(role);
             userRepo.save(Euser);
-            addressRepo.save(address);
+            // Euser.getAddress().setLattitude(user.getAddress().getLattitude());
+            // Euser.getAddress().setLongitutde(user.getAddress().getLongitutde());
+            // Euser.getAddress().getRegion().setName(user.getAddress().getRegion().getName());
+            // Euser.getAddress().getRegion().getCity().setName(user.getAddress().getRegion().getCity().getName());
+            // Euser.getAddress().getRegion().getCity().getCountry().setName(user.getAddress().getRegion().getCity().getCountry().getName());
         }
     }
 

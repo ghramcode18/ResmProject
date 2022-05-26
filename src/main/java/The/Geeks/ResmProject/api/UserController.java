@@ -32,7 +32,7 @@ public class UserController {
     // }
 
     @PostMapping("/auth/v1")
-    public ResponseEntity<?> singUp(@RequestBody UserModel user) throws Exception {
+    public ResponseEntity<?> singUp(@RequestBody User user) throws Exception {
         userService.singUp(user);
         return ResponseEntity.ok().build();
     }
