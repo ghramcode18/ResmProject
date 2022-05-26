@@ -14,6 +14,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 @Entity @Table(name  = "roles") @Data @NoArgsConstructor @AllArgsConstructor @Setter @Getter
 public class Role {
