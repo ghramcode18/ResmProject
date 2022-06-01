@@ -44,13 +44,13 @@ public class Property {
     Float price;
     @JsonFormat(pattern = "yyyy-MM-dd")
     Date dateAdded;
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "userID", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "userID", nullable = true)
     private User user;
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "propertyCategoryID", nullable = true)
     private PropertyCategory propertyCategory;
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "propertyStatusID", nullable = true)
     private PropertyStatus propertyStatus;
 }

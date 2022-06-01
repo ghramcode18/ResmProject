@@ -23,10 +23,10 @@ import lombok.Setter;
 public class TagComment {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     Long tagComment;
-    @ManyToOne(fetch = FetchType.LAZY,optional = false)
-    @JoinColumn(name = "tagID" , nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY,optional = true)
+    @JoinColumn(name = "tagID" , nullable = true)
     private Tag tag;
-    @ManyToOne(fetch = FetchType.LAZY,optional = false)
-    @JoinColumn(name = "commentID" , nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY,optional = true)
+    @JoinColumn(name = "commentID" , nullable = true)
     private Comment comment;
 }

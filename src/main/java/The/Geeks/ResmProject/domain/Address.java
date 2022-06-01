@@ -25,7 +25,7 @@ public class Address {
     String addressDescription;
     Float longitutde;
     Float lattitude;
-    @ManyToOne(fetch = FetchType.LAZY,optional = false)
-    @JoinColumn(name = "regionID", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY,optional = true)
+    @JoinColumn(name = "regionID", nullable = true)
     private Region region;
 }

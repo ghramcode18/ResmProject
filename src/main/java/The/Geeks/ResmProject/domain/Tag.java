@@ -23,10 +23,10 @@ import lombok.Setter;
 public class Tag {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     Long tagId;
-    @ManyToOne(fetch = FetchType.LAZY,optional = false)
-    @JoinColumn(name = "taggerUserinfoID" , nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY,optional = true)
+    @JoinColumn(name = "taggerUserinfoID" , nullable = true)
     private User taggerUserinfo;
-    @ManyToOne(fetch = FetchType.LAZY,optional = false)
-    @JoinColumn(name = "taggedUserinfoID" , nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY,optional = true)
+    @JoinColumn(name = "taggedUserinfoID" , nullable = true)
     private User taggedUserinfo;
 }

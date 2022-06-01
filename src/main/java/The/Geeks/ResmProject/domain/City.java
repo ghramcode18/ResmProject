@@ -24,7 +24,7 @@ public class City {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     Long cityId;
     String name;
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "countryID" , nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "countryID" , nullable = true)
     private Country country;
 }

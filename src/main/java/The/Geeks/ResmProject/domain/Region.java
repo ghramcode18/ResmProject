@@ -24,7 +24,7 @@ public class Region {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     Long regionId;
     String name;
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "cityID", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "cityID", nullable = true)
     private City city;
 }

@@ -23,14 +23,14 @@ import lombok.Setter;
 public class PropertyImage {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     Long propertyImageId;
-    @ManyToOne(fetch = FetchType.LAZY,optional = false)
-    @JoinColumn(name = "propertyID" , nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY,optional = true)
+    @JoinColumn(name = "propertyID" , nullable = true)
     private Property property;
-    @ManyToOne(fetch = FetchType.LAZY,optional = false)
-    @JoinColumn(name = "imageID" , nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY,optional = true)
+    @JoinColumn(name = "imageID" , nullable = true)
     private Image image;
-    @ManyToOne(fetch = FetchType.LAZY,optional = false)
-    @JoinColumn(name = "imageStatusID" , nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY,optional = true)
+    @JoinColumn(name = "imageStatusID" , nullable = true)
     private ImageStatus imageStatus;
 
     public Long getPropertyImageId() {

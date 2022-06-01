@@ -32,10 +32,10 @@ public class User {
     String firstName;
     String lastName;
     String phoneNumber;
-    @ManyToOne(fetch = FetchType.LAZY,optional = false)
-    @JoinColumn(name = "roleID" , nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY,optional = true)
+    @JoinColumn(name = "roleID" , nullable = true)
     private Role role;
-    @ManyToOne(fetch = FetchType.LAZY,optional = false)
-    @JoinColumn(name = "addressID" , nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY,optional = true)
+    @JoinColumn(name = "addressID" , nullable = true)
     private Address address;
 }

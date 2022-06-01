@@ -39,6 +39,7 @@ import The.Geeks.ResmProject.domain.UserImage;
 import The.Geeks.ResmProject.message.ResponseFile;
 import The.Geeks.ResmProject.message.ResponseMessage;
 import The.Geeks.ResmProject.payload.request.PropertyRequest;
+import The.Geeks.ResmProject.repo.FileDBRepository;
 import The.Geeks.ResmProject.repo.ImageStatusRepo;
 import The.Geeks.ResmProject.repo.PropertyCategoryRepo;
 import The.Geeks.ResmProject.repo.PropertyImageRepo;
@@ -72,6 +73,10 @@ public class PropertySreviceImp implements PropertyService {
 
         @Autowired
         ImageStatusRepo imageStatusRepo;
+        @Autowired
+        FileDBRepository fileDBRepository;
+
+
         @Override
         public ResponseEntity<ResponseMessage> addProperty(
                         @RequestPart("file") @Valid @NotNull @NotBlank MultipartFile file,
@@ -104,29 +109,28 @@ public class PropertySreviceImp implements PropertyService {
                 newProperty.setPropertyStatus(propertyStatus.get());
 
                 newProperty.setUser(user);
-
-                // PropertyImage propertyImage = new PropertyImage();
-                // propertyImage.setProperty(newProperty);
-                // ImageStatus imageStatus = new ImageStatus();
                 
-                // imageStatus.setStatus("var");   
-
-                // propertyImage.setImageStatus(imageStatus);
-
-
-                // Image image = new Image();
-                // image.setData(file.getBytes());
-                // image.setName(file.getName());
-                // image.setType(file.getContentType());
-                // propertyImage.setImage(image);
-
-                // imageStatusRepo.save(imageStatus);
-
                 propertyRepo.save(newProperty);
-                // propertyImageRepo.save(propertyImage);
-                // storageService.store(file);
                 uploadFile(file);
+                PropertyImage propertyImage =new PropertyImage();
+                Image image = new Image();
+                fileDBRepository.save(image);
+                image.setData(file.getBytes());
+                propertyImage.setImage(image);
+                propertyImage.setProperty(newProperty);
+                propertyImage.setPropertyImageId((long) 1);
 
+                ImageStatus imageStatus = new ImageStatus();            
+                imageStatus.setStatus("var");
+
+                imageStatusRepo.save(imageStatus);
+
+               ImageStatus imageStatus2 =  imageStatusRepo.findById(imageStatus.getImageStatusId()).get();
+                
+                propertyImage.setImageStatus(imageStatus2);
+
+                propertyImage.setImageStatus(imageStatus);
+                propertyImageRepo.save(propertyImage);
                 return ResponseEntity.ok().build();
 
         }
@@ -138,7 +142,7 @@ public class PropertySreviceImp implements PropertyService {
                 String message = "";
                 try {
                         storageService.store(file);
-
+                        
                         message = "Uploaded the file successfully: " + file.getOriginalFilename();
                         return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
                 } catch (Exception e) {

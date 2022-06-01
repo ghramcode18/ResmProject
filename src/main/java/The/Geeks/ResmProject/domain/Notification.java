@@ -24,10 +24,10 @@ public class Notification {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     Long notificationId;
     String description;
-    @ManyToOne(fetch = FetchType.LAZY,optional = false)
-    @JoinColumn(name = "notificationTypeID" , nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY,optional = true)
+    @JoinColumn(name = "notificationTypeID" , nullable = true)
     private NotificationType notificationType;
-    @ManyToOne(fetch = FetchType.LAZY,optional = false)
-    @JoinColumn(name = "userID" , nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY,optional = true)
+    @JoinColumn(name = "userID" , nullable = true)
     private User user;
 }

@@ -23,7 +23,7 @@ import lombok.Setter;
 public class Chat {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     Long chatId;
-    @ManyToOne(fetch = FetchType.LAZY,optional = false)
-    @JoinColumn(name = "userID" , nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY,optional = true)
+    @JoinColumn(name = "userID" , nullable = true)
     private User user;
 }

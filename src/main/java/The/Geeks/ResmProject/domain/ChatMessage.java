@@ -27,10 +27,10 @@ public class ChatMessage {
     Long chatMessageId;
     String message;
     Date dateSent;
-    @ManyToOne(fetch = FetchType.LAZY,optional = false)
-    @JoinColumn(name = "userID" , nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY,optional = true)
+    @JoinColumn(name = "userID" , nullable = true)
     private User user;
-    @ManyToOne(fetch = FetchType.LAZY,optional = false)
-    @JoinColumn(name = "chatID" , nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY,optional = true)
+    @JoinColumn(name = "chatID" , nullable = true)
     private Chat chat;
 }

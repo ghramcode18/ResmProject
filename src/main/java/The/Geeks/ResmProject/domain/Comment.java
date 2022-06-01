@@ -27,10 +27,10 @@ public class Comment {
     Long commentId;
     String comment;
     Date dateAdded;
-    @ManyToOne(fetch = FetchType.LAZY,optional = false)
-    @JoinColumn(name = "propertyID" , nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY,optional = true)
+    @JoinColumn(name = "propertyID" , nullable = true)
     private Property property;
-    @ManyToOne(fetch = FetchType.LAZY,optional = false)
-    @JoinColumn(name = "userID" , nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY,optional = true)
+    @JoinColumn(name = "userID" , nullable = true)
     private User user;
 }
