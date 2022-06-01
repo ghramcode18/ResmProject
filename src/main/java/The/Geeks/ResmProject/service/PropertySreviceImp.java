@@ -131,6 +131,7 @@ public class PropertySreviceImp implements PropertyService {
 
                 propertyImage.setImageStatus(imageStatus);
                 propertyImageRepo.save(propertyImage);
+        
                 return ResponseEntity.ok().build();
 
         }
@@ -150,5 +151,7 @@ public class PropertySreviceImp implements PropertyService {
                         return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(message));
                 }
         }
+
+        
 
 }

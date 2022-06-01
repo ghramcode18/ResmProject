@@ -20,5 +20,5 @@ import The.Geeks.ResmProject.payload.request.PropertyRequest;
 @Service
 public interface PropertyService {
     public ResponseEntity<ResponseMessage> addProperty(
-            @RequestPart("file") @Valid @NotNull @NotBlank MultipartFile file,@RequestPart ("propertyRequest")PropertyRequest propertyRequest) throws UnsupportedEncodingException, Exception;
+            @RequestPart("file") @Valid @NotNull @NotBlank MultipartFile  files,@RequestPart ("propertyRequest")PropertyRequest propertyRequest) throws UnsupportedEncodingException, Exception;
 }
