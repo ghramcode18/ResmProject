@@ -1,15 +1,20 @@
 package The.Geeks.ResmProject.service;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.http.HttpHeaders;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-
+import org.springframework.util.StringUtils;
+import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import org.aspectj.bridge.Message;
 import org.hibernate.validator.internal.engine.messageinterpolation.parser.MessageState;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +44,8 @@ import The.Geeks.ResmProject.domain.UserImage;
 import The.Geeks.ResmProject.message.ResponseFile;
 import The.Geeks.ResmProject.message.ResponseMessage;
 import The.Geeks.ResmProject.payload.request.PropertyRequest;
-import The.Geeks.ResmProject.repo.FileDBRepository;
+import The.Geeks.ResmProject.repo.ImageRepository;
+// import The.Geeks.ResmProject.repo.FileDBRepository;
 import The.Geeks.ResmProject.repo.ImageStatusRepo;
 import The.Geeks.ResmProject.repo.PropertyCategoryRepo;
 import The.Geeks.ResmProject.repo.PropertyImageRepo;
@@ -50,10 +56,14 @@ import The.Geeks.ResmProject.service.DecodeToken;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import javax.validation.Valid;
+import java.nio.file.Files;
+
+import lombok.extern.slf4j.Slf4j;
 
 @RequiredArgsConstructor
 @Component
 @Service
+@Slf4j
 public class PropertySreviceImp implements PropertyService {
 
         @Autowired
@@ -74,24 +84,102 @@ public class PropertySreviceImp implements PropertyService {
         @Autowired
         ImageStatusRepo imageStatusRepo;
         @Autowired
-        FileDBRepository fileDBRepository;
-
+        ImageRepository imageRepository;
 
         @Override
         public ResponseEntity<ResponseMessage> addProperty(
-                        @RequestPart("file") @Valid @NotNull @NotBlank MultipartFile file,
+                        @RequestParam("files") MultipartFile[] files,
                         @RequestPart("propertyRequest") PropertyRequest propertyRequest)
                         throws UnsupportedEncodingException, Exception {
+                // here decode token and checkIfUserExist in db
+                DecodeToken dtoken = decodeToken(propertyRequest.getToken());
 
-                String token = propertyRequest.getToken();
+                User user = userRepository.findByUsername(
+                                dtoken.getSub())
+                                .orElseThrow(() -> new RuntimeException("Error: user is not found."));
+                // here set property to db
+                Property newProperty = setProperty(propertyRequest);
+
+                // here set user to property
+                newProperty.setUser(user);
+
+                // here saving properties in db
+                propertyRepo.save(newProperty);
+
+                // here i am trying upload images to local file system and save url in db
+                Image image = setImage(files, propertyRequest);
+
+                // here i set imageStatus and set propertyImage
+                PropertyImage propertyImage = setPropertyImage(image, newProperty);
+
+                return ResponseEntity.ok().build();
+
+        }
+
+        // method to setImageStatus
+        private PropertyImage setPropertyImage(Image image, Property newProperty) {
+                Optional<ImageStatus> imageStatus = imageStatusRepo.findById((long) 1);
+
+                PropertyImage propertyImage = new PropertyImage();
+                propertyImage.setImageStatus(imageStatus);
+                propertyImage.setImage(image);
+                propertyImage.setProperty(newProperty);
+
+                propertyImageRepo.save(propertyImage);
+                return propertyImage;
+        }
+
+        // to store images in file system
+        public ResponseEntity uploadToLocalFileSystem(@RequestParam("file") MultipartFile file) {
+                String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+                Path path = Paths.get(fileName);
+                try {
+                        Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+                } catch (IOException e) {
+                        e.printStackTrace();
+                }
+                String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+                                .path("/files/download/")
+                                .path(fileName)
+                                .toUriString();
+                return ResponseEntity.ok(fileDownloadUri);
+        }
+
+        public ResponseEntity multiUpload(@RequestParam("files") MultipartFile[] files) {
+                List<Object> fileDownloadUrls = new ArrayList<>();
+                log.info("hello ghram" + fileDownloadUrls);
+                Arrays.asList(files)
+                                .stream()
+                                .forEach(file -> fileDownloadUrls.add(uploadToLocalFileSystem(file).getBody()));
+                return ResponseEntity.ok(fileDownloadUrls);
+
+        }
+
+        // method to set image in db
+        private Image setImage(MultipartFile[] files, PropertyRequest propertyRequest) {
+
+                Object fileDownloadUrls = multiUpload(files).getBody();
+                Image image = new Image();
+                image.setDateAdded(propertyRequest.getPropertyInfo().getDateAdded());
+                // TODO check ME PLEASE ~_~
+                image.setUrl(fileDownloadUrls.toString());
+                imageRepository.save(image);
+
+                return image;
+        }
+
+        // method to decodeToken
+        private DecodeToken decodeToken(String token) throws UnsupportedEncodingException {
 
                 DecodeToken dtoken = DecodeToken.getDecoded(token);
 
                 System.out.println(dtoken);
 
-                User user = userRepository.findByUsername(
-                                dtoken.getSub())
-                                .orElseThrow(() -> new RuntimeException("Error: user is not found."));
+                return dtoken;
+        }
+
+        // method to set propertyRequest in propertie db
+        private Property setProperty(PropertyRequest propertyRequest) {
 
                 Property newProperty = new Property();
                 newProperty.setDateAdded(propertyRequest.getPropertyInfo().getDateAdded());
@@ -101,57 +189,35 @@ public class PropertySreviceImp implements PropertyService {
                 newProperty.setNumStoreys(propertyRequest.getPropertyInfo().getNumStoreys());
                 newProperty.setPrice(propertyRequest.getPropertyInfo().getPrice());
                 newProperty.setSpace(propertyRequest.getPropertyInfo().getSpace());
+
                 Optional<PropertyCategory> propertyCategory = propertyCategoryRepo
                                 .findById(propertyRequest.getPropertyInfo().getProperty_categoryid());
                 newProperty.setPropertyCategory(propertyCategory.get());
+
                 Optional<PropertyStatus> propertyStatus = propertyStatusRepo
                                 .findById(propertyRequest.getPropertyInfo().getProperty_statusid());
                 newProperty.setPropertyStatus(propertyStatus.get());
 
-                newProperty.setUser(user);
-                
-                propertyRepo.save(newProperty);
-                uploadFile(file);
-                PropertyImage propertyImage =new PropertyImage();
-                Image image = new Image();
-                fileDBRepository.save(image);
-                image.setData(file.getBytes());
-                propertyImage.setImage(image);
-                propertyImage.setProperty(newProperty);
-                propertyImage.setPropertyImageId((long) 1);
-
-                ImageStatus imageStatus = new ImageStatus();            
-                imageStatus.setStatus("var");
-
-                imageStatusRepo.save(imageStatus);
-
-               ImageStatus imageStatus2 =  imageStatusRepo.findById(imageStatus.getImageStatusId()).get();
-                
-                propertyImage.setImageStatus(imageStatus2);
-
-                propertyImage.setImageStatus(imageStatus);
-                propertyImageRepo.save(propertyImage);
-        
-                return ResponseEntity.ok().build();
-
+                return newProperty;
         }
 
-        @Autowired
-        private FileStorageService storageService;
+        // to store image in db
+        // @Autowired
+        // private FileStorageService storageService;
 
-        public ResponseEntity<ResponseMessage> uploadFile(MultipartFile file) {
-                String message = "";
-                try {
-                        storageService.store(file);
-                        
-                        message = "Uploaded the file successfully: " + file.getOriginalFilename();
-                        return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
-                } catch (Exception e) {
-                        message = "Could not upload the file: " + file.getOriginalFilename() + "!";
-                        return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(message));
-                }
-        }
+        // public ResponseEntity<ResponseMessage> uploadFile(MultipartFile file) {
+        // String message = "";
+        // try {
+        // storageService.store(file);
 
-        
+        // message = "Uploaded the file successfully: " + file.getOriginalFilename();
+        // return ResponseEntity.status(HttpStatus.OK).body(new
+        // ResponseMessage(message));
+        // } catch (Exception e) {
+        // message = "Could not upload the file: " + file.getOriginalFilename() + "!";
+        // return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new
+        // ResponseMessage(message));
+        // }
+        // }
 
 }

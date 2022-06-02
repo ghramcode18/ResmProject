@@ -5,7 +5,6 @@ import org.springframework.stereotype.Repository;
 
 import The.Geeks.ResmProject.domain.Image;
 @Repository
-public interface FileDBRepository  extends JpaRepository<Image, String>{
+public interface ImageRepository  extends JpaRepository<Image, String>{
 
-    Image findByName(String fileName);
 }

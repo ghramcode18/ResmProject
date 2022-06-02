@@ -1,6 +1,7 @@
 package The.Geeks.ResmProject.domain;
 
 import java.util.Date;
+import java.util.Objects;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -30,53 +31,80 @@ public class Image {
     @GenericGenerator(name = "uuid", strategy = "uuid2")
     private String id;
 
-    private String name;
+    private String url;
 
-    private String type;
-
-    @Lob
-    private byte[] data;
     
     @JsonFormat(pattern = "yyyy-MM-dd")
     Date dateAdded;
 
-    
+
   public Image() {
   }
 
-  public Image(String name, String type, byte[] data) {
-    this.name = name;
-    this.type = type;
-    this.data = data;
-  }
+
 
   public String getId() {
-    return id;
+    return this.id;
   }
 
-  public String getName() {
-    return name;
+  public void setId(String id) {
+    this.id = id;
   }
 
-  public void setName(String name) {
-    this.name = name;
+  public String getUrl() {
+    return this.url;
   }
 
-  public String getType() {
-    return type;
+  public void setUrl(String url) {
+    this.url = url;
   }
 
-  public void setType(String type) {
-    this.type = type;
+  public Date getDateAdded() {
+    return this.dateAdded;
   }
 
-  public byte[] getData() {
-    return data;
+  public void setDateAdded(Date dateAdded) {
+    this.dateAdded = dateAdded;
   }
 
-  public void setData(byte[] data) {
-    this.data = data;
+  public Image id(String id) {
+    setId(id);
+    return this;
   }
 
+  public Image url(String url) {
+    setUrl(url);
+    return this;
+  }
 
-}
+  public Image dateAdded(Date dateAdded) {
+    setDateAdded(dateAdded);
+    return this;
+  }
+
+  @Override
+    public boolean equals(Object o) {
+        if (o == this)
+            return true;
+        if (!(o instanceof Image)) {
+            return false;
+        }
+        Image image = (Image) o;
+        return Objects.equals(id, image.id) && Objects.equals(url, image.url) && Objects.equals(dateAdded, image.dateAdded);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id, url, dateAdded);
+  }
+
+  @Override
+  public String toString() {
+    return "{" +
+      " id='" + getId() + "'" +
+      ", url='" + getUrl() + "'" +
+      ", dateAdded='" + getDateAdded() + "'" +
+      "}";
+  }
+
+    }

@@ -1,5 +1,8 @@
 package The.Geeks.ResmProject.domain;
 
+import java.util.Objects;
+import java.util.Optional;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -17,7 +20,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity @Table(name = "propertiesImage") @Data @NoArgsConstructor @AllArgsConstructor @Setter @Getter
+@Entity @Table(name = "propertiesImage") @Data  @AllArgsConstructor @Setter @Getter
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 
 public class PropertyImage {
@@ -32,6 +35,10 @@ public class PropertyImage {
     @ManyToOne(fetch = FetchType.LAZY,optional = true)
     @JoinColumn(name = "imageStatusID" , nullable = true)
     private ImageStatus imageStatus;
+
+    public PropertyImage() {
+    }
+
 
     public Long getPropertyImageId() {
         return this.propertyImageId;
@@ -61,17 +68,51 @@ public class PropertyImage {
         return this.imageStatus;
     }
 
-    public void setImageStatus(ImageStatus imageStatus) {
-        this.imageStatus = imageStatus;
+    public void setImageStatus(Optional <ImageStatus >imageStatus) {
+        this.imageStatus = imageStatus.get();
     }
 
-    public PropertyImage(Long i, Property newProperty, byte[] bytes, ImageStatus imageStatus2) 
-    { this.propertyImageId = i;
-        this.property = newProperty;
-        this.image.setData(bytes);
-        this.imageStatus = imageStatus2;
+    public PropertyImage propertyImageId(Long propertyImageId) {
+        setPropertyImageId(propertyImageId);
+        return this;
+    }
+
+    public PropertyImage property(Property property) {
+        setProperty(property);
+        return this;
+    }
+
+    public PropertyImage image(Image image) {
+        setImage(image);
+        return this;
     }
 
     
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this)
+            return true;
+        if (!(o instanceof PropertyImage)) {
+            return false;
+        }
+        PropertyImage propertyImage = (PropertyImage) o;
+        return Objects.equals(propertyImageId, propertyImage.propertyImageId) && Objects.equals(property, propertyImage.property) && Objects.equals(image, propertyImage.image) && Objects.equals(imageStatus, propertyImage.imageStatus);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(propertyImageId, property, image, imageStatus);
+    }
+
+    @Override
+    public String toString() {
+        return "{" +
+            " propertyImageId='" + getPropertyImageId() + "'" +
+            ", property='" + getProperty() + "'" +
+            ", image='" + getImage() + "'" +
+            ", imageStatus='" + getImageStatus() + "'" +
+            "}";
+    }
 
 }

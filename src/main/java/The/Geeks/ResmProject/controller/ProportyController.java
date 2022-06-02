@@ -50,7 +50,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import The.Geeks.ResmProject.domain.Image;
 import The.Geeks.ResmProject.message.ResponseFile;
 import The.Geeks.ResmProject.message.ResponseMessage;
-import The.Geeks.ResmProject.service.FileStorageService;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -80,12 +79,12 @@ public class ProportyController {
 
     @ResponseBody
     public Object addProperty(
-            @RequestPart("file") @Valid @NotNull @NotBlank MultipartFile file,
-            @RequestPart("propertyRequest") @Valid PropertyRequest propertyRequest
+     @RequestParam("files") MultipartFile[] files,  
+               @RequestPart("propertyRequest") @Valid PropertyRequest propertyRequest
            )
             throws UnsupportedEncodingException, Exception {
         try {
-            return proertyserviceImp.addProperty(file,propertyRequest);
+            return proertyserviceImp.addProperty(files,propertyRequest);
 
         } catch (Exception e) {
             return e.getMessage();
