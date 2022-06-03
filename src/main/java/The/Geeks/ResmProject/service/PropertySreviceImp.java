@@ -15,7 +15,6 @@ import javax.validation.constraints.NotNull;
 import org.springframework.util.StringUtils;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
-import org.aspectj.bridge.Message;
 import org.hibernate.validator.internal.engine.messageinterpolation.parser.MessageState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -91,41 +90,59 @@ public class PropertySreviceImp implements PropertyService {
                         @RequestParam("files") MultipartFile[] files,
                         @RequestPart("propertyRequest") PropertyRequest propertyRequest)
                         throws UnsupportedEncodingException, Exception {
-                // here decode token and checkIfUserExist in db
-                DecodeToken dtoken = decodeToken(propertyRequest.getToken());
 
-                User user = userRepository.findByUsername(
-                                dtoken.getSub())
-                                .orElseThrow(() -> new RuntimeException("Error: user is not found."));
-                // here set property to db
-                Property newProperty = setProperty(propertyRequest);
+                Message message = new Message();
+                try {
 
-                // here set user to property
-                newProperty.setUser(user);
+                        // here decode token and checkIfUserExist in db
+                        DecodeToken dtoken = decodeToken(propertyRequest.getToken());
 
-                // here saving properties in db
-                propertyRepo.save(newProperty);
+                        User user = userRepository.findByUsername(
+                                        dtoken.getSub())
+                                        .orElseThrow(() -> new RuntimeException("Error: user is not found."));
+                        // here set property to db
+                        Property newProperty = setProperty(propertyRequest);
 
-                // here i am trying upload images to local file system and save url in db
-                Image image = setImage(files, propertyRequest);
+                        // here set user to property
+                        newProperty.setUser(user);
 
-                // here i set imageStatus and set propertyImage
-                PropertyImage propertyImage = setPropertyImage(image, newProperty);
+                        // here saving properties in db
+                        propertyRepo.save(newProperty);
 
-                return ResponseEntity.ok().build();
+                         // here i am trying upload images to local file system and save url in db
+                        List<Image> images =  setImages(files, propertyRequest);
+
+                         // here i set imageStatus and set propertyImage
+                         PropertyImage propertyImage = setPropertyImage(images, newProperty);
+
+                        ResponseMessage responseMessage = new ResponseMessage("successful");
+
+                        return ResponseEntity.ok(responseMessage);
+
+                } catch (Exception e) {
+                        ResponseMessage responseMessage = new ResponseMessage("error");
+
+                        return ResponseEntity.ok(responseMessage);
+
+                }
 
         }
 
         // method to setImageStatus
-        private PropertyImage setPropertyImage(Image image, Property newProperty) {
+        private PropertyImage setPropertyImage(List <Image> images, Property newProperty) {
                 Optional<ImageStatus> imageStatus = imageStatusRepo.findById((long) 1);
-
                 PropertyImage propertyImage = new PropertyImage();
-                propertyImage.setImageStatus(imageStatus);
-                propertyImage.setImage(image);
-                propertyImage.setProperty(newProperty);
 
-                propertyImageRepo.save(propertyImage);
+                System.out.println(images.size());
+                for (int i = 0; i < images.size(); i++) {
+                        
+                        propertyImage = new PropertyImage();
+                        propertyImage.setImageStatus(imageStatus);
+                        propertyImage.setImage(images.get(i));
+                        propertyImage.setProperty(newProperty);
+                        propertyImageRepo.save(propertyImage);
+                 }
+              
                 return propertyImage;
         }
 
@@ -144,10 +161,9 @@ public class PropertySreviceImp implements PropertyService {
                                 .toUriString();
                 return ResponseEntity.ok(fileDownloadUri);
         }
-
+        // method to upload multi image and return url for each image
         public ResponseEntity multiUpload(@RequestParam("files") MultipartFile[] files) {
                 List<Object> fileDownloadUrls = new ArrayList<>();
-                log.info("hello ghram" + fileDownloadUrls);
                 Arrays.asList(files)
                                 .stream()
                                 .forEach(file -> fileDownloadUrls.add(uploadToLocalFileSystem(file).getBody()));
@@ -155,18 +171,44 @@ public class PropertySreviceImp implements PropertyService {
 
         }
 
-        // method to set image in db
-        private Image setImage(MultipartFile[] files, PropertyRequest propertyRequest) {
+        // method to set url and dataAdded  image in db
+        private List< Image> setImages(MultipartFile[] files, PropertyRequest propertyRequest) {
 
-                Object fileDownloadUrls = multiUpload(files).getBody();
-                Image image = new Image();
-                image.setDateAdded(propertyRequest.getPropertyInfo().getDateAdded());
-                // TODO check ME PLEASE ~_~
-                image.setUrl(fileDownloadUrls.toString());
-                imageRepository.save(image);
 
-                return image;
+                Object fileDownloadUrls = multiUpload(files).getBody().toString();
+                System.out.println(fileDownloadUrls);
+
+                List<String> myList = new ArrayList<String>(Arrays.asList((  multiUpload(files).getBody()
+                                .toString()).split(",")));
+                System.out.println(myList);
+
+               List< Image> images = new ArrayList<Image>();
+                for (int i = 0; i < myList.size(); i++) {
+                        Image image1 = new Image();
+                        image1.setUrl(myList.get(i));
+                        image1.setDateAdded(propertyRequest.getPropertyInfo().getDateAdded());
+
+                        images.add(image1);
+                        imageRepository.save(image1);
+
+                }
+
+                return images;
         }
+
+        // public void zipDownload(@RequestParam List<String> name, HttpServletResponse
+        // response) throws IOException {
+        // ZipOutputStream zipOut = new ZipOutputStream(response.getOutputStream());
+        // for (String fileName : name) {
+        // FileSystemResource resource = new FileSystemResource(fileBasePath +
+        // fileName);
+        // ZipEntry zipEntry = new ZipEntry(resource.getFilename());
+        // zipEntry.setSize(resource.contentLength());
+        // zipOut.putNextEntry(zipEntry);
+        // StreamUtils.copy(resource.getInputStream(), zipOut);
+        // zipOut.closeEntry();
+        // }
+        // }
 
         // method to decodeToken
         private DecodeToken decodeToken(String token) throws UnsupportedEncodingException {

@@ -74,17 +74,15 @@ public class ProportyController {
     @Autowired
     PropertySreviceImp proertyserviceImp;
 
-    @RequestMapping(value="/addProperty",method=RequestMethod.POST,consumes=
-    {"multipart/form-data"})
+    @RequestMapping(value = "/addProperty", method = RequestMethod.POST, consumes = { "multipart/form-data" })
 
     @ResponseBody
     public Object addProperty(
-     @RequestParam("files") MultipartFile[] files,  
-               @RequestPart("propertyRequest") @Valid PropertyRequest propertyRequest
-           )
+            @RequestParam("files") MultipartFile[] files,
+            @RequestPart("propertyRequest") @Valid PropertyRequest propertyRequest)
             throws UnsupportedEncodingException, Exception {
         try {
-            return proertyserviceImp.addProperty(files,propertyRequest);
+            return proertyserviceImp.addProperty(files, propertyRequest);
 
         } catch (Exception e) {
             return e.getMessage();

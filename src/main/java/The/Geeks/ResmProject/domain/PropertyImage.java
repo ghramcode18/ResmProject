@@ -1,5 +1,7 @@
 package The.Geeks.ResmProject.domain;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -31,14 +33,16 @@ public class PropertyImage {
     private Property property;
     @ManyToOne(fetch = FetchType.LAZY,optional = true)
     @JoinColumn(name = "imageID" , nullable = true)
-    private Image image;
+    private  Image image ;
     @ManyToOne(fetch = FetchType.LAZY,optional = true)
     @JoinColumn(name = "imageStatusID" , nullable = true)
     private ImageStatus imageStatus;
 
+
     public PropertyImage() {
     }
 
+    
 
     public Long getPropertyImageId() {
         return this.propertyImageId;
@@ -87,7 +91,10 @@ public class PropertyImage {
         return this;
     }
 
-    
+    public PropertyImage imageStatus(Optional<ImageStatus> imageStatus) {
+        setImageStatus(imageStatus);
+        return this;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -114,5 +121,6 @@ public class PropertyImage {
             ", imageStatus='" + getImageStatus() + "'" +
             "}";
     }
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
 
 }
