@@ -146,7 +146,8 @@ public class PropertySreviceImp implements PropertyService {
                 return propertyImage;
         }
 
-        // to store images in file system
+        
+        //  method to store images in file system
         public ResponseEntity uploadToLocalFileSystem(@RequestParam("file") MultipartFile file) {
                 String fileName = StringUtils.cleanPath(file.getOriginalFilename());
                 Path path = Paths.get(fileName);
