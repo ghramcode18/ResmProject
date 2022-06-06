@@ -145,11 +145,11 @@ public class PropertySreviceImp implements PropertyService {
               
                 return propertyImage;
         }
+private String userDirectory = "src/main/resources/static";
 
-        
         //  method to store images in file system
         public ResponseEntity uploadToLocalFileSystem(@RequestParam("file") MultipartFile file) {
-                String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+                String fileName = StringUtils.cleanPath(userDirectory+"/"+file.getOriginalFilename());
                 Path path = Paths.get(fileName);
                 try {
                         Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
@@ -157,7 +157,7 @@ public class PropertySreviceImp implements PropertyService {
                         e.printStackTrace();
                 }
                 String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-                                .path("/files/download/")
+                                .path("")
                                 .path(fileName)
                                 .toUriString();
                 return ResponseEntity.ok(fileDownloadUri);
