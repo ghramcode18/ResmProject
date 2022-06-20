@@ -20,4 +20,10 @@ public class Message  extends Exception{
         execptionMap.put("error : ", message);
         return execptionMap;
     }
+
+    public void setMessage(String string) {
+    }
+
+    public void setStatusCode(int i) {
+    }
 }

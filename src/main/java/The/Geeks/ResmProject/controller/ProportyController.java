@@ -56,8 +56,7 @@ import The.Geeks.ResmProject.message.ResponseMessage;
 @Slf4j
 
 public class ProportyController {
-    // @Autowired
-    // PasswordEncoder encoder;
+   
 
     /*
      * @RequestMapping(value = "/executesampleservice", method = RequestMethod.POST,
@@ -81,13 +80,10 @@ public class ProportyController {
             @RequestParam("files") MultipartFile[] files,
             @RequestPart("propertyRequest") @Valid PropertyRequest propertyRequest)
             throws UnsupportedEncodingException, Exception {
-        try {
+                
             return proertyserviceImp.addProperty(files, propertyRequest);
 
-        } catch (Exception e) {
-            return e.getMessage();
-
-        }
+       
     }
 
 }

@@ -17,5 +17,5 @@ public interface UserService {
     boolean checkIfUserExist(String email);
 
     ResponseEntity<ResponseMessage> addPropertyToFavoriteList(
-            @RequestPart("propertyRequest") AddPropertyToFavoriteListRequest addPropertyToFavoriteListRequest, Integer integer);
+            @RequestPart("propertyRequest") AddPropertyToFavoriteListRequest addPropertyToFavoriteListRequest);
 }

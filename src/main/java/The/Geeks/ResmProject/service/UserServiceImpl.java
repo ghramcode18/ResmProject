@@ -15,6 +15,7 @@ import The.Geeks.ResmProject.domain.Property;
 import The.Geeks.ResmProject.domain.Region;
 import The.Geeks.ResmProject.domain.Role;
 import The.Geeks.ResmProject.domain.User;
+import The.Geeks.ResmProject.domain.UserFav;
 import The.Geeks.ResmProject.message.ResponseMessage;
 import The.Geeks.ResmProject.model.UserModel;
 import The.Geeks.ResmProject.payload.request.AddPropertyToFavoriteListRequest;
@@ -24,6 +25,7 @@ import The.Geeks.ResmProject.repo.CityRepo;
 import The.Geeks.ResmProject.repo.CountryRepo;
 import The.Geeks.ResmProject.repo.PropertyRepo;
 import The.Geeks.ResmProject.repo.RegionRepo;
+import The.Geeks.ResmProject.repo.UserFavRepo;
 import The.Geeks.ResmProject.repo.UserRepo;
 import lombok.RequiredArgsConstructor;
 
@@ -36,6 +38,8 @@ public class UserServiceImpl implements UserService {
     private final RegionRepo regionRepo;
     private final CityRepo cityRepo;
     private final CountryRepo countryRepo;
+    private final UserFavRepo userFavRepo;
+
     @Autowired
     UserRepo userRepository;
 
@@ -56,7 +60,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity<ResponseMessage> addPropertyToFavoriteList(
-            AddPropertyToFavoriteListRequest addPropertyToFavoriteListRequest, Integer integer) {
+            AddPropertyToFavoriteListRequest addPropertyToFavoriteListRequest) {
 
         Message message = new Message();
         try {
@@ -68,31 +72,32 @@ public class UserServiceImpl implements UserService {
                     dtoken.getSub())
                     .orElseThrow(() -> new RuntimeException("Error: user is not found."));
 
-            // here check if property exist in db        
+            // here check if property exist in db
             String PropertyId = addPropertyToFavoriteListRequest.getPropertyId();
             Integer PropertyIdInt = Integer.parseInt(PropertyId);
 
-            Optional<Property> newProperty = propertyRepo.findById((long)PropertyIdInt);
-            // if (newProperty.isPresent()) {
-            //     Property property = newProperty.get();
-            //     user.getFavoriteProperties().add(property);
-            //     userRepository.save(user);
-            //     message.setMessage("Property added to favorite list successfully");
-            //     message.setStatus(200);
-            //     return ResponseEntity.status(HttpStatus.OK).body(message);
-            // } else {
-            //     message.setMessage("Property not found");
-            //     message.setStatus(404);
-            //     return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
-            // }
+            Optional<Property> newProperty = propertyRepo.findById((long) PropertyIdInt);
 
-            ResponseMessage responseMessage = new ResponseMessage("successful");
+            if (newProperty.isPresent()) {
+                UserFav userFav = new UserFav();
+                userFav.setUser(user);
+                userFav.setProperty(newProperty.get());
+                userFavRepo.save(userFav);
+                ResponseMessage responseMessage = new ResponseMessage();
 
-            return ResponseEntity.ok(responseMessage);
+                responseMessage.setSuccessful(true);
+                return ResponseEntity.ok(responseMessage);
+            } else {
+                ResponseMessage responseMessage = new ResponseMessage();
+                responseMessage.setSuccessful(false);
+                responseMessage.setError("Property is not found");
+                return ResponseEntity.ok(responseMessage);
+            }
 
         } catch (Exception e) {
-            ResponseMessage responseMessage = new ResponseMessage("error");
-
+            ResponseMessage responseMessage = new ResponseMessage();
+            responseMessage.setSuccessful(false);
+            responseMessage.setError(e.getMessage());
             return ResponseEntity.ok(responseMessage);
 
         }

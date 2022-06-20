@@ -109,47 +109,50 @@ public class PropertySreviceImp implements PropertyService {
                         // here saving properties in db
                         propertyRepo.save(newProperty);
 
-                         // here i am trying upload images to local file system and save url in db
-                        List<Image> images =  setImages(files, propertyRequest);
+                        // here i am trying upload images to local file system and save url in db
+                        List<Image> images = setImages(files, propertyRequest);
 
-                         // here i set imageStatus and set propertyImage
-                         PropertyImage propertyImage = setPropertyImage(images, newProperty);
+                        // here i set imageStatus and set propertyImage
+                        PropertyImage propertyImage = setPropertyImage(images, newProperty);
+                
+                        ResponseMessage responseMessage  = new ResponseMessage();
 
-                        ResponseMessage responseMessage = new ResponseMessage("successful");
-
+                        responseMessage.setSuccessful(true);
                         return ResponseEntity.ok(responseMessage);
 
                 } catch (Exception e) {
-                        ResponseMessage responseMessage = new ResponseMessage("error");
-
-                        return ResponseEntity.ok(responseMessage);
+                        ResponseMessage responseMessage = new ResponseMessage();
+                        responseMessage.setSuccessful(false);
+                        responseMessage.setError(e.getMessage());
+                        return ResponseEntity.ok(responseMessage );
 
                 }
 
         }
 
         // method to setImageStatus
-        private PropertyImage setPropertyImage(List <Image> images, Property newProperty) {
+        private PropertyImage setPropertyImage(List<Image> images, Property newProperty) {
                 Optional<ImageStatus> imageStatus = imageStatusRepo.findById((long) 1);
                 PropertyImage propertyImage = new PropertyImage();
 
                 System.out.println(images.size());
                 for (int i = 0; i < images.size(); i++) {
-                        
+
                         propertyImage = new PropertyImage();
                         propertyImage.setImageStatus(imageStatus);
                         propertyImage.setImage(images.get(i));
                         propertyImage.setProperty(newProperty);
                         propertyImageRepo.save(propertyImage);
-                 }
-              
+                }
+
                 return propertyImage;
         }
-private String userDirectory = "src/main/resources/static";
 
-        //  method to store images in file system
+        private String userDirectory = "src/main/resources/static";
+
+        // method to store images in file system
         public ResponseEntity uploadToLocalFileSystem(@RequestParam("file") MultipartFile file) {
-                String fileName = StringUtils.cleanPath(userDirectory+"/"+file.getOriginalFilename());
+                String fileName = StringUtils.cleanPath(userDirectory + "/" + file.getOriginalFilename());
                 Path path = Paths.get(fileName);
                 try {
                         Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
@@ -162,6 +165,7 @@ private String userDirectory = "src/main/resources/static";
                                 .toUriString();
                 return ResponseEntity.ok(fileDownloadUri);
         }
+
         // method to upload multi image and return url for each image
         public ResponseEntity multiUpload(@RequestParam("files") MultipartFile[] files) {
                 List<Object> fileDownloadUrls = new ArrayList<>();
@@ -172,18 +176,17 @@ private String userDirectory = "src/main/resources/static";
 
         }
 
-        // method to set url and dataAdded  image in db
-        private List< Image> setImages(MultipartFile[] files, PropertyRequest propertyRequest) {
-
+        // method to set url and dataAdded image in db
+        private List<Image> setImages(MultipartFile[] files, PropertyRequest propertyRequest) {
 
                 Object fileDownloadUrls = multiUpload(files).getBody().toString();
                 System.out.println(fileDownloadUrls);
 
-                List<String> myList = new ArrayList<String>(Arrays.asList((  multiUpload(files).getBody()
+                List<String> myList = new ArrayList<String>(Arrays.asList((multiUpload(files).getBody()
                                 .toString()).split(",")));
                 System.out.println(myList);
 
-               List< Image> images = new ArrayList<Image>();
+                List<Image> images = new ArrayList<Image>();
                 for (int i = 0; i < myList.size(); i++) {
                         Image image1 = new Image();
                         image1.setUrl(myList.get(i));
