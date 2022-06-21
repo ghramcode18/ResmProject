@@ -86,6 +86,7 @@ public class UserServiceImpl implements UserService {
                 ResponseMessage responseMessage = new ResponseMessage();
 
                 responseMessage.setSuccessful(true);
+                responseMessage.setError("");
                 return ResponseEntity.ok(responseMessage);
             } else {
                 ResponseMessage responseMessage = new ResponseMessage();

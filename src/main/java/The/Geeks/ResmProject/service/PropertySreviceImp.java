@@ -118,6 +118,8 @@ public class PropertySreviceImp implements PropertyService {
                         ResponseMessage responseMessage  = new ResponseMessage();
 
                         responseMessage.setSuccessful(true);
+                        responseMessage.setError("");
+
                         return ResponseEntity.ok(responseMessage);
 
                 } catch (Exception e) {
