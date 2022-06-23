@@ -11,6 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;
@@ -27,9 +28,11 @@ public class Comment {
     Long commentId;
     String comment;
     Date dateAdded;
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY,optional = true)
     @JoinColumn(name = "propertyID" , nullable = true)
     private Property property;
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY,optional = true)
     @JoinColumn(name = "userID" , nullable = true)
     private User user;

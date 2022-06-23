@@ -43,4 +43,15 @@ public class UserController {
         return  userServiceImp.addPropertyToFavoriteList(addPropertyToFavoriteListRequest);
        
     }
+
+    @RequestMapping(value = "/viewPropertyFavoriteList", method = RequestMethod.POST)
+    public Object viewPropertyFavoriteList(
+            @RequestBody String token) throws Exception {
+
+        return userServiceImp.viewPropertyFavoriteList(token);
+
+    }
+    
+    
+
 }

@@ -15,6 +15,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -41,7 +42,7 @@ public class Image {
     @JsonFormat(pattern = "yyyy-MM-dd")
     Date dateAdded;
 
-
+    @JsonIgnore
     @OneToMany(mappedBy = "image", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<PropertyImage> setPropertyImage;  
     

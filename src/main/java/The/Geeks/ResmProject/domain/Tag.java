@@ -9,6 +9,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;
@@ -23,9 +24,13 @@ import lombok.Setter;
 public class Tag {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     Long tagId;
+
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY,optional = true)
     @JoinColumn(name = "taggerUserinfoID" , nullable = true)
     private User taggerUserinfo;
+
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY,optional = true)
     @JoinColumn(name = "taggedUserinfoID" , nullable = true)
     private User taggedUserinfo;
