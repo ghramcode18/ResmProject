@@ -165,42 +165,14 @@ public class UserServiceImpl implements UserService {
             for (int i = 0; i <userFavorites.size(); i++) {
                 UserFav userFavorite = new UserFav();
                  userFavorite.setProperty(userFavorites.get(i).getProperty());
-                      
-                //TODO  make me a method please
+                   
+                 //here i setPropertyView with genral data without address and image
                 PropertyView propertyView = new PropertyView();
-                propertyView.setPropertyId(userFavorite.getProperty().getPropertyId());
-                propertyView.setDescription(userFavorite.getProperty().getDescription());
-                propertyView.setNumBathrooms(userFavorite.getProperty().getNumBathrooms());
-                propertyView.setNumStoreys(userFavorite.getProperty().getNumStoreys());
-                propertyView.setNumRooms(userFavorite.getProperty().getNumRooms());
-                propertyView.setSpace(userFavorite.getProperty().getSpace());
-                propertyView.setPrice(userFavorite.getProperty().getPrice());
-                propertyView.setDateAdded(userFavorite.getProperty().getDateAdded());
-                propertyView.setCategory(userFavorite.getProperty().getPropertyCategory().getCategory()); 
-                Optional<Property> newProperty = propertyRepo.findById((long) userFavorite.getProperty()
-                        .getPropertyId());
-                address address = new address();
-
-                address.setAddressDescription(newProperty.get().getUser().getAddress().getAddressDescription());
-                address.setLattitude(newProperty.get().getUser().getAddress().getLattitude());
-                address.setLongitutde(newProperty.get().getUser().getAddress().getLongitutde());
-                region region= new region();
-                region.setName(newProperty.get().getUser().getAddress().getRegion().getName());
-                city city= new city();
-                city.setName(newProperty.get().getUser().getAddress().getRegion().getCity().getName());
-                country country = new country();
-                country.setName(newProperty.get().getUser().getAddress().getRegion().getCity().getCountry().getName());
-                city.setCountry(country);
-                region.setCity(city);
+                PropertyView propertyView2 =  setPropertyView(propertyView,userFavorite);
                 
-                address.setRegion(region);
-                propertyView.setAddress(address);
+                //here i setPropertyView with address
+                propertyView2.setAddress(setAddresses(userFavorite));
 
-                /*
-                 * OuterClass o = new OuterClass();
-                 * InnerClass inner = o.new InnerClass();
-                 * 
-                 */ 
                 // List<String> imagesUrlList = new ArrayList<String>();
                 // Boolean setSuccessful = true;
                 // while(setSuccessful) {
@@ -215,8 +187,7 @@ public class UserServiceImpl implements UserService {
                 //     }
                 // }
 
-                 System.out.println( newProperty.get().getUser().getAddress()+" hello i am ghramcode18");
-                 propertiesList.add(propertyView);
+                 propertiesList.add(propertyView2);
                  /***         ********************************             ***/
                 
                 }
@@ -242,6 +213,43 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    public PropertyView setPropertyView(PropertyView propertyView,UserFav userFavorite)
+    {
+        propertyView.setPropertyId(userFavorite.getProperty().getPropertyId());
+        propertyView.setDescription(userFavorite.getProperty().getDescription());
+        propertyView.setNumBathrooms(userFavorite.getProperty().getNumBathrooms());
+        propertyView.setNumStoreys(userFavorite.getProperty().getNumStoreys());
+        propertyView.setNumRooms(userFavorite.getProperty().getNumRooms());
+        propertyView.setSpace(userFavorite.getProperty().getSpace());
+        propertyView.setPrice(userFavorite.getProperty().getPrice());
+        propertyView.setDateAdded(userFavorite.getProperty().getDateAdded());
+        propertyView.setCategory(userFavorite.getProperty().getPropertyCategory().getCategory());
+
+                return propertyView;
+
+    }
+     address setAddresses(UserFav userFavorite){
+
+        Optional<Property> newProperty = propertyRepo.findById((long) userFavorite.getProperty()
+                .getPropertyId());
+        address address = new address();
+
+        address.setAddressDescription(newProperty.get().getUser().getAddress().getAddressDescription());
+        address.setLattitude(newProperty.get().getUser().getAddress().getLattitude());
+        address.setLongitutde(newProperty.get().getUser().getAddress().getLongitutde());
+        region region = new region();
+        region.setName(newProperty.get().getUser().getAddress().getRegion().getName());
+        city city = new city();
+        city.setName(newProperty.get().getUser().getAddress().getRegion().getCity().getName());
+        country country = new country();
+        country.setName(newProperty.get().getUser().getAddress().getRegion().getCity().getCountry().getName());
+        city.setCountry(country);
+        region.setCity(city);
+
+        address.setRegion(region);
+
+        return address;
+    }
     // method to decodeToken
     private DecodeToken decodeToken(String token) throws UnsupportedEncodingException {
 

@@ -37,7 +37,7 @@ public class PropertyView {
     @JsonFormat(pattern = "yyyy-MM-dd")
     Date dateAdded;
     String category;
-    address address;
     List<String> imagesUrlList = new ArrayList<String>();
+    address address;
 
 }
