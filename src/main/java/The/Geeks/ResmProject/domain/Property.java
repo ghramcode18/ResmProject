@@ -35,7 +35,6 @@ import com.fasterxml.jackson.core.JsonParser;
 @Data
 @Setter
 @Getter
-@Builder
 @RequiredArgsConstructor
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 
@@ -73,7 +72,7 @@ public class Property {
 
     public Property(Long propertyId, String description, Integer numBathrooms, Integer numStoreys, Integer numRooms,
             Float space, Float price, Date dateAdded, User user, PropertyCategory propertyCategory,
-            PropertyStatus propertyStatus, List<UserFav> PropertyUserFavList) {
+             List<UserFav> PropertyUserFavList) {
         this.propertyId = propertyId;
         this.description = description;
         this.numBathrooms = numBathrooms;
@@ -84,7 +83,6 @@ public class Property {
         this.dateAdded = dateAdded;
         this.user = user;
         this.propertyCategory = propertyCategory;
-        this.propertyStatus = propertyStatus;
         this.PropertyUserFavList = PropertyUserFavList;
     }
 

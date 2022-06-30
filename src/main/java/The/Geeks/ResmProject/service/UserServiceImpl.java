@@ -14,8 +14,10 @@ import org.springframework.stereotype.Service;
 import The.Geeks.ResmProject.domain.Address;
 import The.Geeks.ResmProject.domain.City;
 import The.Geeks.ResmProject.domain.Country;
+import The.Geeks.ResmProject.domain.Image;
 import The.Geeks.ResmProject.domain.Property;
 import The.Geeks.ResmProject.domain.PropertyCategory;
+import The.Geeks.ResmProject.domain.PropertyImage;
 import The.Geeks.ResmProject.domain.PropertyStatus;
 import The.Geeks.ResmProject.domain.Region;
 import The.Geeks.ResmProject.domain.Role;
@@ -26,18 +28,32 @@ import The.Geeks.ResmProject.message.ResponseMessage;
 import The.Geeks.ResmProject.model.UserModel;
 import The.Geeks.ResmProject.payload.request.AddPropertyToFavoriteListRequest;
 import The.Geeks.ResmProject.payload.request.PropertyRequest;
+import The.Geeks.ResmProject.payload.response.PropertyView;
 import The.Geeks.ResmProject.payload.response.ResponseInfo;
 import The.Geeks.ResmProject.payload.response.ViewPropertyFavoriteListResponse;
+import The.Geeks.ResmProject.payload.response.address;
+import The.Geeks.ResmProject.payload.response.city;
+import The.Geeks.ResmProject.payload.response.country;
+import The.Geeks.ResmProject.payload.response.region;
 import The.Geeks.ResmProject.repo.AddressRepo;
 import The.Geeks.ResmProject.repo.CityRepo;
 import The.Geeks.ResmProject.repo.CountryRepo;
+import The.Geeks.ResmProject.repo.PropertyCategoryRepo;
+import The.Geeks.ResmProject.repo.PropertyImageRepo;
 import The.Geeks.ResmProject.repo.PropertyRepo;
 import The.Geeks.ResmProject.repo.RegionRepo;
 import The.Geeks.ResmProject.repo.UserFavRepo;
 import The.Geeks.ResmProject.repo.UserRepo;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.core.JsonParser;
@@ -57,7 +73,8 @@ public class UserServiceImpl implements UserService {
     private final CityRepo cityRepo;
     private final CountryRepo countryRepo;
     private final UserFavRepo userFavRepo;
-
+    private final PropertyCategoryRepo propertyCategoryRepo;
+    private final PropertyImageRepo propertyImageRepo;
     @Autowired
     UserRepo userRepository;
 
@@ -143,24 +160,65 @@ public class UserServiceImpl implements UserService {
             List<UserFav> userFavorites = user.getUserPropertyFavList();
 
             ResponseInfo responseInfo = new ResponseInfo();
-            List<Property> propertiesList = new ArrayList<Property>();
+            List<PropertyView> propertiesList = new ArrayList<PropertyView>();
 
             for (int i = 0; i <userFavorites.size(); i++) {
                 UserFav userFavorite = new UserFav();
                  userFavorite.setProperty(userFavorites.get(i).getProperty());
                       
-                
-                 Property p =new Property(userFavorite.getProperty().getPropertyId(), 
-                         userFavorite.getProperty().getDescription(),
-                         userFavorite.getProperty().getNumBathrooms(),
-                         userFavorite.getProperty().getNumStoreys(),
-                         userFavorite.getProperty().getNumStoreys(), userFavorite.getProperty().getSpace(), userFavorite.getProperty().getPrice(), 
-                         userFavorite.getProperty().getDateAdded(),
-                         userFavorite.getProperty().getUser(), userFavorite.getProperty().getPropertyCategory(),
-                         userFavorite.getProperty().getPropertyStatus(), 
-                         userFavorite.getProperty().getPropertyUserFavList());
+                //TODO  make me a method please
+                PropertyView propertyView = new PropertyView();
+                propertyView.setPropertyId(userFavorite.getProperty().getPropertyId());
+                propertyView.setDescription(userFavorite.getProperty().getDescription());
+                propertyView.setNumBathrooms(userFavorite.getProperty().getNumBathrooms());
+                propertyView.setNumStoreys(userFavorite.getProperty().getNumStoreys());
+                propertyView.setNumRooms(userFavorite.getProperty().getNumRooms());
+                propertyView.setSpace(userFavorite.getProperty().getSpace());
+                propertyView.setPrice(userFavorite.getProperty().getPrice());
+                propertyView.setDateAdded(userFavorite.getProperty().getDateAdded());
+                propertyView.setCategory(userFavorite.getProperty().getPropertyCategory().getCategory()); 
+                Optional<Property> newProperty = propertyRepo.findById((long) userFavorite.getProperty()
+                        .getPropertyId());
+                address address = new address();
 
-                 propertiesList.add(p);
+                address.setAddressDescription(newProperty.get().getUser().getAddress().getAddressDescription());
+                address.setLattitude(newProperty.get().getUser().getAddress().getLattitude());
+                address.setLongitutde(newProperty.get().getUser().getAddress().getLongitutde());
+                region region= new region();
+                region.setName(newProperty.get().getUser().getAddress().getRegion().getName());
+                city city= new city();
+                city.setName(newProperty.get().getUser().getAddress().getRegion().getCity().getName());
+                country country = new country();
+                country.setName(newProperty.get().getUser().getAddress().getRegion().getCity().getCountry().getName());
+                city.setCountry(country);
+                region.setCity(city);
+                
+                address.setRegion(region);
+                propertyView.setAddress(address);
+
+                /*
+                 * OuterClass o = new OuterClass();
+                 * InnerClass inner = o.new InnerClass();
+                 * 
+                 */ 
+                // List<String> imagesUrlList = new ArrayList<String>();
+                // Boolean setSuccessful = true;
+                // while(setSuccessful) {
+
+                //     PropertyImage propertyImage = propertyImageRepo.findByIdPropertyid(userFavorite.getProperty());
+                //     String url = propertyImage.getImage().getUrl();
+                //     imagesUrlList.add(url);
+                //     propertyView.setImagesUrlList(imagesUrlList);
+                //     if (imagesUrlList.equals(propertyView.getImagesUrlList()))
+                //     {
+                //         setSuccessful = false;
+                //     }
+                // }
+
+                 System.out.println( newProperty.get().getUser().getAddress()+" hello i am ghramcode18");
+                 propertiesList.add(propertyView);
+                 /***         ********************************             ***/
+                
                 }
             responseInfo.setPropertiesList(propertiesList); 
             
