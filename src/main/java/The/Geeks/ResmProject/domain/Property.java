@@ -27,6 +27,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import com.fasterxml.jackson.core.JsonParser;
 
 @Entity
 @Table(name = "properties")
