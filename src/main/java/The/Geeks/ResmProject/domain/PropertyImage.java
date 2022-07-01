@@ -30,17 +30,14 @@ public class PropertyImage {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     Long propertyImageId;
 
-    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY,optional = true)
     @JoinColumn(name = "propertyID" , nullable = true)
     private Property property;
 
-    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY,optional = true)
     @JoinColumn(name = "imageID" , nullable = true)
     private  Image image ;
 
-    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY,optional = true)
     @JoinColumn(name = "imageStatusID" , nullable = true)
     private ImageStatus imageStatus;
