@@ -40,7 +40,7 @@ import com.fasterxml.jackson.core.JsonParser;
 
 public class Property {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "PropertyId")
     Long propertyId;
     String description;
