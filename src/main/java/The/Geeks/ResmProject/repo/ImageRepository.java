@@ -11,6 +11,7 @@ import The.Geeks.ResmProject.domain.Image;
 @Repository
 public interface ImageRepository extends JpaRepository<Image, String> {
 
+     Optional<Image> findAllByUrl(String url);
     // @Query(value = "SELECT propertiesImage.propertyId, images.id FROM propertiesImage LEFT JOIN Orders ON propertiesImage.propertyId= images.propertyId where images.id  = ?1  ORDER BY propertiesImage.propertyId", nativeQuery = true)
     // Optional<Image> findByPropertyImagesId(String id);
 

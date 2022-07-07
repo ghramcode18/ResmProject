@@ -21,7 +21,7 @@ public interface PropertyImageRepo extends JpaRepository<PropertyImage, Long> {
     // BY Customers.CustomerName;
 
     @Query(value = " select *  FROM properties p inner JOIN properties_image PIM ON p.property_id= PIM.property_id WHERE p.property_id=?1", nativeQuery = true)
-    PropertyImage findByPropertyId(Long propertyid);
+    List <PropertyImage> findByPropertyId(Long propertyid);
 
     /*
      * 

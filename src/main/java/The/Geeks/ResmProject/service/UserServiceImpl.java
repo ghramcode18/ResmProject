@@ -157,30 +157,22 @@ public class UserServiceImpl implements UserService {
                 // here i setPropertyView with address
                 propertyView2.setAddress(setAddresses(userFavorite));
 
-                System.out.println("hello i am ghram smile please ~_~");
-                PropertyImage propertyImage = propertyImageRepo
+                List<PropertyImage> propertyImage = propertyImageRepo
                         .findByPropertyId(userFavorite.getProperty().getPropertyId());
-                    
-                Optional<Image> image = imageRepo.findById( propertyImage.getImage().getId());
-              
-                String url = image.get().getUrl();
-                imagesUrlList.add(url);
-                propertyView2.setImagesUrlList(imagesUrlList);
 
-                // PropertyImage propertyImage1 = new PropertyImage();
+                for (int j = 0; j < propertyImage.size(); j++) {
 
-                // PropertyImage newObject = new PropertyImage();
-                // BeanUtils.copyProperties(newObject, propertyImage); // for (int j = 0; j < propertyImage.size(); j++) {
+                    Optional<Image> image = imageRepo.findById(propertyImage.get(j).getImage().getId());
 
-                //newObject.getImage().getId();
+                    String url = image.get().getUrl();
+                    imagesUrlList.add(url);
+                    propertyView2.setImagesUrlList(imagesUrlList);
 
+                }
 
-                 System.out.println("hello i am ghram version 2 smile please ~_~");
-
-              
+                imagesUrlList = new ArrayList<>();
 
                 propertiesList.add(propertyView2);
-                /*** ******************************** ***/
 
             }
             responseInfo.setPropertiesList(propertiesList);
