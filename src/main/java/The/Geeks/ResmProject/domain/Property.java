@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -40,6 +41,7 @@ import com.fasterxml.jackson.core.JsonParser;
 public class Property {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "PropertyId")
     Long propertyId;
     String description;
     Integer numBathrooms;

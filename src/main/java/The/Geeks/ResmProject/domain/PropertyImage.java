@@ -23,7 +23,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity @Table(name = "propertiesImage") @Data  @AllArgsConstructor @Setter @Getter
+@Entity  @Data  @AllArgsConstructor @Setter @Getter
+@Table(name = "propertiesImage", schema = "targetSchemaName")
+
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 
 public class PropertyImage {
@@ -31,11 +33,11 @@ public class PropertyImage {
     Long propertyImageId;
 
     @ManyToOne(fetch = FetchType.LAZY,optional = true)
-    @JoinColumn(name = "propertyID" , nullable = true)
+    @JoinColumn(name = "propertyId" , nullable = true)
     private Property property;
 
     @ManyToOne(fetch = FetchType.LAZY,optional = true)
-    @JoinColumn(name = "imageID" , nullable = true)
+    @JoinColumn(name = "imageid" , nullable = true)
     private  Image image ;
 
     @ManyToOne(fetch = FetchType.LAZY,optional = true)

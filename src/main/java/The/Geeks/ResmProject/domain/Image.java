@@ -38,7 +38,6 @@ public class Image {
 
     private String url;
 
-    
     @JsonFormat(pattern = "yyyy-MM-dd")
     Date dateAdded;
 
