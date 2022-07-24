@@ -1,6 +1,7 @@
 package The.Geeks.ResmProject.service;
 
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -16,9 +17,36 @@ import org.springframework.web.multipart.MultipartFile;
 
 import The.Geeks.ResmProject.domain.Property;
 import The.Geeks.ResmProject.message.ResponseMessage;
+import The.Geeks.ResmProject.model.propertyRequestModel;
 import The.Geeks.ResmProject.payload.request.PropertyRequest;
+
 @Service
 public interface PropertyService {
-    public ResponseEntity<ResponseMessage> addProperty(
-           @RequestParam("files") MultipartFile[] files,@RequestPart ("propertyRequest")PropertyRequest propertyRequest) throws UnsupportedEncodingException, Exception;
+        public ResponseEntity<ResponseMessage> addProperty(
+                        @RequestParam("files") MultipartFile[] files,
+                        @RequestPart("propertyRequest") PropertyRequest propertyRequest)
+                        throws UnsupportedEncodingException, Exception;
+
+        public ResponseEntity<ResponseMessage> editProperty(
+
+                        @RequestParam("files") MultipartFile[] files,
+                        @RequestPart("propertyRequestModel") propertyRequestModel propertyRequestModel)
+                        throws UnsupportedEncodingException, Exception;
+
+        public List<Property> searchPrice(Float price);
+
+        public List<Property> searchSpace(Float space);
+
+        public List<Property> searchNumRooms(Integer numRooms);
+
+        public List<Property> searchNumStoreys(Integer numStoreys);
+
+        public List<Property> searchNumBathrooms(Integer numBathrooms);
+
+        public List<Property> searchDateAdded(String dateAdded);
+
+        public List<Property> searchPropertyCategory(Integer propertyCategory);
+
+        public List<Property> searchUser(String userName);
+
 }

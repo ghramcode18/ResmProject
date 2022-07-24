@@ -7,5 +7,5 @@ import The.Geeks.ResmProject.domain.Country;
 
 @Repository
 public interface CountryRepo extends JpaRepository<Country,Long>{
-    Country findByname (String name);
+    Country findByName (String name);
 }

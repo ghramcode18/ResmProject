@@ -7,6 +7,6 @@ import The.Geeks.ResmProject.domain.City;
 
 @Repository
 public interface CityRepo extends JpaRepository<City,Long>{
-    City findByname (String name);
+    City findByName (String name);
   
 }

@@ -218,15 +218,15 @@ public class UserServiceImpl implements UserService {
                 .getPropertyId());
         address address = new address();
 
-        address.setAddressDescription(newProperty.get().getUser().getAddress().getAddressDescription());
-        address.setLattitude(newProperty.get().getUser().getAddress().getLattitude());
-        address.setLongitutde(newProperty.get().getUser().getAddress().getLongitutde());
+        address.setAddressDescription(newProperty.get().getAddress().getAddressDescription());
+        address.setLattitude(newProperty.get().getAddress().getLattitude());
+        address.setLongitutde(newProperty.get().getAddress().getLongitutde());
         region region = new region();
-        region.setName(newProperty.get().getUser().getAddress().getRegion().getName());
+        region.setName(newProperty.get().getAddress().getRegion().getName());
         city city = new city();
-        city.setName(newProperty.get().getUser().getAddress().getRegion().getCity().getName());
+        city.setName(newProperty.get().getAddress().getRegion().getCity().getName());
         country country = new country();
-        country.setName(newProperty.get().getUser().getAddress().getRegion().getCity().getCountry().getName());
+        country.setName(newProperty.get().getAddress().getRegion().getCity().getCountry().getName());
         city.setCountry(country);
         region.setCity(city);
 

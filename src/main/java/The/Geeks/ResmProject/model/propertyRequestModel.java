@@ -1,4 +1,6 @@
-package The.Geeks.ResmProject.payload.request;
+package The.Geeks.ResmProject.model;
+
+import The.Geeks.ResmProject.payload.request.newPropertyInfo;
 
 import java.util.Date;
 
@@ -10,7 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import The.Geeks.ResmProject.domain.PropertyCategory;
 import The.Geeks.ResmProject.domain.PropertyStatus;
-import The.Geeks.ResmProject.payload.response.address;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,19 +28,8 @@ import lombok.Setter;
 @Builder
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 
-public class PropertyInfo {
-    private Long propertyId;
-    private String description;
-    private Integer numBathrooms;
-    private Integer numStoreys;
-    private Integer numRooms;
-    private Float space;
-    private Float price;
-    @JsonFormat(pattern = "yyyy-MM-dd")
-
-    private Date dateAdded;
-    private String  category;
-    private Long  userId;
-    address address;
-    private MultipartFile file ;
+public class propertyRequestModel {
+    String token;
+    String propertyId;
+    public newPropertyInfo newPropertyInfo;
 }

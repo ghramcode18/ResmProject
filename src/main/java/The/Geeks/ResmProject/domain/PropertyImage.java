@@ -62,8 +62,8 @@ public class PropertyImage {
         return this.property;
     }
 
-    public void setProperty(Property property) {
-        this.property = property;
+    public void setProperty(Property newProperty) {
+        this.property = newProperty;
     }
 
     public Image getImage() {

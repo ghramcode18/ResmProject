@@ -42,6 +42,7 @@ import The.Geeks.ResmProject.domain.User;
 import The.Geeks.ResmProject.domain.UserImage;
 import The.Geeks.ResmProject.message.ResponseFile;
 import The.Geeks.ResmProject.message.ResponseMessage;
+import The.Geeks.ResmProject.model.propertyRequestModel;
 import The.Geeks.ResmProject.payload.request.PropertyRequest;
 import The.Geeks.ResmProject.repo.ImageRepository;
 // import The.Geeks.ResmProject.repo.FileDBRepository;
@@ -238,15 +239,70 @@ public class PropertyServieceImp implements PropertyService {
         newProperty.setPrice(propertyRequest.getPropertyInfo().getPrice());
         newProperty.setSpace(propertyRequest.getPropertyInfo().getSpace());
 
-        Optional<PropertyCategory> propertyCategory = propertyCategoryRepo
-                .findById(propertyRequest.getPropertyInfo().getProperty_categoryid());
-        newProperty.setPropertyCategory(propertyCategory.get());
+        // Optional<PropertyCategory> propertyCategory = propertyCategoryRepo
+        //         .findById(propertyRequest.getPropertyInfo().getProperty_categoryid());
+        // newProperty.setPropertyCategory(propertyCategory.get());
 
-        Optional<PropertyStatus> propertyStatus = propertyStatusRepo
-                .findById(propertyRequest.getPropertyInfo().getProperty_statusid());
-        newProperty.setPropertyStatus(propertyStatus.get());
+        // Optional<PropertyStatus> propertyStatus = propertyStatusRepo
+        //         .findById(propertyRequest.getPropertyInfo().getProperty_statusid());
+        // newProperty.setPropertyStatus(propertyStatus.get());
 
         return newProperty;
+    }
+
+    @Override
+    public ResponseEntity<ResponseMessage> editProperty(MultipartFile[] files,
+            propertyRequestModel propertyRequestModel) throws UnsupportedEncodingException, Exception {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<Property> searchPrice(Float price) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<Property> searchSpace(Float space) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<Property> searchNumRooms(Integer numRooms) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<Property> searchNumStoreys(Integer numStoreys) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<Property> searchNumBathrooms(Integer numBathrooms) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<Property> searchDateAdded(String dateAdded) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<Property> searchPropertyCategory(Integer propertyCategory) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<Property> searchUser(String userName) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
     // to store image in db

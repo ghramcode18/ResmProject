@@ -7,4 +7,6 @@ import The.Geeks.ResmProject.domain.Address;
 
 @Repository
 public interface AddressRepo extends JpaRepository<Address,Long> {
+
+    Address findByRegionName(String name);
 }

@@ -12,5 +12,5 @@ import The.Geeks.ResmProject.domain.Property;
 
 @Repository
 public interface RegionRepo extends JpaRepository<Region,Long>{
-    Region findByname (String name);
+    Region findByName (String name);
 }

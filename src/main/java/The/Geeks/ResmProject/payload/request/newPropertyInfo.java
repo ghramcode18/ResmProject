@@ -1,5 +1,6 @@
 package The.Geeks.ResmProject.payload.request;
 
+
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -27,8 +28,7 @@ import lombok.Setter;
 @Builder
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 
-public class PropertyInfo {
-    private Long propertyId;
+public class newPropertyInfo {
     private String description;
     private Integer numBathrooms;
     private Integer numStoreys;
@@ -36,10 +36,9 @@ public class PropertyInfo {
     private Float space;
     private Float price;
     @JsonFormat(pattern = "yyyy-MM-dd")
-
     private Date dateAdded;
-    private String  category;
-    private Long  userId;
-    address address;
-    private MultipartFile file ;
+    private String category;
+    private address address;
+
 }
+
