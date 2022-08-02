@@ -1,5 +1,6 @@
 package The.Geeks.ResmProject.service;
 
+import org.apache.catalina.mbeans.UserMBean;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,7 @@ import The.Geeks.ResmProject.repo.AddressRepo;
 import The.Geeks.ResmProject.repo.CityRepo;
 import The.Geeks.ResmProject.repo.CountryRepo;
 import The.Geeks.ResmProject.repo.RegionRepo;
+import The.Geeks.ResmProject.repo.RoleRepo;
 import The.Geeks.ResmProject.repo.UserRepo;
 import lombok.RequiredArgsConstructor;
 
@@ -25,59 +27,38 @@ public class UserServiceImpl implements UserService
     private final RegionRepo regionRepo;
     private final CityRepo cityRepo;
     private final CountryRepo countryRepo;
+    private final RoleRepo roleRepo;
+
 
     @Override
-    public void singUp(User user) throws Exception 
-    {
-        if(checkIfUserExist(user.getUsername()))
-        {
-            throw new Exception("the username already exist..");
-        }
-        else
-        {
-            // User Euser = new User();
-            // Address address = new Address();
-            // Region region = new Region();
-            // City city = new City();
-            // Country country = new Country();
-            // Role role = new Role();
-            // Euser.setUsername(user.getUsername());
-            // Euser.setHashedPassword(user.getHashedPassword());
-            // Euser.setFirstName(user.getFirstName());
-            // Euser.setLastName(user.getLastName());
-            // address.setLattitude(user.getLattitude());
-            // address.setLongitutde(user.getLongitutde());
-            // region = regionRepo.findByname(user.getRegionname());
-            // city = cityRepo.findByname(user.getCityname());
-            // country = countryRepo.findByname(user.getCountryname());
-            // role.setRoleId(1);
-            // Euser.setAddress(address);
-            // Euser.getAddress().setRegion(region);
-            // Euser.getAddress().getRegion().setCity(city);
-            // Euser.getAddress().getRegion().getCity().setCountry(country);
-            // Euser.setRole(role);
-            // userRepo.save(Euser);
-            // addressRepo.save(address);
-            User Euser = new User();
-            Address address = new Address();
-            Euser.setUsername(user.getUsername());
-            Euser.setHashedPassword(user.getHashedPassword());
-            Euser.setFirstName(user.getFirstName());
-            Euser.setLastName(user.getLastName());
-            address.setLattitude(user.getAddress().getLattitude());
-            address.setLongitutde(user.getAddress().getLongitutde());
-            Euser.setAddress(address);
-            userRepo.save(Euser);
-            // Euser.getAddress().setLattitude(user.getAddress().getLattitude());
-            // Euser.getAddress().setLongitutde(user.getAddress().getLongitutde());
-            // Euser.getAddress().getRegion().setName(user.getAddress().getRegion().getName());
-            // Euser.getAddress().getRegion().getCity().setName(user.getAddress().getRegion().getCity().getName());
-            // Euser.getAddress().getRegion().getCity().getCountry().setName(user.getAddress().getRegion().getCity().getCountry().getName());
-        }
-    }
+    public void singUp(UserModel userModel) throws Exception {
+        User user = new User();
+        Address address = new Address();
+        Region region = new Region();
+        City city = new City();
+        Country country = new Country();
+        Role role = roleRepo.findByroleId(Long.valueOf(1));
 
-    @Override
-    public boolean checkIfUserExist(String username) {
-        return userRepo.findByUsername(username) !=null ? true : false;
+        user.setUsername(userModel.getUsername());
+        user.setHashedPassword(userModel.getHashedPassword());
+        user.setFirstName(userModel.getFirstName());
+        user.setLastName(userModel.getLastName());
+        user.setRole(role);
+        address.setLattitude(userModel.getLattitude());
+        address.setLongitutde(userModel.getLongitutde());
+        user.setAddress(address);
+        region.setName(userModel.getRegionname());
+        user.getAddress().setRegion(region);
+        city.setName(userModel.getCityname());
+        user.getAddress().getRegion().setCity(city);
+        country.setName(userModel.getCountryname());
+        user.getAddress().getRegion().getCity().setCountry(country);
+
+        countryRepo.save(country);
+        cityRepo.save(city);
+        regionRepo.save(region);
+        addressRepo.save(address);
+        userRepo.save(user);
     }
+    
 }

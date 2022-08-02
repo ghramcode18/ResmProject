@@ -31,9 +31,15 @@ public class UserController {
     //     return userException.exception("Done..");
     // }
 
+    // @PostMapping("/auth/v1")
+    // public ResponseEntity<?> singUp(@RequestBody User user) throws Exception {
+    //     userService.singUp(user);
+    //     return ResponseEntity.ok().build();
+    // }
+
     @PostMapping("/auth/v1")
-    public ResponseEntity<?> singUp(@RequestBody User user) throws Exception {
-        userService.singUp(user);
+    public ResponseEntity<?> register(@RequestBody UserModel userModel) throws Exception{
+        userService.singUp(userModel);
         return ResponseEntity.ok().build();
     }
 }
