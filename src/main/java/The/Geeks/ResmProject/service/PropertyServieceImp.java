@@ -32,18 +32,29 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import The.Geeks.ResmProject.domain.Address;
+import The.Geeks.ResmProject.domain.City;
+import The.Geeks.ResmProject.domain.Country;
 import The.Geeks.ResmProject.domain.Image;
 import The.Geeks.ResmProject.domain.ImageStatus;
 import The.Geeks.ResmProject.domain.Property;
 import The.Geeks.ResmProject.domain.PropertyCategory;
 import The.Geeks.ResmProject.domain.PropertyImage;
 import The.Geeks.ResmProject.domain.PropertyStatus;
+import The.Geeks.ResmProject.domain.Region;
 import The.Geeks.ResmProject.domain.User;
 import The.Geeks.ResmProject.domain.UserImage;
 import The.Geeks.ResmProject.message.ResponseFile;
 import The.Geeks.ResmProject.message.ResponseMessage;
 import The.Geeks.ResmProject.model.propertyRequestModel;
 import The.Geeks.ResmProject.payload.request.PropertyRequest;
+import The.Geeks.ResmProject.payload.response.address;
+import The.Geeks.ResmProject.payload.response.city;
+import The.Geeks.ResmProject.payload.response.country;
+import The.Geeks.ResmProject.payload.response.region;
+import The.Geeks.ResmProject.repo.AddressRepo;
+import The.Geeks.ResmProject.repo.CityRepo;
+import The.Geeks.ResmProject.repo.CountryRepo;
 import The.Geeks.ResmProject.repo.ImageRepository;
 // import The.Geeks.ResmProject.repo.FileDBRepository;
 import The.Geeks.ResmProject.repo.ImageStatusRepo;
@@ -51,6 +62,7 @@ import The.Geeks.ResmProject.repo.PropertyCategoryRepo;
 import The.Geeks.ResmProject.repo.PropertyImageRepo;
 import The.Geeks.ResmProject.repo.PropertyRepo;
 import The.Geeks.ResmProject.repo.PropertyStatusRepo;
+import The.Geeks.ResmProject.repo.RegionRepo;
 import The.Geeks.ResmProject.repo.UserRepo;
 import The.Geeks.ResmProject.service.DecodeToken;
 import lombok.RequiredArgsConstructor;
@@ -65,7 +77,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Slf4j
 public class PropertyServieceImp implements PropertyService {
-   
+
     @Autowired
     UserRepo userRepository;
 
@@ -85,6 +97,18 @@ public class PropertyServieceImp implements PropertyService {
     ImageStatusRepo imageStatusRepo;
     @Autowired
     ImageRepository imageRepository;
+
+    @Autowired
+    AddressRepo addressRepository;
+
+    @Autowired
+    CountryRepo countryRepo;
+
+    @Autowired
+    CityRepo cityRepo;
+
+    @Autowired
+    RegionRepo regionRepo;
 
     @Override
     public ResponseEntity<ResponseMessage> addProperty(
@@ -107,7 +131,38 @@ public class PropertyServieceImp implements PropertyService {
             // here set user to property
             newProperty.setUser(user);
 
+            Optional<PropertyStatus> propertyStatus = propertyStatusRepo
+                    .findById((long) 1);
+            newProperty.setPropertyStatus(propertyStatus.get());
+
+            // here i am trying setAddress to property
+            newProperty.getPropertyStatus();
+            Country country = new Country();
+            country = countryRepo.findByName(
+                    propertyRequest.getPropertyInfo()
+                            .getAddress().getRegion().getCity().getCountry().getName());
+
+            City city = new City();
+            city = cityRepo.findByName(propertyRequest.getPropertyInfo()
+                    .getAddress().getRegion().getCity().getName());
+
+            Region region = new Region();
+            region = regionRepo.findByName(propertyRequest.getPropertyInfo()
+                    .getAddress().getRegion().getName());
+
+            address address = propertyRequest.getPropertyInfo().getAddress();
+            Address newAddress = addressRepository.findByRegionName(address.getRegion().name);
+            newAddress.setLattitude(address.getLattitude());
+            newAddress.setLongitutde(address.getLongitutde());
+            newAddress.setAddressDescription(address.getAddressDescription());
+            city.setCountry(country);
+            region.setCity(city);
+            newAddress.setRegion(region);
+
+            newProperty.setAddress(newAddress);
+
             // here saving properties in db
+
             propertyRepo.save(newProperty);
 
             // here i am trying upload images to local file system and save url in db
@@ -131,6 +186,29 @@ public class PropertyServieceImp implements PropertyService {
 
         }
 
+    }
+
+    address setAddresses(Property Property) {
+
+        Property newProperty = propertyRepo.findByPropertyId((long) Property
+                .getPropertyId());
+        address address = new address();
+
+        address.setAddressDescription(newProperty.getUser().getAddress().getAddressDescription());
+        address.setLattitude(newProperty.getUser().getAddress().getLattitude());
+        address.setLongitutde(newProperty.getUser().getAddress().getLongitutde());
+        region region = new region();
+        region.setName(newProperty.getUser().getAddress().getRegion().getName());
+        city city = new city();
+        city.setName(newProperty.getUser().getAddress().getRegion().getCity().getName());
+        country country = new country();
+        country.setName(newProperty.getUser().getAddress().getRegion().getCity().getCountry().getName());
+        city.setCountry(country);
+        region.setCity(city);
+
+        address.setRegion(region);
+
+        return address;
     }
 
     // method to setImageStatus
@@ -172,7 +250,8 @@ public class PropertyServieceImp implements PropertyService {
     // method to upload multi image and return url for each image
     public ResponseEntity multiUpload(@RequestParam("files") MultipartFile[] files) {
         List<Object> fileDownloadUrls = new ArrayList<>();
-        Arrays.asList(files)
+        Arrays.asList(
+                files)
                 .stream()
                 .forEach(file -> fileDownloadUrls.add(uploadToLocalFileSystem(file).getBody()));
         return ResponseEntity.ok(fileDownloadUrls);
@@ -185,7 +264,8 @@ public class PropertyServieceImp implements PropertyService {
         Object fileDownloadUrls = multiUpload(files).getBody().toString();
         System.out.println(fileDownloadUrls);
 
-        List<String> myList = new ArrayList<String>(Arrays.asList((multiUpload(files).getBody()
+        List<String> myList = new ArrayList<String>(Arrays.asList((multiUpload(
+                files).getBody()
                 .toString()).split(",")));
         System.out.println(myList);
 
@@ -194,6 +274,30 @@ public class PropertyServieceImp implements PropertyService {
             Image image1 = new Image();
             image1.setUrl(myList.get(i));
             image1.setDateAdded(propertyRequest.getPropertyInfo().getDateAdded());
+
+            images.add(image1);
+            imageRepository.save(image1);
+
+        }
+
+        return images;
+    }
+
+    private List<Image> setImagesforEdit(MultipartFile[] files, propertyRequestModel propertyRequest) {
+
+        Object fileDownloadUrls = multiUpload(files).getBody().toString();
+        System.out.println(fileDownloadUrls);
+
+        List<String> myList = new ArrayList<String>(Arrays.asList((multiUpload(
+                files).getBody()
+                .toString()).split(",")));
+        System.out.println(myList);
+
+        List<Image> images = new ArrayList<Image>();
+        for (int i = 0; i < myList.size(); i++) {
+            Image image1 = new Image();
+            image1.setUrl(myList.get(i));
+            image1.setDateAdded(propertyRequest.getNewPropertyInfo().getDateAdded());
 
             images.add(image1);
             imageRepository.save(image1);
@@ -239,52 +343,81 @@ public class PropertyServieceImp implements PropertyService {
         newProperty.setPrice(propertyRequest.getPropertyInfo().getPrice());
         newProperty.setSpace(propertyRequest.getPropertyInfo().getSpace());
 
-        // Optional<PropertyCategory> propertyCategory = propertyCategoryRepo
-        //         .findById(propertyRequest.getPropertyInfo().getProperty_categoryid());
-        // newProperty.setPropertyCategory(propertyCategory.get());
+        PropertyCategory propertyCategory = propertyCategoryRepo
+                .findByCategory(propertyRequest.getPropertyInfo().getCategory());
+        newProperty.setPropertyCategory(propertyCategory);
 
-        // Optional<PropertyStatus> propertyStatus = propertyStatusRepo
-        //         .findById(propertyRequest.getPropertyInfo().getProperty_statusid());
-        // newProperty.setPropertyStatus(propertyStatus.get());
+        return newProperty;
+    }
+
+    private Property editProperty(propertyRequestModel propertyRequest) {
+
+        Property newProperty;
+        Long PropertyIdInt = Long.parseLong(propertyRequest.getPropertyId());
+        newProperty = propertyRepo.findByPropertyId((Long)PropertyIdInt);
+
+        System.out.println("helo ghram here3");
+
+        newProperty.setDateAdded(propertyRequest.getNewPropertyInfo().getDateAdded());
+        newProperty.setDescription(propertyRequest.getNewPropertyInfo().getDescription());
+        newProperty.setNumBathrooms(propertyRequest.getNewPropertyInfo().getNumBathrooms());
+        newProperty.setNumRooms(propertyRequest.getNewPropertyInfo().getNumRooms());
+        newProperty.setNumStoreys(propertyRequest.getNewPropertyInfo().getNumStoreys());
+        newProperty.setPrice(propertyRequest.getNewPropertyInfo().getPrice());
+        newProperty.setSpace(propertyRequest.getNewPropertyInfo().getSpace());
+
+        System.out.println("helo ghram here4");
+
+        PropertyCategory propertyCategory = propertyCategoryRepo
+                .findByCategory(propertyRequest.getNewPropertyInfo().getCategory());
+        newProperty.setPropertyCategory(propertyCategory);
+
+        Optional<PropertyStatus> propertyStatus = propertyStatusRepo
+                .findById((long) 1);
+        newProperty.setPropertyStatus(propertyStatus.get());
 
         return newProperty;
     }
 
     @Override
-    public ResponseEntity<ResponseMessage> editProperty(MultipartFile[] files,
-            propertyRequestModel propertyRequestModel) throws UnsupportedEncodingException, Exception {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
     public List<Property> searchPrice(Float price) {
         // TODO Auto-generated method stub
-        return null;
+
+        List<Property> propertiesList = propertyRepo.findByPrice(price);
+
+        return propertiesList;
     }
 
     @Override
     public List<Property> searchSpace(Float space) {
         // TODO Auto-generated method stub
-        return null;
+        List<Property> propertiesList = propertyRepo.findBySpace(space);
+
+        return propertiesList;
     }
 
     @Override
     public List<Property> searchNumRooms(Integer numRooms) {
         // TODO Auto-generated method stub
-        return null;
+        List<Property> propertiesList = propertyRepo.findByNumRooms(numRooms);
+
+        return propertiesList;
     }
 
     @Override
     public List<Property> searchNumStoreys(Integer numStoreys) {
         // TODO Auto-generated method stub
-        return null;
+        List<Property> propertiesList = propertyRepo.findByNumStoreys(numStoreys);
+
+        return propertiesList;
     }
 
     @Override
     public List<Property> searchNumBathrooms(Integer numBathrooms) {
         // TODO Auto-generated method stub
-        return null;
+        List<Property> propertiesList = propertyRepo.findByNumBathrooms(numBathrooms);
+
+        return propertiesList;
     }
 
     @Override
@@ -296,13 +429,91 @@ public class PropertyServieceImp implements PropertyService {
     @Override
     public List<Property> searchPropertyCategory(Integer propertyCategory) {
         // TODO Auto-generated method stub
-        return null;
+        List<Property> propertiesList = propertyRepo.findByPropertyCategory(propertyCategory);
+
+        return propertiesList;
     }
 
     @Override
     public List<Property> searchUser(String userName) {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    @Override
+    public ResponseEntity<ResponseMessage> editProperty(
+            @RequestParam("files") MultipartFile[] files,
+            @RequestPart("propertyRequestModel") propertyRequestModel propertyRequestModel)
+            throws UnsupportedEncodingException, Exception {
+        // TODO Auto-generated method stub
+
+        Message message = new Message();
+        try {
+
+            // here decode token and checkIfUserExist in db
+            DecodeToken dtoken = decodeToken(propertyRequestModel.getToken());
+
+            User user = userRepository.findByUsername(
+                    dtoken.getSub())
+                    .orElseThrow(() -> new RuntimeException("Error: user is not found."));
+            // here set property to db
+
+            System.out.println("helo ghram here1");
+            Property newProperty = editProperty(propertyRequestModel);
+
+            System.out.println("helo ghram here2");
+
+            // here set user to property
+            newProperty.setUser(user);
+
+            Country country = new Country();
+            country = countryRepo.findByName(
+                    propertyRequestModel.getNewPropertyInfo()
+                            .getAddress().getRegion().getCity().getCountry().getName());
+
+            City city = new City();
+            city = cityRepo.findByName(propertyRequestModel.getNewPropertyInfo()
+                    .getAddress().getRegion().getCity().getName());
+
+            Region region = new Region();
+            region = regionRepo.findByName(propertyRequestModel.getNewPropertyInfo()
+                    .getAddress().getRegion().getName());
+
+            address address = propertyRequestModel.getNewPropertyInfo().getAddress();
+            Address newAddress = addressRepository.findByRegionName(address.getRegion().name);
+            newAddress.setLattitude(address.getLattitude());
+            newAddress.setLongitutde(address.getLongitutde());
+            newAddress.setAddressDescription(address.getAddressDescription());
+            city.setCountry(country);
+            region.setCity(city);
+            newAddress.setRegion(region);
+
+            newProperty.setAddress(newAddress);
+
+            // here saving properties in db
+            propertyRepo.save(newProperty);
+
+            // here i am trying upload images to local file system and save url in db
+            List<Image> images = setImagesforEdit(files, propertyRequestModel);
+
+            // here i set imageStatus and set propertyImage
+            PropertyImage propertyImage = setPropertyImage(images, newProperty);
+
+            ResponseMessage responseMessage = new ResponseMessage();
+
+            responseMessage.setSuccessful(true);
+            responseMessage.setError("");
+
+            return ResponseEntity.ok(responseMessage);
+
+        } catch (Exception e) {
+            ResponseMessage responseMessage = new ResponseMessage();
+            responseMessage.setSuccessful(false);
+            responseMessage.setError(e.getMessage());
+            return ResponseEntity.ok(responseMessage);
+
+        }
+
     }
 
     // to store image in db
