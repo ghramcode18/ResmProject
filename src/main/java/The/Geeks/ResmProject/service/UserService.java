@@ -14,7 +14,7 @@ import The.Geeks.ResmProject.payload.response.ViewPropertyFavoriteListResponse;
 
 @Service
 public interface UserService {
-    void singUp(User user) throws Exception;
+     void singUp(UserModel userModel) throws Exception ;
 
     boolean checkIfUserExist(String email);
 

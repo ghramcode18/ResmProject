@@ -14,12 +14,18 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+import The.Geeks.ResmProject.domain.Address;
+import The.Geeks.ResmProject.domain.City;
+import The.Geeks.ResmProject.domain.Country;
 import The.Geeks.ResmProject.domain.Image;
 import The.Geeks.ResmProject.domain.Property;
 import The.Geeks.ResmProject.domain.PropertyImage;
+import The.Geeks.ResmProject.domain.Region;
+import The.Geeks.ResmProject.domain.Role;
 import The.Geeks.ResmProject.domain.User;
 import The.Geeks.ResmProject.domain.UserFav;
 import The.Geeks.ResmProject.message.ResponseMessage;
+import The.Geeks.ResmProject.model.UserModel;
 import The.Geeks.ResmProject.payload.request.AddPropertyToFavoriteListRequest;
 import The.Geeks.ResmProject.payload.response.PropertyView;
 import The.Geeks.ResmProject.payload.response.ResponseInfo;
@@ -37,6 +43,7 @@ import The.Geeks.ResmProject.repo.PropertyImageRepo;
 import The.Geeks.ResmProject.repo.PropertyRepo;
 import The.Geeks.ResmProject.repo.RegionRepo;
 import The.Geeks.ResmProject.repo.UserFavRepo;
+import The.Geeks.ResmProject.repo.RoleRepo;
 import The.Geeks.ResmProject.repo.UserRepo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -57,6 +64,7 @@ public class UserServiceImpl implements UserService {
     private final PropertyCategoryRepo propertyCategoryRepo;
     private final PropertyImageRepo propertyImageRepo;
     private final ImageRepository imageRepo;
+    private final RoleRepo roleRepo;
 
     @Autowired
     UserRepo userRepository;
@@ -64,11 +72,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     PropertyRepo propertyRepo;
 
-    @Override
-    public void singUp(User user) throws Exception {
-        // TODO Auto-generated method stub
-
-    }
+   
 
     @Override
     public boolean checkIfUserExist(String email) {
@@ -245,4 +249,38 @@ public class UserServiceImpl implements UserService {
         return dtoken;
     }
 
+
+
+
+    @Override
+    public void singUp(UserModel userModel) throws Exception {
+        User user = new User();
+        Address address = new Address();
+        Region region = new Region();
+        City city = new City();
+        Country country = new Country();
+        Role role = roleRepo.findByroleId(Long.valueOf(1));
+
+        user.setUsername(userModel.getUsername());
+        user.setHashedPassword(userModel.getHashedPassword());
+        user.setFirstName(userModel.getFirstName());
+        user.setLastName(userModel.getLastName());
+        user.setRole(role);
+        address.setLattitude(userModel.getLattitude());
+        address.setLongitutde(userModel.getLongitutde());
+        user.setAddress(address);
+        region.setName(userModel.getRegionname());
+        user.getAddress().setRegion(region);
+        city.setName(userModel.getCityname());
+        user.getAddress().getRegion().setCity(city);
+        country.setName(userModel.getCountryname());
+        user.getAddress().getRegion().getCity().setCountry(country);
+
+        countryRepo.save(country);
+        cityRepo.save(city);
+        regionRepo.save(region);
+        addressRepo.save(address);
+        userRepo.save(user);
+    }
+    
 }
