@@ -27,7 +27,6 @@ import The.Geeks.ResmProject.domain.UserFav;
 import The.Geeks.ResmProject.message.ResponseMessage;
 import The.Geeks.ResmProject.payload.request.AddPropertyToFavoriteListRequest;
 import The.Geeks.ResmProject.payload.request.SingUpRequest;
-import The.Geeks.ResmProject.payload.request.singUpRequest;
 import The.Geeks.ResmProject.payload.response.PropertyView;
 import The.Geeks.ResmProject.payload.response.ResponseInfo;
 import The.Geeks.ResmProject.payload.response.ViewPropertyFavoriteListResponse;

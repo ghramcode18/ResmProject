@@ -18,7 +18,7 @@ import lombok.Setter;
 @Getter
 @Builder
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
-public class singUpInfoRequest {
+public class SingUpInfoRequest {
     private String username;
     private String phoneNumber;
     private String firstName;

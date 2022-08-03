@@ -16,6 +16,6 @@ import lombok.Setter;
 @Getter
 @Builder
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
-public class singUpRequest {
-    private singUpInfoRequest singUpInfoRequest;
+public class SingUpRequest {
+    private SingUpInfoRequest singUpInfoRequest;
 }

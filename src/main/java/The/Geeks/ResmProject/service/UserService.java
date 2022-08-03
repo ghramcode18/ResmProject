@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestPart;
 import The.Geeks.ResmProject.message.ResponseMessage;
 import The.Geeks.ResmProject.payload.request.AddPropertyToFavoriteListRequest;
 import The.Geeks.ResmProject.payload.request.SingUpRequest;
-import The.Geeks.ResmProject.payload.request.singUpRequest;
 import The.Geeks.ResmProject.payload.response.ViewPropertyFavoriteListResponse;
 
 @Service
