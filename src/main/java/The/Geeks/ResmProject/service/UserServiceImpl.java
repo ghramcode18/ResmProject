@@ -5,12 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestPart;
 
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -22,13 +22,12 @@ import The.Geeks.ResmProject.domain.Image;
 import The.Geeks.ResmProject.domain.Property;
 import The.Geeks.ResmProject.domain.PropertyImage;
 import The.Geeks.ResmProject.domain.Region;
-import The.Geeks.ResmProject.domain.Role;
 import The.Geeks.ResmProject.domain.User;
 import The.Geeks.ResmProject.domain.UserFav;
 import The.Geeks.ResmProject.message.ResponseMessage;
-import The.Geeks.ResmProject.model.UserModel;
 import The.Geeks.ResmProject.payload.request.AddPropertyToFavoriteListRequest;
 import The.Geeks.ResmProject.payload.request.SingUpRequest;
+import The.Geeks.ResmProject.payload.request.singUpRequest;
 import The.Geeks.ResmProject.payload.response.PropertyView;
 import The.Geeks.ResmProject.payload.response.ResponseInfo;
 import The.Geeks.ResmProject.payload.response.ViewPropertyFavoriteListResponse;
@@ -40,21 +39,18 @@ import The.Geeks.ResmProject.repo.AddressRepo;
 import The.Geeks.ResmProject.repo.CityRepo;
 import The.Geeks.ResmProject.repo.CountryRepo;
 import The.Geeks.ResmProject.repo.ImageRepository;
-import The.Geeks.ResmProject.repo.PropertyCategoryRepo;
 import The.Geeks.ResmProject.repo.PropertyImageRepo;
 import The.Geeks.ResmProject.repo.PropertyRepo;
 import The.Geeks.ResmProject.repo.RegionRepo;
-import The.Geeks.ResmProject.repo.UserFavRepo;
 import The.Geeks.ResmProject.repo.RoleRepo;
+import The.Geeks.ResmProject.repo.UserFavRepo;
 import The.Geeks.ResmProject.repo.UserRepo;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
 @Component
 @JsonSerialize
-@Slf4j
 @JsonPOJOBuilder
 public class UserServiceImpl implements UserService {
     private final UserRepo userRepo;
@@ -63,7 +59,6 @@ public class UserServiceImpl implements UserService {
     private final CityRepo cityRepo;
     private final CountryRepo countryRepo;
     private final UserFavRepo userFavRepo;
-    private final PropertyCategoryRepo propertyCategoryRepo;
     private final PropertyImageRepo propertyImageRepo;
     private final ImageRepository imageRepo;
     private final RoleRepo roleRepo;
@@ -74,11 +69,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     PropertyRepo propertyRepo;
 
-    @Override
-    public boolean checkIfUserExist(String email) {
-        // TODO Auto-generated method stub
-        return false;
-    }
+    
 
     @Override
     public ResponseEntity<ResponseMessage> addPropertyToFavoriteList(
@@ -90,7 +81,7 @@ public class UserServiceImpl implements UserService {
             // here decode token and checkIfUserExist in db
             DecodeToken dtoken = decodeToken(addPropertyToFavoriteListRequest.getToken());
 
-            User user = userRepository.findByUsername(
+            User user = userRepo.findByUsername(
                     dtoken.getSub())
                     .orElseThrow(() -> new RuntimeException("Error: user is not found."));
 
@@ -136,7 +127,7 @@ public class UserServiceImpl implements UserService {
             // here decode token and checkIfUserExist in db
             DecodeToken dtoken = decodeToken(token);
 
-            User user = userRepository.findByUsername(
+            User user = userRepo.findByUsername(
                     dtoken.getSub())
                     .orElseThrow(() -> new RuntimeException("Error: user is not found."));
 
@@ -248,6 +239,7 @@ public class UserServiceImpl implements UserService {
 
         return dtoken;
     }
+    //////////////////////////////////////////////////////
 
     @Override
     public ResponseEntity<ResponseMessage> singUp(
@@ -282,7 +274,6 @@ public class UserServiceImpl implements UserService {
             newAddress.setRegion(region);
 
             newUser.setAddress(newAddress);
-
             userRepo.save(newUser);
 
             ResponseMessage responseMessage = new ResponseMessage();
@@ -316,4 +307,6 @@ public class UserServiceImpl implements UserService {
 
         return newUser;
     }
+
+   
 }

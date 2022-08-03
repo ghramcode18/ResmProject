@@ -4,12 +4,9 @@ import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonIgnoreType;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import The.Geeks.ResmProject.domain.PropertyCategory;
-import The.Geeks.ResmProject.domain.PropertyStatus;
 import The.Geeks.ResmProject.payload.response.address;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,10 +20,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @Setter
 @Getter
-
 @Builder
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
-
 public class PropertyInfo {
     private Long propertyId;
     private String description;

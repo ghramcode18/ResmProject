@@ -35,7 +35,6 @@ public interface PropertyService {
                         throws UnsupportedEncodingException, Exception;
 
         public ResponseEntity<ResponseMessage> editProperty(
-
                         @RequestParam("files") MultipartFile[] files,
                         @RequestPart("propertyRequestModel") propertyRequestModel propertyRequestModel)
                         throws UnsupportedEncodingException, Exception;

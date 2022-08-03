@@ -13,15 +13,9 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter
- @Getter
-
+@Getter
 @Builder
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
-
-public class AddPropertyToFavoriteListRequest {
-    private String token;
-    private String propertyId;
-
-    
-
+public class singUpRequest {
+    private singUpInfoRequest singUpInfoRequest;
 }
