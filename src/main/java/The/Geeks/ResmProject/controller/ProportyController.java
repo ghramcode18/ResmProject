@@ -26,7 +26,6 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping("/api/v1")
 @Slf4j
-
 public class ProportyController {
    
 
@@ -46,7 +45,6 @@ public class ProportyController {
     PropertyServieceImp proertyserviceImp;
 
     @RequestMapping(value = "/addProperty", method = RequestMethod.POST, consumes = { "multipart/form-data" })
-
     @ResponseBody
     public Object addProperty(
             @RequestParam("files") MultipartFile[] files,

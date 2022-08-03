@@ -1,39 +1,32 @@
 package The.Geeks.ResmProject.controller;
 
-import java.util.Map;
+import javax.validation.Valid;
 
-import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import The.Geeks.ResmProject.message.ResponseMessage;
 
-import The.Geeks.ResmProject.domain.User;
-import The.Geeks.ResmProject.exception.UserException;
-import The.Geeks.ResmProject.model.UserModel;
 import The.Geeks.ResmProject.payload.request.AddPropertyToFavoriteListRequest;
-import The.Geeks.ResmProject.service.Message;
-import The.Geeks.ResmProject.service.UserService;
+import The.Geeks.ResmProject.payload.request.singUpRequest;
 import The.Geeks.ResmProject.service.UserServiceImpl;
-import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/api/v1")
 public class UserController {
 
     @Autowired
     private UserServiceImpl userServiceImp;
-    private UserException userException;
 
-    @PostMapping("/user/signup")
-    public ResponseEntity<?> singUp(@RequestBody User user) throws Exception {
-        userServiceImp.singUp(user);
-        return ResponseEntity.ok().build();
+    @RequestMapping(value = "/sigup", method = RequestMethod.POST)
+    @ResponseBody
+    public Object singUp(
+        @RequestPart("singUpRequest") @Valid singUpRequest singUpRequest)throws Exception{
+        return  userServiceImp.singUp(singUpRequest);
+      
     }
 
     @RequestMapping(value = "/addPropertyToFavoriteList", method = RequestMethod.POST)
