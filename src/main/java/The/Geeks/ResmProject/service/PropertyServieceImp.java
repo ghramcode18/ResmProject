@@ -47,7 +47,17 @@ import The.Geeks.ResmProject.domain.UserImage;
 import The.Geeks.ResmProject.message.ResponseFile;
 import The.Geeks.ResmProject.message.ResponseMessage;
 import The.Geeks.ResmProject.model.propertyRequestModel;
+import The.Geeks.ResmProject.payload.request.SearchPriceRequest;
+import The.Geeks.ResmProject.payload.request.SearchSpaceRequest;
+import The.Geeks.ResmProject.payload.request.SearchUserRequest;
 import The.Geeks.ResmProject.payload.request.PropertyRequest;
+import The.Geeks.ResmProject.payload.request.SearchNumBathroomsRequest;
+import The.Geeks.ResmProject.payload.request.SearchNumRoomsRequest;
+import The.Geeks.ResmProject.payload.request.SearchNumStoreysRequest;
+import The.Geeks.ResmProject.payload.response.SearchResponce;
+import The.Geeks.ResmProject.payload.response.PropertyView;
+import The.Geeks.ResmProject.payload.response.ResponseInfo;
+import The.Geeks.ResmProject.payload.response.ViewPropertyListResponse;
 import The.Geeks.ResmProject.payload.response.address;
 import The.Geeks.ResmProject.payload.response.city;
 import The.Geeks.ResmProject.payload.response.country;
@@ -56,7 +66,6 @@ import The.Geeks.ResmProject.repo.AddressRepo;
 import The.Geeks.ResmProject.repo.CityRepo;
 import The.Geeks.ResmProject.repo.CountryRepo;
 import The.Geeks.ResmProject.repo.ImageRepository;
-// import The.Geeks.ResmProject.repo.FileDBRepository;
 import The.Geeks.ResmProject.repo.ImageStatusRepo;
 import The.Geeks.ResmProject.repo.PropertyCategoryRepo;
 import The.Geeks.ResmProject.repo.PropertyImageRepo;
@@ -106,6 +115,8 @@ public class PropertyServieceImp implements PropertyService {
 
     @Autowired
     CityRepo cityRepo;
+    @Autowired
+    ImageRepository imageRepo;
 
     @Autowired
     RegionRepo regionRepo;
@@ -354,7 +365,7 @@ public class PropertyServieceImp implements PropertyService {
 
         Property newProperty;
         Long PropertyIdInt = Long.parseLong(propertyRequest.getPropertyId());
-        newProperty = propertyRepo.findByPropertyId((Long)PropertyIdInt);
+        newProperty = propertyRepo.findByPropertyId((Long) PropertyIdInt);
 
         System.out.println("helo ghram here3");
 
@@ -380,45 +391,392 @@ public class PropertyServieceImp implements PropertyService {
     }
 
     @Override
-    public List<Property> searchPrice(Float price) {
-        // TODO Auto-generated method stub
+    public SearchResponce searchPrice(SearchPriceRequest searchPriceRequest) throws UnsupportedEncodingException {
 
-        List<Property> propertiesList = propertyRepo.findByPrice(price);
+        Message message = new Message();
+        try {
 
-        return propertiesList;
+            // here decode token and checkIfUserExist in db
+            DecodeToken dtoken = decodeToken(searchPriceRequest.getSearchRequestInfo().getToken());
+
+            User user = userRepository.findByUsername(
+                    dtoken.getSub())
+                    .orElseThrow(() -> new RuntimeException("Error: user is not found."));
+
+            List<Property> propertiesList = propertyRepo.findByPrice(
+                    searchPriceRequest.getSearchRequestInfo().getPrice());
+
+            List<PropertyView> propertiesList2 = new ArrayList<PropertyView>();
+
+            ResponseInfo responseInfo = new ResponseInfo();
+            List<String> imagesUrlList = new ArrayList<String>();
+
+            for (int i = 0; i < propertiesList.size(); i++) {
+
+                Property property = new Property();
+                property = propertiesList.get(i);
+
+                // here i setPropertyView with genral data without address and image
+                PropertyView propertyView = new PropertyView();
+                PropertyView propertyView2 = setPropertyView(propertyView, property);
+
+                // here i setPropertyView with address
+                propertyView2.setAddress(setAddresses(property));
+
+                List<PropertyImage> propertyImage = propertyImageRepo
+                        .findByPropertyId(property.getPropertyId());
+
+                for (int j = 0; j < propertyImage.size(); j++) {
+
+                    Optional<Image> image = imageRepo.findById(propertyImage.get(j).getImage().getId());
+
+                    String url = image.get().getUrl();
+                    imagesUrlList.add(url);
+                    propertyView2.setImagesUrlList(imagesUrlList);
+
+                }
+
+                imagesUrlList = new ArrayList<>();
+
+                propertiesList2.add(propertyView2);
+
+            }
+            responseInfo.setPropertiesList(propertiesList2);
+            SearchResponce searchResponce = new SearchResponce();
+            searchResponce.setResponseInfo(responseInfo);
+
+            ResponseMessage responseMessage = new ResponseMessage();
+            responseMessage.setSuccessful(true);
+            responseMessage.setError("");
+            searchResponce.setResponseMessage(responseMessage);
+
+            return searchResponce;
+
+        } catch (Exception e) {
+            SearchResponce searchResponce = new SearchResponce();
+            ResponseMessage responseMessage = new ResponseMessage();
+            responseMessage.setSuccessful(false);
+            responseMessage.setError(e.getMessage());
+            searchResponce.setResponseMessage(responseMessage);
+            return searchResponce;
+        }
+
+    }
+
+    public PropertyView setPropertyView(PropertyView propertyView, Property property) {
+        propertyView.setPropertyId(property.getPropertyId());
+        propertyView.setDescription(property.getDescription());
+        propertyView.setNumBathrooms(property.getNumBathrooms());
+        propertyView.setNumStoreys(property.getNumStoreys());
+        propertyView.setNumRooms(property.getNumRooms());
+        propertyView.setSpace(property.getSpace());
+        propertyView.setPrice(property.getPrice());
+        propertyView.setDateAdded(property.getDateAdded());
+        propertyView.setCategory(property.getPropertyCategory().getCategory());
+
+        return propertyView;
+
     }
 
     @Override
-    public List<Property> searchSpace(Float space) {
-        // TODO Auto-generated method stub
-        List<Property> propertiesList = propertyRepo.findBySpace(space);
+    public SearchResponce searchSpace(@RequestBody SearchSpaceRequest searchSpaceRequest)
+            throws UnsupportedEncodingException {
 
-        return propertiesList;
+        Message message = new Message();
+        try {
+
+            // here decode token and checkIfUserExist in db
+            DecodeToken dtoken = decodeToken(searchSpaceRequest.getSearchSpaceRequestInfo().getToken());
+
+            User user = userRepository.findByUsername(
+                    dtoken.getSub())
+                    .orElseThrow(() -> new RuntimeException("Error: user is not found."));
+            List<Property> propertiesList = propertyRepo.findBySpace(
+                    searchSpaceRequest.getSearchSpaceRequestInfo().getSpace());
+
+            List<PropertyView> propertiesList2 = new ArrayList<PropertyView>();
+
+            ViewPropertyListResponse viewPropertyFavoriteListResponse = new ViewPropertyListResponse();
+
+            ResponseInfo responseInfo = new ResponseInfo();
+            List<String> imagesUrlList = new ArrayList<String>();
+
+            for (int i = 0; i < propertiesList.size(); i++) {
+
+                Property property = new Property();
+                property = propertiesList.get(i);
+
+                // here i setPropertyView with genral data without address and image
+                PropertyView propertyView = new PropertyView();
+                PropertyView propertyView2 = setPropertyView(propertyView, property);
+
+                // here i setPropertyView with address
+                propertyView2.setAddress(setAddresses(property));
+
+                List<PropertyImage> propertyImage = propertyImageRepo
+                        .findByPropertyId(property.getPropertyId());
+
+                for (int j = 0; j < propertyImage.size(); j++) {
+
+                    Optional<Image> image = imageRepo.findById(propertyImage.get(j).getImage().getId());
+
+                    String url = image.get().getUrl();
+                    imagesUrlList.add(url);
+                    propertyView2.setImagesUrlList(imagesUrlList);
+
+                }
+
+                imagesUrlList = new ArrayList<>();
+
+                propertiesList2.add(propertyView2);
+
+            }
+            responseInfo.setPropertiesList(propertiesList2);
+            SearchResponce searchResponce = new SearchResponce();
+            searchResponce.setResponseInfo(responseInfo);
+
+            ResponseMessage responseMessage = new ResponseMessage();
+            responseMessage.setSuccessful(true);
+            responseMessage.setError("");
+            searchResponce.setResponseMessage(responseMessage);
+
+            return searchResponce;
+
+        } catch (Exception e) {
+            SearchResponce searchResponce = new SearchResponce();
+            ResponseMessage responseMessage = new ResponseMessage();
+            responseMessage.setSuccessful(false);
+            responseMessage.setError(e.getMessage());
+            searchResponce.setResponseMessage(responseMessage);
+            return searchResponce;
+        }
+
     }
 
     @Override
-    public List<Property> searchNumRooms(Integer numRooms) {
-        // TODO Auto-generated method stub
-        List<Property> propertiesList = propertyRepo.findByNumRooms(numRooms);
+    public SearchResponce searchNumRooms(@RequestBody SearchNumRoomsRequest searchNumRoomsRequest)
+            throws UnsupportedEncodingException{
+            
 
-        return propertiesList;
+        Message message = new Message();
+        try {
+
+            // here decode token and checkIfUserExist in db
+            DecodeToken dtoken = decodeToken(searchNumRoomsRequest.getSearchNumRoomsRequestInfo().getToken());
+
+            User user = userRepository.findByUsername(
+                    dtoken.getSub())
+                    .orElseThrow(() -> new RuntimeException("Error: user is not found."));
+            List<Property> propertiesList = propertyRepo.findByNumRooms(
+                    searchNumRoomsRequest.getSearchNumRoomsRequestInfo().getNumRooms());
+
+            List<PropertyView> propertiesList2 = new ArrayList<PropertyView>();
+
+
+            ResponseInfo responseInfo = new ResponseInfo();
+            List<String> imagesUrlList = new ArrayList<String>();
+
+            for (int i = 0; i < propertiesList.size(); i++) {
+
+                Property property = new Property();
+                property = propertiesList.get(i);
+
+                // here i setPropertyView with genral data without address and image
+                PropertyView propertyView = new PropertyView();
+                PropertyView propertyView2 = setPropertyView(propertyView, property);
+
+                // here i setPropertyView with address
+                propertyView2.setAddress(setAddresses(property));
+
+                List<PropertyImage> propertyImage = propertyImageRepo
+                        .findByPropertyId(property.getPropertyId());
+
+                for (int j = 0; j < propertyImage.size(); j++) {
+
+                    Optional<Image> image = imageRepo.findById(propertyImage.get(j).getImage().getId());
+
+                    String url = image.get().getUrl();
+                    imagesUrlList.add(url);
+                    propertyView2.setImagesUrlList(imagesUrlList);
+
+                }
+
+                imagesUrlList = new ArrayList<>();
+
+                propertiesList2.add(propertyView2);
+
+            }
+            responseInfo.setPropertiesList(propertiesList2);
+            SearchResponce searchResponce = new SearchResponce();
+            searchResponce.setResponseInfo(responseInfo);
+
+            ResponseMessage responseMessage = new ResponseMessage();
+            responseMessage.setSuccessful(true);
+            responseMessage.setError("");
+            searchResponce.setResponseMessage(responseMessage);
+
+            return searchResponce;
+
+        } catch (Exception e) {
+            SearchResponce searchResponce = new SearchResponce();
+            ResponseMessage responseMessage = new ResponseMessage();
+            responseMessage.setSuccessful(false);
+            responseMessage.setError(e.getMessage());
+            searchResponce.setResponseMessage(responseMessage);
+            return searchResponce;
+        }
+
     }
 
     @Override
-    public List<Property> searchNumStoreys(Integer numStoreys) {
-        // TODO Auto-generated method stub
-        List<Property> propertiesList = propertyRepo.findByNumStoreys(numStoreys);
+    public SearchResponce searchNumStoreys(@RequestBody SearchNumStoreysRequest searchnumStoreysRequest)
+            throws UnsupportedEncodingException{
 
-        return propertiesList;
+        Message message = new Message();
+        try {
+
+            // here decode token and checkIfUserExist in db
+            DecodeToken dtoken = decodeToken(searchnumStoreysRequest.getSearchNumStoreysRequestInfo().getToken());
+
+            User user = userRepository.findByUsername(
+                    dtoken.getSub())
+                    .orElseThrow(() -> new RuntimeException("Error: user is not found."));
+            List<Property> propertiesList = propertyRepo.findByNumStoreys(
+                    searchnumStoreysRequest.getSearchNumStoreysRequestInfo().getNumStoreys());
+
+            List<PropertyView> propertiesList2 = new ArrayList<PropertyView>();
+
+
+            ResponseInfo responseInfo = new ResponseInfo();
+            List<String> imagesUrlList = new ArrayList<String>();
+
+            for (int i = 0; i < propertiesList.size(); i++) {
+
+                Property property = new Property();
+                property = propertiesList.get(i);
+
+                // here i setPropertyView with genral data without address and image
+                PropertyView propertyView = new PropertyView();
+                PropertyView propertyView2 = setPropertyView(propertyView, property);
+
+                // here i setPropertyView with address
+                propertyView2.setAddress(setAddresses(property));
+
+                List<PropertyImage> propertyImage = propertyImageRepo
+                        .findByPropertyId(property.getPropertyId());
+
+                for (int j = 0; j < propertyImage.size(); j++) {
+
+                    Optional<Image> image = imageRepo.findById(propertyImage.get(j).getImage().getId());
+
+                    String url = image.get().getUrl();
+                    imagesUrlList.add(url);
+                    propertyView2.setImagesUrlList(imagesUrlList);
+
+                }
+
+                imagesUrlList = new ArrayList<>();
+
+                propertiesList2.add(propertyView2);
+
+            }
+            responseInfo.setPropertiesList(propertiesList2);
+            SearchResponce searchResponce = new SearchResponce();
+            searchResponce.setResponseInfo(responseInfo);
+
+            ResponseMessage responseMessage = new ResponseMessage();
+            responseMessage.setSuccessful(true);
+            responseMessage.setError("");
+            searchResponce.setResponseMessage(responseMessage);
+
+            return searchResponce;
+
+        } catch (Exception e) {
+            SearchResponce searchResponce = new SearchResponce();
+            ResponseMessage responseMessage = new ResponseMessage();
+            responseMessage.setSuccessful(false);
+            responseMessage.setError(e.getMessage());
+            searchResponce.setResponseMessage(responseMessage);
+            return searchResponce;
+        }
+
     }
 
     @Override
-    public List<Property> searchNumBathrooms(Integer numBathrooms) {
-        // TODO Auto-generated method stub
-        List<Property> propertiesList = propertyRepo.findByNumBathrooms(numBathrooms);
+    public SearchResponce searchNumBathrooms(@RequestBody SearchNumBathroomsRequest searchNumBathroomsRequest)
+            throws UnsupportedEncodingException{
 
-        return propertiesList;
-    }
+        Message message = new Message();
+        try
+        {
+
+            // here decode token and checkIfUserExist in db
+            DecodeToken dtoken = decodeToken(searchNumBathroomsRequest.getSearchNumBathroomsRequestInfo().getToken());
+
+            User user = userRepository.findByUsername(
+                    dtoken.getSub())
+                    .orElseThrow(() -> new RuntimeException("Error: user is not found."));
+            List<Property> propertiesList = propertyRepo.findByNumBathrooms(
+                    searchNumBathroomsRequest.getSearchNumBathroomsRequestInfo().getNumBathrooms());
+
+            List<PropertyView> propertiesList2 = new ArrayList<PropertyView>();
+
+            ResponseInfo responseInfo = new ResponseInfo();
+            List<String> imagesUrlList = new ArrayList<String>();
+
+            for (int i = 0; i < propertiesList.size(); i++) {
+
+                Property property = new Property();
+                property = propertiesList.get(i);
+
+                // here i setPropertyView with genral data without address and image
+                PropertyView propertyView = new PropertyView();
+                PropertyView propertyView2 = setPropertyView(propertyView, property);
+
+                // here i setPropertyView with address
+                propertyView2.setAddress(setAddresses(property));
+
+                List<PropertyImage> propertyImage = propertyImageRepo
+                        .findByPropertyId(property.getPropertyId());
+
+                for (int j = 0; j < propertyImage.size(); j++) {
+
+                    Optional<Image> image = imageRepo.findById(propertyImage.get(j).getImage().getId());
+
+                    String url = image.get().getUrl();
+                    imagesUrlList.add(url);
+                    propertyView2.setImagesUrlList(imagesUrlList);
+
+                }
+
+                imagesUrlList = new ArrayList<>();
+
+                propertiesList2.add(propertyView2);
+
+            }
+            responseInfo.setPropertiesList(propertiesList2);
+            SearchResponce searchResponce = new SearchResponce();
+            searchResponce.setResponseInfo(responseInfo);
+
+            ResponseMessage responseMessage = new ResponseMessage();
+            responseMessage.setSuccessful(true);
+            responseMessage.setError("");
+            searchResponce.setResponseMessage(responseMessage);
+
+            return searchResponce;
+
+        }catch(
+        Exception e)
+        {
+            SearchResponce searchResponce = new SearchResponce();
+            ResponseMessage responseMessage = new ResponseMessage();
+            responseMessage.setSuccessful(false);
+            responseMessage.setError(e.getMessage());
+            searchResponce.setResponseMessage(responseMessage);
+            return searchResponce;
+        }
+
+        }
 
     @Override
     public List<Property> searchDateAdded(String dateAdded) {
@@ -435,8 +793,9 @@ public class PropertyServieceImp implements PropertyService {
     }
 
     @Override
-    public List<Property> searchUser(String userName) {
-        // TODO Auto-generated method stub
+ public SearchResponce searchUser(@RequestBody SearchUserRequest searchUserRequest)
+                        throws UnsupportedEncodingException{
+         // TODO Auto-generated method stub
         return null;
     }
 
@@ -445,7 +804,6 @@ public class PropertyServieceImp implements PropertyService {
             @RequestParam("files") MultipartFile[] files,
             @RequestPart("propertyRequestModel") propertyRequestModel propertyRequestModel)
             throws UnsupportedEncodingException, Exception {
-        // TODO Auto-generated method stub
 
         Message message = new Message();
         try {

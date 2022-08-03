@@ -10,11 +10,13 @@ import The.Geeks.ResmProject.message.ResponseMessage;
 import The.Geeks.ResmProject.model.UserModel;
 import The.Geeks.ResmProject.payload.request.AddPropertyToFavoriteListRequest;
 import The.Geeks.ResmProject.payload.request.PropertyRequest;
+import The.Geeks.ResmProject.payload.request.SingUpRequest;
 import The.Geeks.ResmProject.payload.response.ViewPropertyFavoriteListResponse;
 
 @Service
 public interface UserService {
-     void singUp(UserModel userModel) throws Exception ;
+public ResponseEntity<ResponseMessage> singUp(
+         @RequestBody  SingUpRequest singUpRequest) throws Exception ;
 
     boolean checkIfUserExist(String email);
 

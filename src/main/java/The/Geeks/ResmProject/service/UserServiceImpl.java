@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -27,6 +28,7 @@ import The.Geeks.ResmProject.domain.UserFav;
 import The.Geeks.ResmProject.message.ResponseMessage;
 import The.Geeks.ResmProject.model.UserModel;
 import The.Geeks.ResmProject.payload.request.AddPropertyToFavoriteListRequest;
+import The.Geeks.ResmProject.payload.request.SingUpRequest;
 import The.Geeks.ResmProject.payload.response.PropertyView;
 import The.Geeks.ResmProject.payload.response.ResponseInfo;
 import The.Geeks.ResmProject.payload.response.ViewPropertyFavoriteListResponse;
@@ -71,8 +73,6 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     PropertyRepo propertyRepo;
-
-   
 
     @Override
     public boolean checkIfUserExist(String email) {
@@ -249,38 +249,71 @@ public class UserServiceImpl implements UserService {
         return dtoken;
     }
 
-
-
-
     @Override
-    public void singUp(UserModel userModel) throws Exception {
-        User user = new User();
-        Address address = new Address();
-        Region region = new Region();
-        City city = new City();
-        Country country = new Country();
-        Role role = roleRepo.findByroleId(Long.valueOf(1));
+    public ResponseEntity<ResponseMessage> singUp(
+            @RequestBody SingUpRequest singUpRequest) throws Exception {
 
-        user.setUsername(userModel.getUsername());
-        user.setHashedPassword(userModel.getHashedPassword());
-        user.setFirstName(userModel.getFirstName());
-        user.setLastName(userModel.getLastName());
-        user.setRole(role);
-        address.setLattitude(userModel.getLattitude());
-        address.setLongitutde(userModel.getLongitutde());
-        user.setAddress(address);
-        region.setName(userModel.getRegionname());
-        user.getAddress().setRegion(region);
-        city.setName(userModel.getCityname());
-        user.getAddress().getRegion().setCity(city);
-        country.setName(userModel.getCountryname());
-        user.getAddress().getRegion().getCity().setCountry(country);
+        Message message = new Message();
 
-        countryRepo.save(country);
-        cityRepo.save(city);
-        regionRepo.save(region);
-        addressRepo.save(address);
-        userRepo.save(user);
+        try {
+            User newUser = setUser(singUpRequest);
+
+            Country country = new Country();
+            country = countryRepo.findByName(
+                    singUpRequest.getSingUpInfoRequest()
+                            .getAddress().getRegion().getCity().getCountry().getName());
+
+            City city = new City();
+            city = cityRepo.findByName(singUpRequest.getSingUpInfoRequest()
+                    .getAddress().getRegion().getCity().getName());
+
+            Region region = new Region();
+            region = regionRepo.findByName(singUpRequest.getSingUpInfoRequest()
+                    .getAddress().getRegion().getName());
+
+            address address = singUpRequest.getSingUpInfoRequest().getAddress();
+            Address newAddress = addressRepo.findByRegionName(address.getRegion().name);
+            
+            newAddress.setLattitude(address.getLattitude());
+            newAddress.setLongitutde(address.getLongitutde());
+            newAddress.setAddressDescription(address.getAddressDescription());
+            city.setCountry(country);
+            region.setCity(city);
+            newAddress.setRegion(region);
+
+            newUser.setAddress(newAddress);
+
+            userRepo.save(newUser);
+
+            ResponseMessage responseMessage = new ResponseMessage();
+
+            responseMessage.setSuccessful(true);
+            responseMessage.setError("");
+
+            return ResponseEntity.ok(responseMessage);
+        } catch (Exception e) {
+            ResponseMessage responseMessage = new ResponseMessage();
+            responseMessage.setSuccessful(false);
+            responseMessage.setError(e.getMessage());
+            return ResponseEntity.ok(responseMessage);
+        }
+
     }
-    
+
+    private User setUser(SingUpRequest singUpRequest) {
+
+        User newUser = new User();
+
+        newUser.setUsername(singUpRequest.getSingUpInfoRequest().getFirstName());
+
+        newUser.setPhoneNumber(singUpRequest.getSingUpInfoRequest().getPhoneNumber());
+
+        newUser.setFirstName(singUpRequest.getSingUpInfoRequest().getFirstName());
+
+        newUser.setLastName(singUpRequest.getSingUpInfoRequest().getLastName());
+
+        newUser.setPassword(singUpRequest.getSingUpInfoRequest().getPassword());
+
+        return newUser;
+    }
 }
