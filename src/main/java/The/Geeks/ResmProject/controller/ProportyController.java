@@ -6,6 +6,7 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import The.Geeks.ResmProject.domain.Property;
+import The.Geeks.ResmProject.message.ResponseMessage;
 import The.Geeks.ResmProject.model.propertyRequestModel;
 import The.Geeks.ResmProject.payload.request.search.SearchDateAddedRequest;
 import The.Geeks.ResmProject.payload.request.search.SearchNumBathroomsRequest;
@@ -23,6 +25,8 @@ import The.Geeks.ResmProject.payload.request.search.SearchPropertyCategoryReques
 import The.Geeks.ResmProject.payload.request.search.SearchSpaceRequest;
 import The.Geeks.ResmProject.payload.request.search.SearchUserRequest;
 import The.Geeks.ResmProject.payload.response.SearchResponce;
+import The.Geeks.ResmProject.payload.request.DeletePropertyFromFvaoriteLsitRequest;
+import The.Geeks.ResmProject.payload.request.DeletePropertyRequest;
 import The.Geeks.ResmProject.payload.request.PropertyRequest;
 import The.Geeks.ResmProject.service.PropertyServieceImp;
 import lombok.extern.slf4j.Slf4j;
@@ -124,5 +128,21 @@ public class ProportyController {
                     return proertyserviceImp.searchDateAdded(searchDateAddedRequest);
 
         }
+        
+        @PostMapping("/deleteProperty")
+        public ResponseEntity<ResponseMessage> deleteProperty(@RequestBody DeletePropertyRequest deletePropertyRequest)
+                throws UnsupportedEncodingException {
+            return proertyserviceImp.deleteProperty(deletePropertyRequest);
+
+        }
+
+        @PostMapping("/deletePropertyFromFavaoriteList")
+        public ResponseEntity<ResponseMessage> deletePropertyFromFavaoriteList(
+            @RequestBody DeletePropertyFromFvaoriteLsitRequest deletePropertyRequest)
+            throws UnsupportedEncodingException{
+
+                return proertyserviceImp.deletePropertyFromFavaoriteList(deletePropertyRequest);
+
+            }
 
 }

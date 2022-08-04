@@ -26,6 +26,8 @@ import The.Geeks.ResmProject.payload.request.search.SearchPriceRequest;
 import The.Geeks.ResmProject.payload.request.search.SearchPropertyCategoryRequest;
 import The.Geeks.ResmProject.payload.request.search.SearchSpaceRequest;
 import The.Geeks.ResmProject.payload.request.search.SearchUserRequest;
+import The.Geeks.ResmProject.payload.request.DeletePropertyFromFvaoriteLsitRequest;
+import The.Geeks.ResmProject.payload.request.DeletePropertyRequest;
 import The.Geeks.ResmProject.payload.request.PropertyRequest;
 import The.Geeks.ResmProject.payload.response.SearchResponce;
 
@@ -52,7 +54,7 @@ public interface PropertyService {
 
         public SearchResponce searchNumStoreys(@RequestBody SearchNumStoreysRequest searchnumStoreysRequest)
                         throws UnsupportedEncodingException;
-
+                  
         public SearchResponce searchNumBathrooms(@RequestBody SearchNumBathroomsRequest searchNumBathroomsRequest)
                         throws UnsupportedEncodingException;
 
@@ -67,4 +69,12 @@ public interface PropertyService {
         public SearchResponce searchDateAdded(
                         @RequestBody SearchDateAddedRequest searchDateAddedRequest)
                         throws UnsupportedEncodingException;
+
+
+        public ResponseEntity<ResponseMessage> deleteProperty(@RequestBody DeletePropertyRequest deletePropertyRequest)
+        throws UnsupportedEncodingException;
+
+        public ResponseEntity<ResponseMessage> deletePropertyFromFavaoriteList(@RequestBody DeletePropertyFromFvaoriteLsitRequest deletePropertyRequest)
+        throws UnsupportedEncodingException;
+
 }

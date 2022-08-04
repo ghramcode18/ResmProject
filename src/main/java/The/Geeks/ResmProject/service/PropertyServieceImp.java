@@ -19,6 +19,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+
+import org.aspectj.weaver.ast.Instanceof;
 import org.hibernate.validator.internal.engine.messageinterpolation.parser.MessageState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -47,6 +49,7 @@ import The.Geeks.ResmProject.domain.PropertyImage;
 import The.Geeks.ResmProject.domain.PropertyStatus;
 import The.Geeks.ResmProject.domain.Region;
 import The.Geeks.ResmProject.domain.User;
+import The.Geeks.ResmProject.domain.UserFav;
 import The.Geeks.ResmProject.domain.UserImage;
 import The.Geeks.ResmProject.message.ResponseFile;
 import The.Geeks.ResmProject.message.ResponseMessage;
@@ -59,6 +62,8 @@ import The.Geeks.ResmProject.payload.request.search.SearchPriceRequest;
 import The.Geeks.ResmProject.payload.request.search.SearchPropertyCategoryRequest;
 import The.Geeks.ResmProject.payload.request.search.SearchSpaceRequest;
 import The.Geeks.ResmProject.payload.request.search.SearchUserRequest;
+import The.Geeks.ResmProject.payload.request.DeletePropertyFromFvaoriteLsitRequest;
+import The.Geeks.ResmProject.payload.request.DeletePropertyRequest;
 import The.Geeks.ResmProject.payload.request.PropertyRequest;
 import The.Geeks.ResmProject.payload.response.SearchResponce;
 import The.Geeks.ResmProject.payload.response.PropertyView;
@@ -78,6 +83,7 @@ import The.Geeks.ResmProject.repo.PropertyImageRepo;
 import The.Geeks.ResmProject.repo.PropertyRepo;
 import The.Geeks.ResmProject.repo.PropertyStatusRepo;
 import The.Geeks.ResmProject.repo.RegionRepo;
+import The.Geeks.ResmProject.repo.UserFavRepo;
 import The.Geeks.ResmProject.repo.UserRepo;
 import The.Geeks.ResmProject.service.DecodeToken;
 import lombok.RequiredArgsConstructor;
@@ -126,6 +132,9 @@ public class PropertyServieceImp implements PropertyService {
 
     @Autowired
     RegionRepo regionRepo;
+
+    @Autowired
+    UserFavRepo userFavRepo;
 
     @Override
     public ResponseEntity<ResponseMessage> addProperty(
@@ -965,7 +974,6 @@ public class PropertyServieceImp implements PropertyService {
 
             Property newProperty = editProperty(propertyRequestModel);
 
-
             // here set user to property
             newProperty.setUser(user);
 
@@ -1001,6 +1009,81 @@ public class PropertyServieceImp implements PropertyService {
 
             // here i set imageStatus and set propertyImage
             PropertyImage propertyImage = setPropertyImage(images, newProperty);
+
+            ResponseMessage responseMessage = new ResponseMessage();
+
+            responseMessage.setSuccessful(true);
+            responseMessage.setError("");
+
+            return ResponseEntity.ok(responseMessage);
+
+        } catch (Exception e) {
+            ResponseMessage responseMessage = new ResponseMessage();
+            responseMessage.setSuccessful(false);
+            responseMessage.setError(e.getMessage());
+            return ResponseEntity.ok(responseMessage);
+
+        }
+
+    }
+
+    public ResponseEntity<ResponseMessage> deleteProperty(@RequestBody DeletePropertyRequest deletePropertyRequest)
+            throws UnsupportedEncodingException {
+
+        Message message = new Message();
+        try {
+            // here decode token and checkIfUserExist in db
+            DecodeToken dtoken = decodeToken(deletePropertyRequest.getToken());
+
+            User user = userRepository.findByUsername(
+                    dtoken.getSub())
+                    .orElseThrow(() -> new RuntimeException("Error: user is not found."));
+
+            Long id = Long.parseLong(deletePropertyRequest.getPropertyToDeleteId());
+            Property property = propertyRepo.findByPropertyId(id);
+            Optional<PropertyStatus> propertyStatus = propertyStatusRepo
+                    .findById((long) 0);
+
+            property.setPropertyStatus(propertyStatus.get());
+            propertyRepo.save(property);
+            ResponseMessage responseMessage = new ResponseMessage();
+
+            responseMessage.setSuccessful(true);
+            responseMessage.setError("");
+
+            return ResponseEntity.ok(responseMessage);
+
+        } catch (Exception e) {
+            ResponseMessage responseMessage = new ResponseMessage();
+            responseMessage.setSuccessful(false);
+            responseMessage.setError(e.getMessage());
+            return ResponseEntity.ok(responseMessage);
+
+        }
+
+    }
+
+    public ResponseEntity<ResponseMessage> deletePropertyFromFavaoriteList(
+            @RequestBody DeletePropertyFromFvaoriteLsitRequest deletePropertyRequest)
+            throws UnsupportedEncodingException {
+        Message message = new Message();
+        try {
+            // here decode token and checkIfUserExist in db
+            DecodeToken dtoken = decodeToken(deletePropertyRequest.getToken());
+
+            User user = userRepository.findByUsername(
+                    dtoken.getSub())
+                    .orElseThrow(() -> new RuntimeException("Error: user is not found."));
+            Long id = Long.parseLong(deletePropertyRequest.getPropertyId());
+            List<UserFav> userFavorites = user.getUserPropertyFavList();
+
+
+            for (int i = 0; i < userFavorites.size(); i++) {
+                if (userFavorites.get(i).getProperty().getPropertyId().equals(id)) {
+                    userFavRepo.deleteByPropertyId(id);
+                }
+            }
+            
 
             ResponseMessage responseMessage = new ResponseMessage();
 

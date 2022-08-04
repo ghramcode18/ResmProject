@@ -15,10 +15,7 @@ import The.Geeks.ResmProject.domain.Property;
 @Repository
 public interface PropertyRepo extends JpaRepository<Property, Long> {
     List<Property> findByPrice(Float price);
-    /*
-     * @Query("SELECT r FROM Employee r WHERE r.empId = ?1)
-     * Employee getMyEmployee(long id);
-     */
+    
     Property findByPropertyId(long id);
 
     List<Property> findBySpace(Float space);
