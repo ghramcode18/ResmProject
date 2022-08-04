@@ -14,14 +14,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 import The.Geeks.ResmProject.domain.Property;
 import The.Geeks.ResmProject.model.propertyRequestModel;
-import The.Geeks.ResmProject.payload.request.SearchPriceRequest;
-import The.Geeks.ResmProject.payload.request.SearchSpaceRequest;
-import The.Geeks.ResmProject.payload.request.SearchUserRequest;
+import The.Geeks.ResmProject.payload.request.search.SearchDateAddedRequest;
+import The.Geeks.ResmProject.payload.request.search.SearchNumBathroomsRequest;
+import The.Geeks.ResmProject.payload.request.search.SearchNumRoomsRequest;
+import The.Geeks.ResmProject.payload.request.search.SearchNumStoreysRequest;
+import The.Geeks.ResmProject.payload.request.search.SearchPriceRequest;
+import The.Geeks.ResmProject.payload.request.search.SearchPropertyCategoryRequest;
+import The.Geeks.ResmProject.payload.request.search.SearchSpaceRequest;
+import The.Geeks.ResmProject.payload.request.search.SearchUserRequest;
 import The.Geeks.ResmProject.payload.response.SearchResponce;
 import The.Geeks.ResmProject.payload.request.PropertyRequest;
-import The.Geeks.ResmProject.payload.request.SearchNumBathroomsRequest;
-import The.Geeks.ResmProject.payload.request.SearchNumRoomsRequest;
-import The.Geeks.ResmProject.payload.request.SearchNumStoreysRequest;
 import The.Geeks.ResmProject.service.PropertyServieceImp;
 import lombok.extern.slf4j.Slf4j;
 
@@ -103,8 +105,10 @@ public class ProportyController {
     }
 
     @PostMapping("/searchPropertyCategory")
-    public List<Property> searchPropertyCategory(@RequestBody Integer Category) {
-        return proertyserviceImp.searchPropertyCategory(Category);
+    public SearchResponce searchPropertyCategory(
+            @RequestBody SearchPropertyCategoryRequest searchPropertyCategoryRequest)
+            throws UnsupportedEncodingException {    
+                    return proertyserviceImp.searchPropertyCategory(searchPropertyCategoryRequest);
     }
 
     @PostMapping("/SearchUserRequest")
@@ -113,4 +117,12 @@ public class ProportyController {
         return proertyserviceImp.searchUser(searchUserRequest);
 
     }
+    @PostMapping("/searchDateAdded")
+     public SearchResponce searchDateAdded(
+            @RequestBody SearchDateAddedRequest searchDateAddedRequest)
+            throws UnsupportedEncodingException {
+                    return proertyserviceImp.searchDateAdded(searchDateAddedRequest);
+
+        }
+
 }

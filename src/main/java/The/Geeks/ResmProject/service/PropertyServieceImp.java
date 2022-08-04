@@ -5,6 +5,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.http.HttpHeaders;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.nio.file.Path;
@@ -14,6 +15,9 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import org.springframework.util.StringUtils;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import org.hibernate.validator.internal.engine.messageinterpolation.parser.MessageState;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,13 +51,15 @@ import The.Geeks.ResmProject.domain.UserImage;
 import The.Geeks.ResmProject.message.ResponseFile;
 import The.Geeks.ResmProject.message.ResponseMessage;
 import The.Geeks.ResmProject.model.propertyRequestModel;
-import The.Geeks.ResmProject.payload.request.SearchPriceRequest;
-import The.Geeks.ResmProject.payload.request.SearchSpaceRequest;
-import The.Geeks.ResmProject.payload.request.SearchUserRequest;
+import The.Geeks.ResmProject.payload.request.search.SearchDateAddedRequest;
+import The.Geeks.ResmProject.payload.request.search.SearchNumBathroomsRequest;
+import The.Geeks.ResmProject.payload.request.search.SearchNumRoomsRequest;
+import The.Geeks.ResmProject.payload.request.search.SearchNumStoreysRequest;
+import The.Geeks.ResmProject.payload.request.search.SearchPriceRequest;
+import The.Geeks.ResmProject.payload.request.search.SearchPropertyCategoryRequest;
+import The.Geeks.ResmProject.payload.request.search.SearchSpaceRequest;
+import The.Geeks.ResmProject.payload.request.search.SearchUserRequest;
 import The.Geeks.ResmProject.payload.request.PropertyRequest;
-import The.Geeks.ResmProject.payload.request.SearchNumBathroomsRequest;
-import The.Geeks.ResmProject.payload.request.SearchNumRoomsRequest;
-import The.Geeks.ResmProject.payload.request.SearchNumStoreysRequest;
 import The.Geeks.ResmProject.payload.response.SearchResponce;
 import The.Geeks.ResmProject.payload.response.PropertyView;
 import The.Geeks.ResmProject.payload.response.ResponseInfo;
@@ -555,8 +561,7 @@ public class PropertyServieceImp implements PropertyService {
 
     @Override
     public SearchResponce searchNumRooms(@RequestBody SearchNumRoomsRequest searchNumRoomsRequest)
-            throws UnsupportedEncodingException{
-            
+            throws UnsupportedEncodingException {
 
         Message message = new Message();
         try {
@@ -571,7 +576,6 @@ public class PropertyServieceImp implements PropertyService {
                     searchNumRoomsRequest.getSearchNumRoomsRequestInfo().getNumRooms());
 
             List<PropertyView> propertiesList2 = new ArrayList<PropertyView>();
-
 
             ResponseInfo responseInfo = new ResponseInfo();
             List<String> imagesUrlList = new ArrayList<String>();
@@ -630,7 +634,7 @@ public class PropertyServieceImp implements PropertyService {
 
     @Override
     public SearchResponce searchNumStoreys(@RequestBody SearchNumStoreysRequest searchnumStoreysRequest)
-            throws UnsupportedEncodingException{
+            throws UnsupportedEncodingException {
 
         Message message = new Message();
         try {
@@ -645,7 +649,6 @@ public class PropertyServieceImp implements PropertyService {
                     searchnumStoreysRequest.getSearchNumStoreysRequestInfo().getNumStoreys());
 
             List<PropertyView> propertiesList2 = new ArrayList<PropertyView>();
-
 
             ResponseInfo responseInfo = new ResponseInfo();
             List<String> imagesUrlList = new ArrayList<String>();
@@ -704,11 +707,10 @@ public class PropertyServieceImp implements PropertyService {
 
     @Override
     public SearchResponce searchNumBathrooms(@RequestBody SearchNumBathroomsRequest searchNumBathroomsRequest)
-            throws UnsupportedEncodingException{
+            throws UnsupportedEncodingException {
 
         Message message = new Message();
-        try
-        {
+        try {
 
             // here decode token and checkIfUserExist in db
             DecodeToken dtoken = decodeToken(searchNumBathroomsRequest.getSearchNumBathroomsRequestInfo().getToken());
@@ -765,9 +767,7 @@ public class PropertyServieceImp implements PropertyService {
 
             return searchResponce;
 
-        }catch(
-        Exception e)
-        {
+        } catch (Exception e) {
             SearchResponce searchResponce = new SearchResponce();
             ResponseMessage responseMessage = new ResponseMessage();
             responseMessage.setSuccessful(false);
@@ -776,26 +776,173 @@ public class PropertyServieceImp implements PropertyService {
             return searchResponce;
         }
 
+    }
+
+    @Override
+    public SearchResponce searchDateAdded(
+            @RequestBody SearchDateAddedRequest searchDateAddedRequest)
+            throws UnsupportedEncodingException {
+
+        Message message = new Message();
+        try {
+
+            // here decode token and checkIfUserExist in db
+            DecodeToken dtoken = decodeToken(searchDateAddedRequest.getSearchDateAddedRequestInfo().getToken());
+
+            User user = userRepository.findByUsername(
+                    dtoken.getSub())
+                    .orElseThrow(() -> new RuntimeException("Error: user is not found."));
+
+            List<Property> propertiesList = new ArrayList<Property>();
+            // LocalDate date =
+            // LocalDate.parse(searchDateAddedRequest.getSearchDateAddedRequestInfo().getDateAdded());
+
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern(
+                    "u-M-d H:m:s[.[SSSSSSSSS][SSSSSSSS][SSSSSSS][SSSSSS][SSSSS][SSSS][SSS][SS][S]]", Locale.ENGLISH);
+            String strDateTime = searchDateAddedRequest.getSearchDateAddedRequestInfo().getDateAdded();
+            LocalDateTime date = LocalDateTime.parse(strDateTime, dtf);
+            propertiesList = propertyRepo.findByDateAdded(date);
+
+            List<PropertyView> propertiesList2 = new ArrayList<PropertyView>();
+
+            ResponseInfo responseInfo = new ResponseInfo();
+            List<String> imagesUrlList = new ArrayList<String>();
+
+            for (int i = 0; i < propertiesList.size(); i++) {
+
+                Property property = new Property();
+                property = propertiesList.get(i);
+
+                // here i setPropertyView with genral data without address and image
+                PropertyView propertyView = new PropertyView();
+                PropertyView propertyView2 = setPropertyView(propertyView, property);
+
+                // here i setPropertyView with address
+                propertyView2.setAddress(setAddresses(property));
+
+                List<PropertyImage> propertyImage = propertyImageRepo
+                        .findByPropertyId(property.getPropertyId());
+
+                for (int j = 0; j < propertyImage.size(); j++) {
+
+                    Optional<Image> image = imageRepo.findById(propertyImage.get(j).getImage().getId());
+
+                    String url = image.get().getUrl();
+                    imagesUrlList.add(url);
+                    propertyView2.setImagesUrlList(imagesUrlList);
+
+                }
+
+                imagesUrlList = new ArrayList<>();
+
+                propertiesList2.add(propertyView2);
+
+            }
+            responseInfo.setPropertiesList(propertiesList2);
+            SearchResponce searchResponce = new SearchResponce();
+            searchResponce.setResponseInfo(responseInfo);
+
+            ResponseMessage responseMessage = new ResponseMessage();
+            responseMessage.setSuccessful(true);
+            responseMessage.setError("");
+            searchResponce.setResponseMessage(responseMessage);
+
+            return searchResponce;
+
+        } catch (Exception e) {
+            SearchResponce searchResponce = new SearchResponce();
+            ResponseMessage responseMessage = new ResponseMessage();
+            responseMessage.setSuccessful(false);
+            responseMessage.setError(e.getMessage());
+            searchResponce.setResponseMessage(responseMessage);
+            return searchResponce;
         }
 
-    @Override
-    public List<Property> searchDateAdded(String dateAdded) {
-        // TODO Auto-generated method stub
-        return null;
     }
 
     @Override
-    public List<Property> searchPropertyCategory(Integer propertyCategory) {
-        // TODO Auto-generated method stub
-        List<Property> propertiesList = propertyRepo.findByPropertyCategory(propertyCategory);
+    public SearchResponce searchPropertyCategory(
+            @RequestBody SearchPropertyCategoryRequest searchPropertyCategoryRequest)
+            throws UnsupportedEncodingException {
 
-        return propertiesList;
+        Message message = new Message();
+        try {
+
+            // here decode token and checkIfUserExist in db
+            DecodeToken dtoken = decodeToken(
+                    searchPropertyCategoryRequest.getSearchPropertyCategoryRequestInfo().getToken());
+
+            User user = userRepository.findByUsername(
+                    dtoken.getSub())
+                    .orElseThrow(() -> new RuntimeException("Error: user is not found."));
+
+            PropertyCategory propertyCategory = propertyCategoryRepo
+                    .findByCategory(
+                            searchPropertyCategoryRequest.getSearchPropertyCategoryRequestInfo().getCategory());
+
+            List<Property> propertiesList = propertyRepo.findByPropertyCategoryId(
+                    propertyCategory.getPropertyCategoryId());
+            List<PropertyView> propertiesList2 = new ArrayList<PropertyView>();
+
+            ResponseInfo responseInfo = new ResponseInfo();
+            List<String> imagesUrlList = new ArrayList<String>();
+
+            for (int i = 0; i < propertiesList.size(); i++) {
+
+                Property property = new Property();
+                property = propertiesList.get(i);
+
+                // here i setPropertyView with genral data without address and image
+                PropertyView propertyView = new PropertyView();
+                PropertyView propertyView2 = setPropertyView(propertyView, property);
+
+                // here i setPropertyView with address
+                propertyView2.setAddress(setAddresses(property));
+
+                List<PropertyImage> propertyImage = propertyImageRepo
+                        .findByPropertyId(property.getPropertyId());
+
+                for (int j = 0; j < propertyImage.size(); j++) {
+
+                    Optional<Image> image = imageRepo.findById(propertyImage.get(j).getImage().getId());
+
+                    String url = image.get().getUrl();
+                    imagesUrlList.add(url);
+                    propertyView2.setImagesUrlList(imagesUrlList);
+
+                }
+
+                imagesUrlList = new ArrayList<>();
+
+                propertiesList2.add(propertyView2);
+
+            }
+            responseInfo.setPropertiesList(propertiesList2);
+            SearchResponce searchResponce = new SearchResponce();
+            searchResponce.setResponseInfo(responseInfo);
+
+            ResponseMessage responseMessage = new ResponseMessage();
+            responseMessage.setSuccessful(true);
+            responseMessage.setError("");
+            searchResponce.setResponseMessage(responseMessage);
+
+            return searchResponce;
+
+        } catch (Exception e) {
+            SearchResponce searchResponce = new SearchResponce();
+            ResponseMessage responseMessage = new ResponseMessage();
+            responseMessage.setSuccessful(false);
+            responseMessage.setError(e.getMessage());
+            searchResponce.setResponseMessage(responseMessage);
+            return searchResponce;
+        }
+
     }
 
     @Override
- public SearchResponce searchUser(@RequestBody SearchUserRequest searchUserRequest)
-                        throws UnsupportedEncodingException{
-         // TODO Auto-generated method stub
+    public SearchResponce searchUser(@RequestBody SearchUserRequest searchUserRequest)
+            throws UnsupportedEncodingException {
+        // TODO Auto-generated method stub
         return null;
     }
 
@@ -816,10 +963,8 @@ public class PropertyServieceImp implements PropertyService {
                     .orElseThrow(() -> new RuntimeException("Error: user is not found."));
             // here set property to db
 
-            System.out.println("helo ghram here1");
             Property newProperty = editProperty(propertyRequestModel);
 
-            System.out.println("helo ghram here2");
 
             // here set user to property
             newProperty.setUser(user);

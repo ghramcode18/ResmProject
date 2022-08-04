@@ -18,13 +18,15 @@ import org.springframework.web.multipart.MultipartFile;
 import The.Geeks.ResmProject.domain.Property;
 import The.Geeks.ResmProject.message.ResponseMessage;
 import The.Geeks.ResmProject.model.propertyRequestModel;
-import The.Geeks.ResmProject.payload.request.SearchPriceRequest;
-import The.Geeks.ResmProject.payload.request.SearchSpaceRequest;
-import The.Geeks.ResmProject.payload.request.SearchUserRequest;
+import The.Geeks.ResmProject.payload.request.search.SearchDateAddedRequest;
+import The.Geeks.ResmProject.payload.request.search.SearchNumBathroomsRequest;
+import The.Geeks.ResmProject.payload.request.search.SearchNumRoomsRequest;
+import The.Geeks.ResmProject.payload.request.search.SearchNumStoreysRequest;
+import The.Geeks.ResmProject.payload.request.search.SearchPriceRequest;
+import The.Geeks.ResmProject.payload.request.search.SearchPropertyCategoryRequest;
+import The.Geeks.ResmProject.payload.request.search.SearchSpaceRequest;
+import The.Geeks.ResmProject.payload.request.search.SearchUserRequest;
 import The.Geeks.ResmProject.payload.request.PropertyRequest;
-import The.Geeks.ResmProject.payload.request.SearchNumBathroomsRequest;
-import The.Geeks.ResmProject.payload.request.SearchNumRoomsRequest;
-import The.Geeks.ResmProject.payload.request.SearchNumStoreysRequest;
 import The.Geeks.ResmProject.payload.response.SearchResponce;
 
 @Service
@@ -57,9 +59,12 @@ public interface PropertyService {
         public SearchResponce searchUser(@RequestBody SearchUserRequest searchUserRequest)
                         throws UnsupportedEncodingException;
 
-        public List<Property> searchDateAdded(String dateAdded);
 
-        public List<Property> searchPropertyCategory(Integer propertyCategory);
+        public SearchResponce searchPropertyCategory(
+                        @RequestBody SearchPropertyCategoryRequest searchPropertyCategoryRequest)
+                        throws UnsupportedEncodingException;
 
-
+        public SearchResponce searchDateAdded(
+                        @RequestBody SearchDateAddedRequest searchDateAddedRequest)
+                        throws UnsupportedEncodingException;
 }

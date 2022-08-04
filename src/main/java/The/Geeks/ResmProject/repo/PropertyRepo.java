@@ -1,5 +1,8 @@
 package The.Geeks.ResmProject.repo;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,7 +15,6 @@ import The.Geeks.ResmProject.domain.Property;
 @Repository
 public interface PropertyRepo extends JpaRepository<Property, Long> {
     List<Property> findByPrice(Float price);
-
     /*
      * @Query("SELECT r FROM Employee r WHERE r.empId = ?1)
      * Employee getMyEmployee(long id);
@@ -26,8 +28,15 @@ public interface PropertyRepo extends JpaRepository<Property, Long> {
     List<Property> findByNumBathrooms(Integer numBathrooms);
     
     List<Property> findByNumStoreys(Integer numStoreys);
+
+    @Query(value = "SELECT * FROM `properties` WHERE date_added=?1", nativeQuery = true)
+    List<Property> findByDateAdded(LocalDateTime date);
+
     
-    List<Property> findByPropertyCategory(Integer propertyCategory);
+
+    @Query(value = "select *  FROM properties p inner JOIN properties_category PIM"+
+    " ON p.property_categoryid= PIM.property_category_id WHERE p.property_categoryid=?1", nativeQuery = true)
+    List<Property> findByPropertyCategoryId(Long id);
 
     void save(Optional<Property> newProperty);
 

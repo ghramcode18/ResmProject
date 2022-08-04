@@ -1,4 +1,4 @@
-package The.Geeks.ResmProject.payload.request;
+package The.Geeks.ResmProject.payload.request.search;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

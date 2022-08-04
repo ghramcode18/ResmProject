@@ -1,4 +1,4 @@
-package The.Geeks.ResmProject.payload.request;
+package The.Geeks.ResmProject.payload.request.search;
 
 import java.util.Date;
 
@@ -28,6 +28,7 @@ import lombok.Setter;
 @Builder
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 
-public class SearchPriceRequest {
-        SearchPriceRequestInfo searchRequestInfo = new SearchPriceRequestInfo();
+public class SearchSpaceRequestInfo {
+    private String token;
+    private Float space;
 }
