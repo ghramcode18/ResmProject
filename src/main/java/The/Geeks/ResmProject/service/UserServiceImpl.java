@@ -276,9 +276,8 @@ public class UserServiceImpl implements UserService {
 
             newUser.setAddress(newAddress);
             userRepo.save(newUser);
-            mailService.authEmail(newUser.getUsername(), "thanks for register in our platform",
-                    "please verify your email by this link : \nhttp://localhost:8090/api/v1/verify/"+ newUser.getUserId());
-
+            mailService.authEmail(newUser.getUsername(), 
+                    "please verify your email by this link : \nhttp://localhost:8090/api/v1/verify/"+ newUser.getUserId(),"thanks for register in our platform");
             ResponseMessage responseMessage = new ResponseMessage();
 
             responseMessage.setSuccessful(true);
