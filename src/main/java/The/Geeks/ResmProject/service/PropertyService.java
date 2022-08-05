@@ -18,7 +18,18 @@ import org.springframework.web.multipart.MultipartFile;
 import The.Geeks.ResmProject.domain.Property;
 import The.Geeks.ResmProject.message.ResponseMessage;
 import The.Geeks.ResmProject.model.propertyRequestModel;
+import The.Geeks.ResmProject.payload.request.search.SearchDateAddedRequest;
+import The.Geeks.ResmProject.payload.request.search.SearchNumBathroomsRequest;
+import The.Geeks.ResmProject.payload.request.search.SearchNumRoomsRequest;
+import The.Geeks.ResmProject.payload.request.search.SearchNumStoreysRequest;
+import The.Geeks.ResmProject.payload.request.search.SearchPriceRequest;
+import The.Geeks.ResmProject.payload.request.search.SearchPropertyCategoryRequest;
+import The.Geeks.ResmProject.payload.request.search.SearchSpaceRequest;
+import The.Geeks.ResmProject.payload.request.search.SearchUserRequest;
+import The.Geeks.ResmProject.payload.request.DeletePropertyFromFvaoriteLsitRequest;
+import The.Geeks.ResmProject.payload.request.DeletePropertyRequest;
 import The.Geeks.ResmProject.payload.request.PropertyRequest;
+import The.Geeks.ResmProject.payload.response.SearchResponce;
 
 @Service
 public interface PropertyService {
@@ -32,20 +43,38 @@ public interface PropertyService {
                         @RequestPart("propertyRequestModel") propertyRequestModel propertyRequestModel)
                         throws UnsupportedEncodingException, Exception;
 
-        public List<Property> searchPrice(Float price);
+        public SearchResponce searchPrice(@RequestBody SearchPriceRequest searchPriceRequest)
+                        throws UnsupportedEncodingException;
 
-        public List<Property> searchSpace(Float space);
+        public SearchResponce searchSpace(@RequestBody SearchSpaceRequest searchSpaceRequest)
+                        throws UnsupportedEncodingException;
 
-        public List<Property> searchNumRooms(Integer numRooms);
+        public SearchResponce searchNumRooms(@RequestBody SearchNumRoomsRequest searchNumRoomsRequest)
+                        throws UnsupportedEncodingException;
 
-        public List<Property> searchNumStoreys(Integer numStoreys);
+        public SearchResponce searchNumStoreys(@RequestBody SearchNumStoreysRequest searchnumStoreysRequest)
+                        throws UnsupportedEncodingException;
+                  
+        public SearchResponce searchNumBathrooms(@RequestBody SearchNumBathroomsRequest searchNumBathroomsRequest)
+                        throws UnsupportedEncodingException;
 
-        public List<Property> searchNumBathrooms(Integer numBathrooms);
+        public SearchResponce searchUser(@RequestBody SearchUserRequest searchUserRequest)
+                        throws UnsupportedEncodingException;
 
-        public List<Property> searchDateAdded(String dateAdded);
 
-        public List<Property> searchPropertyCategory(Integer propertyCategory);
+        public SearchResponce searchPropertyCategory(
+                        @RequestBody SearchPropertyCategoryRequest searchPropertyCategoryRequest)
+                        throws UnsupportedEncodingException;
 
-        public List<Property> searchUser(String userName);
+        public SearchResponce searchDateAdded(
+                        @RequestBody SearchDateAddedRequest searchDateAddedRequest)
+                        throws UnsupportedEncodingException;
+
+
+        public ResponseEntity<ResponseMessage> deleteProperty(@RequestBody DeletePropertyRequest deletePropertyRequest)
+        throws UnsupportedEncodingException;
+
+        public ResponseEntity<ResponseMessage> deletePropertyFromFavaoriteList(@RequestBody DeletePropertyFromFvaoriteLsitRequest deletePropertyRequest)
+        throws UnsupportedEncodingException;
 
 }

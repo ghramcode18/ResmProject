@@ -15,6 +15,7 @@ import java.util.stream.Stream;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -36,6 +37,7 @@ import The.Geeks.ResmProject.domain.ImageStatus;
 import The.Geeks.ResmProject.domain.Property;
 import The.Geeks.ResmProject.domain.PropertyImage;
 import The.Geeks.ResmProject.domain.Region;
+import The.Geeks.ResmProject.domain.Role;
 import The.Geeks.ResmProject.domain.User;
 import The.Geeks.ResmProject.domain.UserFav;
 import The.Geeks.ResmProject.domain.UserImage;
@@ -60,6 +62,7 @@ import The.Geeks.ResmProject.repo.ImageStatusRepo;
 import The.Geeks.ResmProject.repo.PropertyImageRepo;
 import The.Geeks.ResmProject.repo.PropertyRepo;
 import The.Geeks.ResmProject.repo.RegionRepo;
+import The.Geeks.ResmProject.repo.RoleRepo;
 import The.Geeks.ResmProject.repo.UserFavRepo;
 import The.Geeks.ResmProject.repo.UserImageRepo;
 import The.Geeks.ResmProject.repo.UserRepo;
@@ -82,6 +85,8 @@ public class UserServiceImpl implements UserService {
     private final ImageStatusRepo imageStatusRepo;
     private final UserImageRepo userImageRepo;
     private final PropertyRepo propertyRepo;
+    private final RoleRepo roleRepo;
+    private final MailService mailService;
 
     Pageable pageable = 
     PageRequest.of(0, 10, Sort.by("propertyId").descending());
@@ -319,7 +324,7 @@ public class UserServiceImpl implements UserService {
             Country country = new Country();
             country = countryRepo.findByName(
                     singUpRequest.getSingUpInfoRequest()
-                          .getAddress().getRegion().getCity().getCountry().getName());
+                            .getAddress().getRegion().getCity().getCountry().getName());
 
             City city = new City();
             city = cityRepo.findByName(singUpRequest.getSingUpInfoRequest()
@@ -329,9 +334,9 @@ public class UserServiceImpl implements UserService {
             region = regionRepo.findByName(singUpRequest.getSingUpInfoRequest()
                     .getAddress().getRegion().getName());
 
-
             address address = singUpRequest.getSingUpInfoRequest().getAddress();
             Address newAddress = addressRepo.findByRegionName(address.getRegion().name);
+
             newAddress.setLattitude(address.getLattitude());
             newAddress.setLongitutde(address.getLongitutde());
             newAddress.setAddressDescription(address.getAddressDescription());
@@ -341,6 +346,8 @@ public class UserServiceImpl implements UserService {
 
             newUser.setAddress(newAddress);
             userRepo.save(newUser);
+            mailService.authEmail(newUser.getUsername(), "thanks for register in our platform",
+                    "please verify your email by this link : \nhttp://localhost:8090/api/v1/verify/"+ newUser.getUserId());
 
 
             ResponseMessage responseMessage = new ResponseMessage();
@@ -349,14 +356,12 @@ public class UserServiceImpl implements UserService {
             responseMessage.setError("");
 
             return ResponseEntity.ok(responseMessage);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             ResponseMessage responseMessage = new ResponseMessage();
             responseMessage.setSuccessful(false);
             responseMessage.setError(e.getMessage());
             return ResponseEntity.ok(responseMessage);
         }
-         
 
     }
 
@@ -508,5 +513,16 @@ public class UserServiceImpl implements UserService {
 
         }
     }
+
+    
+    public String verify(Long id) throws Exception {
+        User user = userRepo.findById(id).orElseThrow(() -> new Exception("no user with this id"));
+        Optional<Role> role = roleRepo.findById((long)1);
+        user.setRole(role.get());
+        userRepo.save(user);
+        return "user with id : " + id + " is verified";
+    }
+
+
 }
 
