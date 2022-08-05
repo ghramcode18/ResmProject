@@ -1,5 +1,7 @@
 package The.Geeks.ResmProject.controller;
 
+import java.io.UnsupportedEncodingException;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,9 +11,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import The.Geeks.ResmProject.payload.request.AddPropertyToFavoriteListRequest;
-import The.Geeks.ResmProject.payload.request.singUpRequest;
+import The.Geeks.ResmProject.payload.request.ProfileEditRequest;
+import The.Geeks.ResmProject.payload.request.SingUpRequest;
 import The.Geeks.ResmProject.service.UserServiceImpl;
 
 @RestController
@@ -22,12 +26,31 @@ public class UserController {
     private UserServiceImpl userServiceImp;
 
     @RequestMapping(value = "/sigup", method = RequestMethod.POST)
-    @ResponseBody
     public Object singUp(
-        @RequestPart("singUpRequest") @Valid singUpRequest singUpRequest)throws Exception{
+        @RequestBody SingUpRequest singUpRequest)throws Exception{
         return  userServiceImp.singUp(singUpRequest);
       
     }
+
+    @RequestMapping(value = "/editProfile", method = RequestMethod.POST, consumes = { "multipart/form-data" })
+    @ResponseBody
+    public Object editProperty(
+            @RequestPart(value = "files",required = false) MultipartFile[] files ,
+            @RequestPart("profileEditRequest") @Valid ProfileEditRequest profileEditRequest)
+            throws UnsupportedEncodingException, Exception {
+                
+        return userServiceImp.profileEdit(files, profileEditRequest);
+
+    }
+
+    @RequestMapping(value = "/viewHomePage", method = RequestMethod.POST)
+    public Object viewHomePage(
+            @RequestBody String token) throws Exception {
+
+        return userServiceImp.viewProfile(token);
+
+    }
+
 
     @RequestMapping(value = "/addPropertyToFavoriteList", method = RequestMethod.POST)
     public Object addPropertyToFavoriteList(

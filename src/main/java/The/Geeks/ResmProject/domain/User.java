@@ -12,8 +12,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -39,10 +37,8 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long userId;
-    @Email(message = "Username is not valid", regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}")
-    @NotEmpty(message = "Username cannot be empty")
     String username;
-    String hashedPassword;
+    String password;
     String firstName;
     String lastName;
     String phoneNumber;

@@ -1,5 +1,6 @@
 package The.Geeks.ResmProject.repo;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,6 +13,10 @@ import The.Geeks.ResmProject.domain.Image;
 public interface ImageRepository extends JpaRepository<Image, String> {
 
      Optional<Image> findAllByUrl(String url);
+
+     @Query(value =  "SELECT `url` FROM `images` WHERE `id` IN (SELECT `imageid` FROM `properties_image` WHERE `property_id` = ?1)",nativeQuery = true)
+     List<String> findByImagePropertyId(Long id);
+    
     // @Query(value = "SELECT propertiesImage.propertyId, images.id FROM propertiesImage LEFT JOIN Orders ON propertiesImage.propertyId= images.propertyId where images.id  = ?1  ORDER BY propertiesImage.propertyId", nativeQuery = true)
     // Optional<Image> findByPropertyImagesId(String id);
 

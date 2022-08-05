@@ -2,33 +2,20 @@ package The.Geeks.ResmProject.service;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.http.HttpHeaders;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import org.springframework.util.StringUtils;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
-import org.hibernate.validator.internal.engine.messageinterpolation.parser.MessageState;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-// import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -43,8 +30,6 @@ import The.Geeks.ResmProject.domain.PropertyImage;
 import The.Geeks.ResmProject.domain.PropertyStatus;
 import The.Geeks.ResmProject.domain.Region;
 import The.Geeks.ResmProject.domain.User;
-import The.Geeks.ResmProject.domain.UserImage;
-import The.Geeks.ResmProject.message.ResponseFile;
 import The.Geeks.ResmProject.message.ResponseMessage;
 import The.Geeks.ResmProject.model.propertyRequestModel;
 import The.Geeks.ResmProject.payload.request.PropertyRequest;
@@ -56,7 +41,6 @@ import The.Geeks.ResmProject.repo.AddressRepo;
 import The.Geeks.ResmProject.repo.CityRepo;
 import The.Geeks.ResmProject.repo.CountryRepo;
 import The.Geeks.ResmProject.repo.ImageRepository;
-// import The.Geeks.ResmProject.repo.FileDBRepository;
 import The.Geeks.ResmProject.repo.ImageStatusRepo;
 import The.Geeks.ResmProject.repo.PropertyCategoryRepo;
 import The.Geeks.ResmProject.repo.PropertyImageRepo;
@@ -64,18 +48,12 @@ import The.Geeks.ResmProject.repo.PropertyRepo;
 import The.Geeks.ResmProject.repo.PropertyStatusRepo;
 import The.Geeks.ResmProject.repo.RegionRepo;
 import The.Geeks.ResmProject.repo.UserRepo;
-import The.Geeks.ResmProject.service.DecodeToken;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import javax.validation.Valid;
 import java.nio.file.Files;
-
-import lombok.extern.slf4j.Slf4j;
 
 @RequiredArgsConstructor
 @Component
 @Service
-@Slf4j
 public class PropertyServieceImp implements PropertyService {
 
     @Autowired

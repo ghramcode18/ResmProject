@@ -2,8 +2,6 @@ package The.Geeks.ResmProject.payload.request;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import The.Geeks.ResmProject.payload.response.address;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,11 +16,7 @@ import lombok.Setter;
 @Getter
 @Builder
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
-public class SingUpInfoRequest {
-    private String username;
-    private String phoneNumber;
-    private String firstName;
-    private String lastName;
-    private String password;
-    address address;
+public class ProfileEditRequest {
+    private String token;
+    private ProfileEditInfoRequest profileEditInfoRequest;
 }

@@ -14,6 +14,5 @@ public class address {
     Float longitutde;
     Float lattitude;
     String addressDescription;
-
     public region region;
 }

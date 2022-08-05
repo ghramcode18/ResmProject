@@ -1,8 +1,9 @@
 package The.Geeks.ResmProject.payload.request;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.sql.Date;
 
-import The.Geeks.ResmProject.payload.response.address;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,11 +19,12 @@ import lombok.Setter;
 @Getter
 @Builder
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
-public class SingUpInfoRequest {
+public class ProfileEditInfoRequest {
     private String username;
     private String phoneNumber;
     private String firstName;
     private String lastName;
     private String password;
-    address address;
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private Date dateAdded;
 }
