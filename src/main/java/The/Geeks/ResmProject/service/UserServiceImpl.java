@@ -358,17 +358,10 @@ public class UserServiceImpl implements UserService {
 
             newUser.setAddress(newAddress);
             userRepo.save(newUser);
-<<<<<<< HEAD
             mailService.authEmail(newUser.getUsername(),
                     "please verify your email by this link : \nhttp://localhost:8090/api/v1/verify/"
                             + newUser.getUserId(),
                     "thanks for register in our platform");
-=======
-            mailService.authEmail(newUser.getUsername(), "thanks for register in our platform",
-                    "please verify your email by this link : \nhttp://localhost:8090/api/v1/verify/"+ newUser.getUserId());
-
-
->>>>>>> 93438e228042dda1e5a86afde6b277667bb25bd3
             ResponseMessage responseMessage = new ResponseMessage();
 
             responseMessage.setSuccessful(true);
@@ -384,8 +377,6 @@ public class UserServiceImpl implements UserService {
 
     }
 
-<<<<<<< HEAD
-=======
     private User profileEdit(ProfileEditRequest profileEditRequest) throws UnsupportedEncodingException {
 
         DecodeToken dtoken = decodeToken(profileEditRequest.getToken());
@@ -536,7 +527,6 @@ public class UserServiceImpl implements UserService {
     }
 
     
->>>>>>> 93438e228042dda1e5a86afde6b277667bb25bd3
     public String verify(Long id) throws Exception {
         User user = userRepo.findById(id).orElseThrow(() -> new Exception("no user with this id"));
         Optional<Role> role = roleRepo.findById((long) 1);
@@ -554,6 +544,8 @@ public class UserServiceImpl implements UserService {
 
         return pagedResult.toList();
     }
+
+    
 
 }
 

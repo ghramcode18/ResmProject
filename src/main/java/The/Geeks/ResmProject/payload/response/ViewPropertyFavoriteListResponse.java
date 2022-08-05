@@ -17,6 +17,7 @@ import lombok.Setter;
 
 public class ViewPropertyFavoriteListResponse {
     ResponseMessage responseMessage = new ResponseMessage();
+
     ResponseInfo responseInfo = new ResponseInfo();
 }
 

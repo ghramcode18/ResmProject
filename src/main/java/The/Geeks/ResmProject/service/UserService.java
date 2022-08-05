@@ -1,6 +1,5 @@
 package The.Geeks.ResmProject.service;
 
-
 import java.io.UnsupportedEncodingException;
 
 import org.springframework.http.ResponseEntity;
@@ -22,24 +21,22 @@ import java.util.List;
 @Service
 public interface UserService {
 
-     ResponseEntity<ResponseMessage> singUp(
-                        @RequestBody SingUpRequest singUpRequest)
-                        throws Exception;
+    ResponseEntity<ResponseMessage> singUp(
+            @RequestBody SingUpRequest singUpRequest)
+            throws Exception;
 
-     ResponseEntity<ResponseMessage> profileEdit(
-                            @RequestParam("files") MultipartFile[] files,
-                            @RequestPart("profileEditRequest") ProfileEditRequest profileEditRequest)
-                            throws UnsupportedEncodingException, Exception;
-                            
+    ResponseEntity<ResponseMessage> profileEdit(
+            @RequestParam("files") MultipartFile[] files,
+            @RequestPart("profileEditRequest") ProfileEditRequest profileEditRequest)
+            throws UnsupportedEncodingException, Exception;
+
     ViewProfile viewProfile(String token);
 
+    public ResponseEntity<ResponseMessage> addPropertyToFavoriteList(
+            AddPropertyToFavoriteListRequest addPropertyToFavoriteListRequest);
 
+    ViewPropertyFavoriteListResponse viewPropertyFavoriteList(String token);
 
-    ResponseEntity<ResponseMessage> addPropertyToFavoriteList(
-            @RequestPart("propertyRequest") AddPropertyToFavoriteListRequest addPropertyToFavoriteListRequest);
-
-    ViewPropertyFavoriteListResponse viewPropertyFavoriteList( String token);
-    
-   List< UserFav >findPaginated(int pageNo, int pageSize);
+    List<UserFav> findPaginated(int pageNo, int pageSize);
 
 }

@@ -3,12 +3,8 @@ package The.Geeks.ResmProject.message;
 import java.util.Objects;
 
 public class ResponseMessage {
-   private Boolean successful;
-  private String error;
-
-
-
-  
+  Boolean successful;
+  String error;
 
   public ResponseMessage() {
   }
@@ -49,14 +45,14 @@ public class ResponseMessage {
   }
 
   @Override
-    public boolean equals(Object o) {
-        if (o == this)
-            return true;
-        if (!(o instanceof ResponseMessage)) {
-            return false;
-        }
-        ResponseMessage responseMessage = (ResponseMessage) o;
-        return Objects.equals(successful, responseMessage.successful) && Objects.equals(error, responseMessage.error);
+  public boolean equals(Object o) {
+    if (o == this)
+      return true;
+    if (!(o instanceof ResponseMessage)) {
+      return false;
+    }
+    ResponseMessage responseMessage = (ResponseMessage) o;
+    return Objects.equals(successful, responseMessage.successful) && Objects.equals(error, responseMessage.error);
   }
 
   @Override
@@ -67,8 +63,8 @@ public class ResponseMessage {
   @Override
   public String toString() {
     return "{" +
-      " successful='" + isSuccessful() + "'" +
-      ", error='" + getError() + "'" +
-      "}";
+        " successful='" + isSuccessful() + "'" +
+        ", error='" + getError() + "'" +
+        "}";
   }
 }
