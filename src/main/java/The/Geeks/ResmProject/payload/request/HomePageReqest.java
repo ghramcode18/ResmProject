@@ -1,6 +1,7 @@
-package The.Geeks.ResmProject.payload.request.search;
+package The.Geeks.ResmProject.payload.request;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,11 +13,11 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter
-@Getter
+ @Getter
 
 @Builder
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
-
-public class SearchUserRequest {
-    SearchUserRequestInfo searchUserRequest = new SearchUserRequestInfo();
+public class HomePageReqest {
+    private String token;
+    private Pagintion pagintion;
 }

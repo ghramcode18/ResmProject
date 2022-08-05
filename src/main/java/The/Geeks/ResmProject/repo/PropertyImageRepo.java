@@ -1,13 +1,11 @@
 package The.Geeks.ResmProject.repo;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import The.Geeks.ResmProject.domain.Property;
 import The.Geeks.ResmProject.domain.PropertyImage;
 
 @Repository

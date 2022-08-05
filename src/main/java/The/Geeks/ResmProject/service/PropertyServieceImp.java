@@ -10,11 +10,15 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.springframework.util.StringUtils;
 import java.nio.file.StandardCopyOption;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -36,12 +40,11 @@ import The.Geeks.ResmProject.domain.PropertyStatus;
 import The.Geeks.ResmProject.domain.Region;
 import The.Geeks.ResmProject.domain.User;
 import The.Geeks.ResmProject.domain.UserFav;
-import The.Geeks.ResmProject.domain.UserImage;
-import The.Geeks.ResmProject.message.ResponseFile;
 import The.Geeks.ResmProject.message.ResponseMessage;
 import The.Geeks.ResmProject.model.propertyRequestModel;
 import The.Geeks.ResmProject.payload.request.DeletePropertyFromFvaoriteLsitRequest;
 import The.Geeks.ResmProject.payload.request.DeletePropertyRequest;
+import The.Geeks.ResmProject.payload.request.HomePageReqest;
 import The.Geeks.ResmProject.payload.request.PropertyRequest;
 import The.Geeks.ResmProject.payload.request.search.SearchDateAddedRequest;
 import The.Geeks.ResmProject.payload.request.search.SearchNumBathroomsRequest;
@@ -52,6 +55,8 @@ import The.Geeks.ResmProject.payload.request.search.SearchPropertyCategoryReques
 import The.Geeks.ResmProject.payload.request.search.SearchSpaceRequest;
 import The.Geeks.ResmProject.payload.request.search.SearchUserRequest;
 import The.Geeks.ResmProject.payload.response.SearchResponce;
+import The.Geeks.ResmProject.payload.response.ViewHomePage;
+import The.Geeks.ResmProject.payload.response.HomePageInfo;
 import The.Geeks.ResmProject.payload.response.PropertyView;
 import The.Geeks.ResmProject.payload.response.ResponseInfo;
 import The.Geeks.ResmProject.payload.response.ViewPropertyListResponse;
@@ -115,6 +120,9 @@ public class PropertyServieceImp implements PropertyService {
 
     @Autowired
     UserFavRepo userFavRepo;
+
+    Pageable pageable = 
+    PageRequest.of(0, 3, Sort.by("propertyId"));
 
     @Override
     public ResponseEntity<ResponseMessage> addProperty(
@@ -1080,6 +1088,78 @@ public class PropertyServieceImp implements PropertyService {
 
         }
 
+    }
+
+    address setAddress(Address address) {
+
+        address newaddress = new address();
+
+        newaddress.setAddressDescription(address.getAddressDescription());
+        newaddress.setLattitude(address.getLattitude());
+        newaddress.setLongitutde(address.getLongitutde());
+        region region = new region();
+        region.setName(address.getRegion().getName());
+        city city = new city();
+        city.setName(address.getRegion().getCity().getName());
+        country country = new country();
+        country.setName(address.getRegion().getCity().getCountry().getName());
+        city.setCountry(country);
+        region.setCity(city);
+        newaddress.setRegion(region);
+
+        return newaddress;
+    }
+
+    private Page<PropertyView> setPropertyToPropertyView(Page<Property> ppage) {
+        List<PropertyView> propertyViews = new ArrayList<PropertyView>();
+        for(int i = 0 ; i < ppage.getContent().size() ; i++){
+            PropertyView propertyView = new PropertyView();
+            propertyView.setPropertyId(ppage.getContent().get(i).getPropertyId());
+            propertyView.setDescription(ppage.getContent().get(i).getDescription());
+            propertyView.setNumBathrooms(ppage.getContent().get(i).getNumBathrooms());
+            propertyView.setNumRooms(ppage.getContent().get(i).getNumRooms());
+            propertyView.setPrice(ppage.getContent().get(i).getPrice());
+            propertyView.setSpace(ppage.getContent().get(i).getSpace());
+            propertyView.setCategory(ppage.getContent().get(i).getPropertyCategory().getCategory());
+            propertyView.setDateAdded(ppage.getContent().get(i).getDateAdded());
+            propertyView.setAddress(setAddress(ppage.getContent().get(i).getAddress()));
+
+            propertyViews.add(propertyView);
+    }
+    final Page<PropertyView> page = new PageImpl<PropertyView>(propertyViews);
+    return page;
+        }
+        
+    
+
+    @Override
+    public ViewHomePage viewHomePage(HomePageReqest homePageReqest) throws UnsupportedEncodingException{
+        try {
+            DecodeToken dtoken = decodeToken(homePageReqest.getToken());
+
+            User user = userRepository.findByUsername(
+                    dtoken.getSub())
+                    .orElseThrow(() -> new RuntimeException("Error: user is not found."));
+
+            ViewHomePage viewHomePage = new ViewHomePage();
+            Page<PropertyView> propertyView =setPropertyToPropertyView(propertyRepo.findAll(pageable));
+            viewHomePage.getHomePageInfo().setPropertyView(propertyView);
+            ResponseMessage responseMessage = new ResponseMessage();
+            responseMessage.setSuccessful(true);
+            responseMessage.setError("");
+            viewHomePage.setResponseMessage(responseMessage);
+
+            return viewHomePage;
+
+        } catch (Exception e) {
+            ViewHomePage viewHomePage = new ViewHomePage();
+            ResponseMessage responseMessage = new ResponseMessage();
+            responseMessage.setSuccessful(false);
+            responseMessage.setError(e.getMessage());
+            viewHomePage.setResponseMessage(responseMessage);
+            return viewHomePage;
+
+        }
     }
 
     // to store image in db

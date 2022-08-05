@@ -1,6 +1,12 @@
-package The.Geeks.ResmProject.payload.request.search;
+package The.Geeks.ResmProject.payload.response;
+
+import java.util.List;
+
+import org.springframework.data.domain.Page;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import The.Geeks.ResmProject.message.ResponseMessage;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,10 +19,9 @@ import lombok.Setter;
 @AllArgsConstructor
 @Setter
 @Getter
-
-@Builder
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
-
-public class SearchUserRequest {
-    SearchUserRequestInfo searchUserRequest = new SearchUserRequestInfo();
+@Builder
+public class ViewHomePage {
+    ResponseMessage responseMessage = new ResponseMessage();
+    HomePageInfo homePageInfo = new HomePageInfo();
 }
