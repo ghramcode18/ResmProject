@@ -122,6 +122,7 @@ public class PropertyServieceImp implements PropertyService {
             @RequestPart("propertyRequest") PropertyRequest propertyRequest)
             throws UnsupportedEncodingException, Exception {
 
+                
         Message message = new Message();
         try {
 
@@ -131,6 +132,12 @@ public class PropertyServieceImp implements PropertyService {
             User user = userRepository.findByUsername(
                     dtoken.getSub())
                     .orElseThrow(() -> new RuntimeException("Error: user is not found."));
+                    List<String >Roles = new ArrayList<String>();
+                    Roles.add("USER_ROLE");
+                    Roles.add("ROLE_MANAGER");
+
+                if(dtoken.getRoles().equals(Roles))
+                {
             // here set property to db
             Property newProperty = setProperty(propertyRequest);
 
@@ -176,14 +183,14 @@ public class PropertyServieceImp implements PropertyService {
 
             // here i set imageStatus and set propertyImage
             PropertyImage propertyImage = setPropertyImage(images, newProperty);
-
+                }
             ResponseMessage responseMessage = new ResponseMessage();
 
             responseMessage.setSuccessful(true);
             responseMessage.setError("");
-
+                
             return ResponseEntity.ok(responseMessage);
-
+                
         } catch (Exception e) {
             ResponseMessage responseMessage = new ResponseMessage();
             responseMessage.setSuccessful(false);
@@ -876,29 +883,30 @@ public class PropertyServieceImp implements PropertyService {
                 // here i setPropertyView with genral data without address and image
                 PropertyView propertyView = new PropertyView();
                 PropertyView propertyView2 = setPropertyView(propertyView, property);
-                if (!(propertyView2.equals(new PropertyView() ))) {
+                if (!(propertyView2.equals(new PropertyView()))) {
 
-                // here i setPropertyView with address
-                propertyView2.setAddress(setAddresses(property));
+                    // here i setPropertyView with address
+                    propertyView2.setAddress(setAddresses(property));
 
-                List<PropertyImage> propertyImage = propertyImageRepo
-                        .findByPropertyId(property.getPropertyId());
+                    List<PropertyImage> propertyImage = propertyImageRepo
+                            .findByPropertyId(property.getPropertyId());
 
-                for (int j = 0; j < propertyImage.size(); j++) {
+                    for (int j = 0; j < propertyImage.size(); j++) {
 
-                    Optional<Image> image = imageRepo.findById(propertyImage.get(j).getImage().getId());
+                        Optional<Image> image = imageRepo.findById(propertyImage.get(j).getImage().getId());
 
-                    String url = image.get().getUrl();
-                    imagesUrlList.add(url);
-                    propertyView2.setImagesUrlList(imagesUrlList);
+                        String url = image.get().getUrl();
+                        imagesUrlList.add(url);
+                        propertyView2.setImagesUrlList(imagesUrlList);
+
+                    }
+
+                    imagesUrlList = new ArrayList<>();
+
+                    propertiesList2.add(propertyView2);
 
                 }
-
-                imagesUrlList = new ArrayList<>();
-
-                propertiesList2.add(propertyView2);
-
-            }}
+            }
             responseInfo.setPropertiesList(propertiesList2);
             SearchResponce searchResponce = new SearchResponce();
             searchResponce.setResponseInfo(responseInfo);
