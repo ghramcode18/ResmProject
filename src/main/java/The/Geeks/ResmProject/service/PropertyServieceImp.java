@@ -56,7 +56,6 @@ import The.Geeks.ResmProject.payload.request.search.SearchSpaceRequest;
 import The.Geeks.ResmProject.payload.request.search.SearchUserRequest;
 import The.Geeks.ResmProject.payload.response.SearchResponce;
 import The.Geeks.ResmProject.payload.response.ViewHomePage;
-import The.Geeks.ResmProject.payload.response.HomePageInfo;
 import The.Geeks.ResmProject.payload.response.PropertyView;
 import The.Geeks.ResmProject.payload.response.ResponseInfo;
 import The.Geeks.ResmProject.payload.response.ViewPropertyListResponse;
