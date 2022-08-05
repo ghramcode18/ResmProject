@@ -22,6 +22,7 @@ import The.Geeks.ResmProject.domain.Image;
 import The.Geeks.ResmProject.domain.Property;
 import The.Geeks.ResmProject.domain.PropertyImage;
 import The.Geeks.ResmProject.domain.Region;
+import The.Geeks.ResmProject.domain.Role;
 import The.Geeks.ResmProject.domain.User;
 import The.Geeks.ResmProject.domain.UserFav;
 import The.Geeks.ResmProject.message.ResponseMessage;
@@ -68,7 +69,8 @@ public class UserServiceImpl implements UserService {
     @Autowired
     PropertyRepo propertyRepo;
 
-    
+    @Autowired
+    MailService mailService;
 
     @Override
     public ResponseEntity<ResponseMessage> addPropertyToFavoriteList(
@@ -264,7 +266,7 @@ public class UserServiceImpl implements UserService {
 
             address address = singUpRequest.getSingUpInfoRequest().getAddress();
             Address newAddress = addressRepo.findByRegionName(address.getRegion().name);
-            
+
             newAddress.setLattitude(address.getLattitude());
             newAddress.setLongitutde(address.getLongitutde());
             newAddress.setAddressDescription(address.getAddressDescription());
@@ -274,6 +276,8 @@ public class UserServiceImpl implements UserService {
 
             newUser.setAddress(newAddress);
             userRepo.save(newUser);
+            mailService.authEmail(newUser.getUsername(), "thanks for register in our platform",
+                    "please verify your email by this link : \nhttp://localhost:8090/api/v1/verify/"+ newUser.getUserId());
 
             ResponseMessage responseMessage = new ResponseMessage();
 
@@ -289,23 +293,26 @@ public class UserServiceImpl implements UserService {
         }
 
     }
+    
+    public String verify(Long id) throws Exception {
+        User user = userRepo.findById(id).orElseThrow(() -> new Exception("no user with this id"));
+        Optional<Role> role = roleRepo.findById((long)1);
+        user.setRole(role.get());
+        userRepo.save(user);
+        return "user with id : " + id + " is verified";
+    }
 
     private User setUser(SingUpRequest singUpRequest) {
 
         User newUser = new User();
 
-        newUser.setUsername(singUpRequest.getSingUpInfoRequest().getFirstName());
-
+        newUser.setUsername(singUpRequest.getSingUpInfoRequest().getUsername());
         newUser.setPhoneNumber(singUpRequest.getSingUpInfoRequest().getPhoneNumber());
-
         newUser.setFirstName(singUpRequest.getSingUpInfoRequest().getFirstName());
-
         newUser.setLastName(singUpRequest.getSingUpInfoRequest().getLastName());
-
         newUser.setPassword(singUpRequest.getSingUpInfoRequest().getPassword());
 
         return newUser;
     }
 
-   
 }
