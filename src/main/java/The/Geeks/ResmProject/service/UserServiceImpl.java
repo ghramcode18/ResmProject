@@ -4,11 +4,13 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestPart;
 
@@ -150,26 +152,29 @@ public class UserServiceImpl implements UserService {
                 PropertyView propertyView = new PropertyView();
                 PropertyView propertyView2 = setPropertyView(propertyView, userFavorite);
 
-                // here i setPropertyView with address
-                propertyView2.setAddress(setAddresses(userFavorite));
+                if (!(propertyView2.equals(new PropertyView() ))) {
 
-                List<PropertyImage> propertyImage = propertyImageRepo
-                        .findByPropertyId(userFavorite.getProperty().getPropertyId());
+                    // here i setPropertyView with address
+                    propertyView2.setAddress(setAddresses(userFavorite));
 
-                for (int j = 0; j < propertyImage.size(); j++) {
+                    List<PropertyImage> propertyImage = propertyImageRepo
+                            .findByPropertyId(userFavorite.getProperty().getPropertyId());
 
-                    Optional<Image> image = imageRepo.findById(propertyImage.get(j).getImage().getId());
+                    for (int j = 0; j < propertyImage.size(); j++) {
 
-                    String url = image.get().getUrl();
-                    imagesUrlList.add(url);
-                    propertyView2.setImagesUrlList(imagesUrlList);
+                        Optional<Image> image = imageRepo.findById(propertyImage.get(j).getImage().getId());
+
+                        String url = image.get().getUrl();
+                        imagesUrlList.add(url);
+                        propertyView2.setImagesUrlList(imagesUrlList);
+
+                    }
+
+                    imagesUrlList = new ArrayList<>();
+
+                    propertiesList.add(propertyView2);
 
                 }
-
-                imagesUrlList = new ArrayList<>();
-
-                propertiesList.add(propertyView2);
-
             }
             responseInfo.setPropertiesList(propertiesList);
 
@@ -194,6 +199,7 @@ public class UserServiceImpl implements UserService {
     }
 
     public PropertyView setPropertyView(PropertyView propertyView, UserFav userFavorite) {
+
         propertyView.setPropertyId(userFavorite.getProperty().getPropertyId());
         propertyView.setDescription(userFavorite.getProperty().getDescription());
         propertyView.setNumBathrooms(userFavorite.getProperty().getNumBathrooms());
@@ -204,6 +210,10 @@ public class UserServiceImpl implements UserService {
         propertyView.setDateAdded(userFavorite.getProperty().getDateAdded());
         propertyView.setCategory(userFavorite.getProperty().getPropertyCategory().getCategory());
 
+        if (userFavorite.getProperty().getPropertyStatus().getStatus().equals("NOTEXIST")) {
+
+            return new PropertyView();
+        }
         return propertyView;
 
     }
@@ -276,8 +286,10 @@ public class UserServiceImpl implements UserService {
 
             newUser.setAddress(newAddress);
             userRepo.save(newUser);
-            mailService.authEmail(newUser.getUsername(), 
-                    "please verify your email by this link : \nhttp://localhost:8090/api/v1/verify/"+ newUser.getUserId(),"thanks for register in our platform");
+            mailService.authEmail(newUser.getUsername(),
+                    "please verify your email by this link : \nhttp://localhost:8090/api/v1/verify/"
+                            + newUser.getUserId(),
+                    "thanks for register in our platform");
             ResponseMessage responseMessage = new ResponseMessage();
 
             responseMessage.setSuccessful(true);
@@ -292,10 +304,10 @@ public class UserServiceImpl implements UserService {
         }
 
     }
-    
+
     public String verify(Long id) throws Exception {
         User user = userRepo.findById(id).orElseThrow(() -> new Exception("no user with this id"));
-        Optional<Role> role = roleRepo.findById((long)1);
+        Optional<Role> role = roleRepo.findById((long) 1);
         user.setRole(role.get());
         userRepo.save(user);
         return "user with id : " + id + " is verified";
@@ -312,6 +324,15 @@ public class UserServiceImpl implements UserService {
         newUser.setPassword(singUpRequest.getSingUpInfoRequest().getPassword());
 
         return newUser;
+    }
+
+    @Override
+    public List<UserFav> findPaginated(int pageNo, int pageSize) {
+        // TODO Auto-generated method stub
+        Pageable paging = PageRequest.of(pageNo, pageSize);
+        Page<UserFav> pagedResult = userFavRepo.findAll(paging);
+
+        return pagedResult.toList();
     }
 
 }

@@ -1,6 +1,8 @@
 package The.Geeks.ResmProject.controller;
 
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import The.Geeks.ResmProject.domain.UserFav;
 import The.Geeks.ResmProject.payload.request.AddPropertyToFavoriteListRequest;
 import The.Geeks.ResmProject.payload.request.SingUpRequest;
 import The.Geeks.ResmProject.service.UserServiceImpl;
@@ -49,6 +52,12 @@ public class UserController {
 
     }
     
+    @GetMapping("/UserFavotite/{pageNo}/{pageSize}")
+    public List<UserFav> getPaginatedCountries(@PathVariable int pageNo,
+            @PathVariable int pageSize) {
+
+        return userServiceImp.findPaginated(pageNo, pageSize);
+    }
     
 
 }

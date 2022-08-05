@@ -6,10 +6,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestPart;
 
+import The.Geeks.ResmProject.domain.UserFav;
 import The.Geeks.ResmProject.message.ResponseMessage;
 import The.Geeks.ResmProject.payload.request.AddPropertyToFavoriteListRequest;
 import The.Geeks.ResmProject.payload.request.SingUpRequest;
 import The.Geeks.ResmProject.payload.response.ViewPropertyFavoriteListResponse;
+import java.util.List;
 
 @Service
 public interface UserService {
@@ -20,4 +22,7 @@ public ResponseEntity<ResponseMessage> singUp(
             @RequestPart("propertyRequest") AddPropertyToFavoriteListRequest addPropertyToFavoriteListRequest);
 
     ViewPropertyFavoriteListResponse viewPropertyFavoriteList( String token);
+    
+   List< UserFav >findPaginated(int pageNo, int pageSize);
+
 }
