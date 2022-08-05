@@ -44,4 +44,17 @@ public class UserFav {
     @JoinColumn(name = "propertyID", nullable = true)
     private Property property;
     
+
+    public Long getUserFavId() {
+        return this.userFavId;
+    }
+
+    public User getUser() {
+        return this.user;
+    }
+
+    public Property getProperty() {
+        return this.property;
+    }
+    
 }

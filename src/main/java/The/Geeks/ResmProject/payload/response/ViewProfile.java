@@ -18,6 +18,7 @@ import lombok.Setter;
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 @Builder
 public class ViewProfile {
-    ResponseMessage responseMessage = new ResponseMessage();
+    boolean successful;
+    String error;
     ProfileInfo profileInfo = new ProfileInfo();
 }

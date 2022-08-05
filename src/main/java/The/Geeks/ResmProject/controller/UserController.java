@@ -4,6 +4,8 @@ import java.io.UnsupportedEncodingException;
 
 import javax.validation.Valid;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import The.Geeks.ResmProject.domain.UserFav;
 import The.Geeks.ResmProject.payload.request.AddPropertyToFavoriteListRequest;
 import The.Geeks.ResmProject.payload.request.ProfileEditRequest;
 
@@ -77,6 +80,12 @@ public class UserController {
 
     }
     
+    @GetMapping("/UserFavotite/{pageNo}/{pageSize}")
+    public List<UserFav> getPaginatedCountries(@PathVariable int pageNo,
+            @PathVariable int pageSize) {
+
+        return userServiceImp.findPaginated(pageNo, pageSize);
+    }
     
 
 }

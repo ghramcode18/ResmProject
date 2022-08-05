@@ -14,7 +14,8 @@ import lombok.Setter;
 @Setter
 @Getter
 public class SearchResponce {
-    ResponseMessage responseMessage = new ResponseMessage();
+    boolean successful;
+    String error;
    public ResponseInfo responseInfo = new ResponseInfo();
 
 }

@@ -16,7 +16,9 @@ import lombok.Setter;
 // @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 
 public class ViewPropertyFavoriteListResponse {
-    ResponseMessage responseMessage = new ResponseMessage();
+
+    boolean successful;
+    String error;
     ResponseInfo responseInfo = new ResponseInfo();
 }
 
