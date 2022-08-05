@@ -92,8 +92,7 @@ public class UserServiceImpl implements UserService {
     private final RoleRepo roleRepo;
     private final MailService mailService;
 
-    Pageable pageable = 
-    PageRequest.of(0, 10, Sort.by("propertyId").descending());
+    Pageable pageable = PageRequest.of(0, 10, Sort.by("propertyId").descending());
 
     @Override
     public ResponseEntity<ResponseMessage> addPropertyToFavoriteList(
@@ -171,7 +170,8 @@ public class UserServiceImpl implements UserService {
                 PropertyView propertyView = new PropertyView();
                 PropertyView propertyView2 = setPropertyView(propertyView, userFavorite);
 
-                if (!(propertyView2.equals(new PropertyView() ))) {
+                // here i am trying to remove properties with status not exist
+                if (!(propertyView2.equals(new PropertyView()))) {
 
                     // here i setPropertyView with address
                     propertyView2.setAddress(setAddresses(userFavorite));
@@ -198,19 +198,18 @@ public class UserServiceImpl implements UserService {
             responseInfo.setPropertiesList(propertiesList);
 
             viewPropertyFavoriteListResponse.setResponseInfo(responseInfo);
-            ResponseMessage responseMessage = new ResponseMessage();
-            responseMessage.setSuccessful(true);
-            responseMessage.setError("");
-            viewPropertyFavoriteListResponse.setResponseMessage(responseMessage);
+            viewPropertyFavoriteListResponse.setSuccessful(true);
+            viewPropertyFavoriteListResponse.setError("");
 
             return viewPropertyFavoriteListResponse;
 
         } catch (Exception e) {
             ViewPropertyFavoriteListResponse viewPropertyFavoriteListResponse = new ViewPropertyFavoriteListResponse();
-            ResponseMessage responseMessage = new ResponseMessage();
-            responseMessage.setSuccessful(false);
-            responseMessage.setError(e.getMessage());
-            viewPropertyFavoriteListResponse.setResponseMessage(responseMessage);
+
+            viewPropertyFavoriteListResponse.setSuccessful(false);
+
+            viewPropertyFavoriteListResponse.setError(e.getMessage());
+
             return viewPropertyFavoriteListResponse;
 
         }
@@ -251,10 +250,14 @@ public class UserServiceImpl implements UserService {
             profilePropertyView.setCategory(property.get(i).getPropertyCategory().getCategory());
             profilePropertyView.setAddress(setAddress(property.get(i).getAddress()));
             profilePropertyView.setImagesUrlList(imageRepo.findByImagePropertyId(property.get(i).getPropertyId()));
+            if (property.get(i).getPropertyStatus().getStatus().equals("NOTEXIST")) {
+
+                profilePropertyView = new ProfilePropertyView();
+            }
             profilePropertyViews.add(profilePropertyView);
+            
         }
 
-      
         return profilePropertyViews;
     }
 
@@ -281,6 +284,7 @@ public class UserServiceImpl implements UserService {
         return address;
     }
 
+    //convert Entity to dto
     address setAddress(Address address) {
 
         address newaddress = new address();
@@ -326,11 +330,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity<ResponseMessage> singUp(
-            @RequestBody  SingUpRequest singUpRequest)
-            throws  Exception {
+            @RequestBody SingUpRequest singUpRequest)
+            throws Exception {
 
-        try
-        {
+        try {
             User newUser = setUser(singUpRequest);
 
             Country country = new Country();
@@ -382,7 +385,7 @@ public class UserServiceImpl implements UserService {
         DecodeToken dtoken = decodeToken(profileEditRequest.getToken());
         User user = userRepo.findByUsername(
                 dtoken.getSub()).get();
-        
+
         user.setUsername(profileEditRequest.getProfileEditInfoRequest().getUsername());
         user.setPassword(profileEditRequest.getProfileEditInfoRequest().getPassword());
         user.setFirstName(profileEditRequest.getProfileEditInfoRequest().getFirstName());
@@ -390,7 +393,7 @@ public class UserServiceImpl implements UserService {
         user.setPhoneNumber(profileEditRequest.getProfileEditInfoRequest().getPhoneNumber());
 
         return user;
-        
+
     }
 
     private String userDirectory = "src/main/resources/static";
@@ -409,7 +412,7 @@ public class UserServiceImpl implements UserService {
                 .toUriString();
         return ResponseEntity.ok(fileDownloadUri);
     }
-    
+
     public ResponseEntity multiUpload(@RequestParam("files") MultipartFile[] files) {
         List<Object> fileDownloadUrls = new ArrayList<>();
         Arrays.asList(
@@ -458,42 +461,41 @@ public class UserServiceImpl implements UserService {
 
         return userImage;
     }
-                
 
     @Override
     public ResponseEntity<ResponseMessage> profileEdit(
-             @RequestParam("files") MultipartFile[] files,
-             @RequestPart("profileEditRequest") ProfileEditRequest profileEditRequest)
+            @RequestParam("files") MultipartFile[] files,
+            @RequestPart("profileEditRequest") ProfileEditRequest profileEditRequest)
             throws UnsupportedEncodingException, Exception {
 
-                try {
-                    DecodeToken dtoken = decodeToken(profileEditRequest.getToken());
-                    User user = userRepo.findByUsername(
-                            dtoken.getSub())
-                            .orElseThrow(() -> new RuntimeException("Error: user is not found."));
-            
-                    user = profileEdit(profileEditRequest);
-                    userRepo.save(user);
-                    
-                    List<Image> images = setImages(files, profileEditRequest);
-                    UserImage userImage = setUserImage(images, user);
+        try {
+            DecodeToken dtoken = decodeToken(profileEditRequest.getToken());
+            User user = userRepo.findByUsername(
+                    dtoken.getSub())
+                    .orElseThrow(() -> new RuntimeException("Error: user is not found."));
 
-                    ResponseMessage responseMessage = new ResponseMessage();
+            user = profileEdit(profileEditRequest);
+            userRepo.save(user);
 
-                    responseMessage.setSuccessful(true);
-                    responseMessage.setError("");
+            List<Image> images = setImages(files, profileEditRequest);
+            UserImage userImage = setUserImage(images, user);
 
-                    return ResponseEntity.ok(responseMessage);
+            ResponseMessage responseMessage = new ResponseMessage();
 
-                    } catch (Exception e) {
-                        ResponseMessage responseMessage = new ResponseMessage();
-                        responseMessage.setSuccessful(false);
-                        responseMessage.setError(e.getMessage());
-                        return ResponseEntity.ok(responseMessage);
+            responseMessage.setSuccessful(true);
+            responseMessage.setError("");
 
-                    }
+            return ResponseEntity.ok(responseMessage);
 
-                }
+        } catch (Exception e) {
+            ResponseMessage responseMessage = new ResponseMessage();
+            responseMessage.setSuccessful(false);
+            responseMessage.setError(e.getMessage());
+            return ResponseEntity.ok(responseMessage);
+
+        }
+
+    }
 
     @Override
     public ViewProfile viewProfile(String token) {
@@ -502,31 +504,27 @@ public class UserServiceImpl implements UserService {
             User user = userRepo.findByUsername(
                     dtoken.getSub())
                     .orElseThrow(() -> new RuntimeException("Error: user is not found."));
-           
+
             ViewProfile viewProfile = new ViewProfile();
             viewProfile.getProfileInfo().setUsername(user.getUsername());
             viewProfile.getProfileInfo().setFirstName(user.getFirstName());
+            viewProfile.getProfileInfo().setLastName(user.getLastName());
             viewProfile.getProfileInfo().setAddress(setAddress(user.getAddress()));
             viewProfile.getProfileInfo().setPropertiesList(setProperty(propertyRepo.findByUserId(user.getUserId())));
-            ResponseMessage responseMessage = new ResponseMessage();
-            responseMessage.setSuccessful(true);
-            responseMessage.setError("");
-            viewProfile.setResponseMessage(responseMessage);
 
+            viewProfile.setSuccessful(true);
+            viewProfile.setError("");
             return viewProfile;
 
         } catch (Exception e) {
             ViewProfile viewProfile = new ViewProfile();
-            ResponseMessage responseMessage = new ResponseMessage();
-            responseMessage.setSuccessful(false);
-            responseMessage.setError(e.getMessage());
-            viewProfile.setResponseMessage(responseMessage);
+            viewProfile.setSuccessful(false);
+            viewProfile.setError(e.getMessage());
             return viewProfile;
 
         }
     }
 
-    
     public String verify(Long id) throws Exception {
         User user = userRepo.findById(id).orElseThrow(() -> new Exception("no user with this id"));
         Optional<Role> role = roleRepo.findById((long) 1);
@@ -534,7 +532,6 @@ public class UserServiceImpl implements UserService {
         userRepo.save(user);
         return "user with id : " + id + " is verified";
     }
-
 
     @Override
     public List<UserFav> findPaginated(int pageNo, int pageSize) {
@@ -545,7 +542,4 @@ public class UserServiceImpl implements UserService {
         return pagedResult.toList();
     }
 
-    
-
 }
-

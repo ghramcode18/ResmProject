@@ -55,7 +55,7 @@ public class UserController {
 
     }
 
-    @RequestMapping(value = "/viewHomePage", method = RequestMethod.POST)
+    @RequestMapping(value = "/viewProfile", method = RequestMethod.POST)
     public Object viewHomePage(
             @RequestBody String token) throws Exception {
 

@@ -18,6 +18,7 @@ import lombok.Data;
 public class ProfileInfo {
     private String username;
     private String firstName;
+    private String lastName;
     private String phoneNumber;
     address address;
     List<ProfilePropertyView> propertiesList = new ArrayList<ProfilePropertyView>();

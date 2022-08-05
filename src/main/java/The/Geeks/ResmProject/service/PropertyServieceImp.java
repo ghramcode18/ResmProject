@@ -415,44 +415,43 @@ public class PropertyServieceImp implements PropertyService {
                 PropertyView propertyView = new PropertyView();
                 PropertyView propertyView2 = setPropertyView(propertyView, property);
 
-                // here i setPropertyView with address
-                propertyView2.setAddress(setAddresses(property));
+                if (!(propertyView2.equals(new PropertyView()))) {
 
-                List<PropertyImage> propertyImage = propertyImageRepo
-                        .findByPropertyId(property.getPropertyId());
+                    // here i setPropertyView with address
+                    propertyView2.setAddress(setAddresses(property));
 
-                for (int j = 0; j < propertyImage.size(); j++) {
+                    List<PropertyImage> propertyImage = propertyImageRepo
+                            .findByPropertyId(property.getPropertyId());
 
-                    Optional<Image> image = imageRepo.findById(propertyImage.get(j).getImage().getId());
+                    for (int j = 0; j < propertyImage.size(); j++) {
 
-                    String url = image.get().getUrl();
-                    imagesUrlList.add(url);
-                    propertyView2.setImagesUrlList(imagesUrlList);
+                        Optional<Image> image = imageRepo.findById(propertyImage.get(j).getImage().getId());
+
+                        String url = image.get().getUrl();
+                        imagesUrlList.add(url);
+                        propertyView2.setImagesUrlList(imagesUrlList);
+
+                    }
+
+                    imagesUrlList = new ArrayList<>();
+
+                    propertiesList2.add(propertyView2);
 
                 }
-
-                imagesUrlList = new ArrayList<>();
-
-                propertiesList2.add(propertyView2);
-
             }
             responseInfo.setPropertiesList(propertiesList2);
             SearchResponce searchResponce = new SearchResponce();
             searchResponce.setResponseInfo(responseInfo);
 
-            ResponseMessage responseMessage = new ResponseMessage();
-            responseMessage.setSuccessful(true);
-            responseMessage.setError("");
-            searchResponce.setResponseMessage(responseMessage);
+            searchResponce.setSuccessful(true);
+            searchResponce.setError("");
 
             return searchResponce;
 
         } catch (Exception e) {
             SearchResponce searchResponce = new SearchResponce();
-            ResponseMessage responseMessage = new ResponseMessage();
-            responseMessage.setSuccessful(false);
-            responseMessage.setError(e.getMessage());
-            searchResponce.setResponseMessage(responseMessage);
+            searchResponce.setSuccessful(false);
+            searchResponce.setError(e.getMessage());
             return searchResponce;
         }
 
@@ -468,6 +467,10 @@ public class PropertyServieceImp implements PropertyService {
         propertyView.setPrice(property.getPrice());
         propertyView.setDateAdded(property.getDateAdded());
         propertyView.setCategory(property.getPropertyCategory().getCategory());
+        if (property.getPropertyStatus().getStatus().equals("NOTEXIST")) {
+
+            return new PropertyView();
+        }
 
         return propertyView;
 
@@ -505,44 +508,42 @@ public class PropertyServieceImp implements PropertyService {
                 PropertyView propertyView = new PropertyView();
                 PropertyView propertyView2 = setPropertyView(propertyView, property);
 
-                // here i setPropertyView with address
-                propertyView2.setAddress(setAddresses(property));
+                if (!(propertyView2.equals(new PropertyView()))) {
 
-                List<PropertyImage> propertyImage = propertyImageRepo
-                        .findByPropertyId(property.getPropertyId());
+                    // here i setPropertyView with address
+                    propertyView2.setAddress(setAddresses(property));
 
-                for (int j = 0; j < propertyImage.size(); j++) {
+                    List<PropertyImage> propertyImage = propertyImageRepo
+                            .findByPropertyId(property.getPropertyId());
 
-                    Optional<Image> image = imageRepo.findById(propertyImage.get(j).getImage().getId());
+                    for (int j = 0; j < propertyImage.size(); j++) {
 
-                    String url = image.get().getUrl();
-                    imagesUrlList.add(url);
-                    propertyView2.setImagesUrlList(imagesUrlList);
+                        Optional<Image> image = imageRepo.findById(propertyImage.get(j).getImage().getId());
 
+                        String url = image.get().getUrl();
+                        imagesUrlList.add(url);
+                        propertyView2.setImagesUrlList(imagesUrlList);
+
+                    }
+
+                    imagesUrlList = new ArrayList<>();
+
+                    propertiesList2.add(propertyView2);
                 }
-
-                imagesUrlList = new ArrayList<>();
-
-                propertiesList2.add(propertyView2);
-
             }
             responseInfo.setPropertiesList(propertiesList2);
             SearchResponce searchResponce = new SearchResponce();
             searchResponce.setResponseInfo(responseInfo);
 
-            ResponseMessage responseMessage = new ResponseMessage();
-            responseMessage.setSuccessful(true);
-            responseMessage.setError("");
-            searchResponce.setResponseMessage(responseMessage);
+            searchResponce.setSuccessful(true);
+            searchResponce.setError("");
 
             return searchResponce;
 
         } catch (Exception e) {
             SearchResponce searchResponce = new SearchResponce();
-            ResponseMessage responseMessage = new ResponseMessage();
-            responseMessage.setSuccessful(false);
-            responseMessage.setError(e.getMessage());
-            searchResponce.setResponseMessage(responseMessage);
+            searchResponce.setSuccessful(false);
+            searchResponce.setError(e.getMessage());
             return searchResponce;
         }
 
@@ -577,45 +578,43 @@ public class PropertyServieceImp implements PropertyService {
                 // here i setPropertyView with genral data without address and image
                 PropertyView propertyView = new PropertyView();
                 PropertyView propertyView2 = setPropertyView(propertyView, property);
+                if (!(propertyView2.equals(new PropertyView()))) {
 
-                // here i setPropertyView with address
-                propertyView2.setAddress(setAddresses(property));
+                    // here i setPropertyView with address
+                    propertyView2.setAddress(setAddresses(property));
 
-                List<PropertyImage> propertyImage = propertyImageRepo
-                        .findByPropertyId(property.getPropertyId());
+                    List<PropertyImage> propertyImage = propertyImageRepo
+                            .findByPropertyId(property.getPropertyId());
 
-                for (int j = 0; j < propertyImage.size(); j++) {
+                    for (int j = 0; j < propertyImage.size(); j++) {
 
-                    Optional<Image> image = imageRepo.findById(propertyImage.get(j).getImage().getId());
+                        Optional<Image> image = imageRepo.findById(propertyImage.get(j).getImage().getId());
 
-                    String url = image.get().getUrl();
-                    imagesUrlList.add(url);
-                    propertyView2.setImagesUrlList(imagesUrlList);
+                        String url = image.get().getUrl();
+                        imagesUrlList.add(url);
+                        propertyView2.setImagesUrlList(imagesUrlList);
+
+                    }
+
+                    imagesUrlList = new ArrayList<>();
+
+                    propertiesList2.add(propertyView2);
 
                 }
-
-                imagesUrlList = new ArrayList<>();
-
-                propertiesList2.add(propertyView2);
-
             }
             responseInfo.setPropertiesList(propertiesList2);
             SearchResponce searchResponce = new SearchResponce();
             searchResponce.setResponseInfo(responseInfo);
 
-            ResponseMessage responseMessage = new ResponseMessage();
-            responseMessage.setSuccessful(true);
-            responseMessage.setError("");
-            searchResponce.setResponseMessage(responseMessage);
+            searchResponce.setSuccessful(true);
+            searchResponce.setError("");
 
             return searchResponce;
 
         } catch (Exception e) {
             SearchResponce searchResponce = new SearchResponce();
-            ResponseMessage responseMessage = new ResponseMessage();
-            responseMessage.setSuccessful(false);
-            responseMessage.setError(e.getMessage());
-            searchResponce.setResponseMessage(responseMessage);
+            searchResponce.setSuccessful(false);
+            searchResponce.setError(e.getMessage());
             return searchResponce;
         }
 
@@ -650,45 +649,42 @@ public class PropertyServieceImp implements PropertyService {
                 // here i setPropertyView with genral data without address and image
                 PropertyView propertyView = new PropertyView();
                 PropertyView propertyView2 = setPropertyView(propertyView, property);
+                if (!(propertyView2.equals(new PropertyView()))) {
 
-                // here i setPropertyView with address
-                propertyView2.setAddress(setAddresses(property));
+                    // here i setPropertyView with address
+                    propertyView2.setAddress(setAddresses(property));
 
-                List<PropertyImage> propertyImage = propertyImageRepo
-                        .findByPropertyId(property.getPropertyId());
+                    List<PropertyImage> propertyImage = propertyImageRepo
+                            .findByPropertyId(property.getPropertyId());
 
-                for (int j = 0; j < propertyImage.size(); j++) {
+                    for (int j = 0; j < propertyImage.size(); j++) {
 
-                    Optional<Image> image = imageRepo.findById(propertyImage.get(j).getImage().getId());
+                        Optional<Image> image = imageRepo.findById(propertyImage.get(j).getImage().getId());
 
-                    String url = image.get().getUrl();
-                    imagesUrlList.add(url);
-                    propertyView2.setImagesUrlList(imagesUrlList);
+                        String url = image.get().getUrl();
+                        imagesUrlList.add(url);
+                        propertyView2.setImagesUrlList(imagesUrlList);
 
+                    }
+
+                    imagesUrlList = new ArrayList<>();
+
+                    propertiesList2.add(propertyView2);
                 }
-
-                imagesUrlList = new ArrayList<>();
-
-                propertiesList2.add(propertyView2);
-
             }
             responseInfo.setPropertiesList(propertiesList2);
             SearchResponce searchResponce = new SearchResponce();
             searchResponce.setResponseInfo(responseInfo);
 
-            ResponseMessage responseMessage = new ResponseMessage();
-            responseMessage.setSuccessful(true);
-            responseMessage.setError("");
-            searchResponce.setResponseMessage(responseMessage);
+            searchResponce.setSuccessful(true);
+            searchResponce.setError("");
 
             return searchResponce;
 
         } catch (Exception e) {
             SearchResponce searchResponce = new SearchResponce();
-            ResponseMessage responseMessage = new ResponseMessage();
-            responseMessage.setSuccessful(false);
-            responseMessage.setError(e.getMessage());
-            searchResponce.setResponseMessage(responseMessage);
+            searchResponce.setSuccessful(false);
+            searchResponce.setError(e.getMessage());
             return searchResponce;
         }
 
@@ -723,45 +719,42 @@ public class PropertyServieceImp implements PropertyService {
                 // here i setPropertyView with genral data without address and image
                 PropertyView propertyView = new PropertyView();
                 PropertyView propertyView2 = setPropertyView(propertyView, property);
+                if (!(propertyView2.equals(new PropertyView()))) {
 
-                // here i setPropertyView with address
-                propertyView2.setAddress(setAddresses(property));
+                    // here i setPropertyView with address
+                    propertyView2.setAddress(setAddresses(property));
 
-                List<PropertyImage> propertyImage = propertyImageRepo
-                        .findByPropertyId(property.getPropertyId());
+                    List<PropertyImage> propertyImage = propertyImageRepo
+                            .findByPropertyId(property.getPropertyId());
 
-                for (int j = 0; j < propertyImage.size(); j++) {
+                    for (int j = 0; j < propertyImage.size(); j++) {
 
-                    Optional<Image> image = imageRepo.findById(propertyImage.get(j).getImage().getId());
+                        Optional<Image> image = imageRepo.findById(propertyImage.get(j).getImage().getId());
 
-                    String url = image.get().getUrl();
-                    imagesUrlList.add(url);
-                    propertyView2.setImagesUrlList(imagesUrlList);
+                        String url = image.get().getUrl();
+                        imagesUrlList.add(url);
+                        propertyView2.setImagesUrlList(imagesUrlList);
 
+                    }
+
+                    imagesUrlList = new ArrayList<>();
+
+                    propertiesList2.add(propertyView2);
                 }
-
-                imagesUrlList = new ArrayList<>();
-
-                propertiesList2.add(propertyView2);
-
             }
             responseInfo.setPropertiesList(propertiesList2);
             SearchResponce searchResponce = new SearchResponce();
             searchResponce.setResponseInfo(responseInfo);
 
-            ResponseMessage responseMessage = new ResponseMessage();
-            responseMessage.setSuccessful(true);
-            responseMessage.setError("");
-            searchResponce.setResponseMessage(responseMessage);
+            searchResponce.setSuccessful(true);
+            searchResponce.setError("");
 
             return searchResponce;
 
         } catch (Exception e) {
             SearchResponce searchResponce = new SearchResponce();
-            ResponseMessage responseMessage = new ResponseMessage();
-            responseMessage.setSuccessful(false);
-            responseMessage.setError(e.getMessage());
-            searchResponce.setResponseMessage(responseMessage);
+            searchResponce.setSuccessful(false);
+            searchResponce.setError(e.getMessage());
             return searchResponce;
         }
 
@@ -806,44 +799,43 @@ public class PropertyServieceImp implements PropertyService {
                 PropertyView propertyView = new PropertyView();
                 PropertyView propertyView2 = setPropertyView(propertyView, property);
 
-                // here i setPropertyView with address
-                propertyView2.setAddress(setAddresses(property));
+                if (!(propertyView2.equals(new PropertyView()))) {
 
-                List<PropertyImage> propertyImage = propertyImageRepo
-                        .findByPropertyId(property.getPropertyId());
+                    // here i setPropertyView with address
+                    propertyView2.setAddress(setAddresses(property));
 
-                for (int j = 0; j < propertyImage.size(); j++) {
+                    List<PropertyImage> propertyImage = propertyImageRepo
+                            .findByPropertyId(property.getPropertyId());
 
-                    Optional<Image> image = imageRepo.findById(propertyImage.get(j).getImage().getId());
+                    for (int j = 0; j < propertyImage.size(); j++) {
 
-                    String url = image.get().getUrl();
-                    imagesUrlList.add(url);
-                    propertyView2.setImagesUrlList(imagesUrlList);
+                        Optional<Image> image = imageRepo.findById(propertyImage.get(j).getImage().getId());
+
+                        String url = image.get().getUrl();
+                        imagesUrlList.add(url);
+                        propertyView2.setImagesUrlList(imagesUrlList);
+
+                    }
+
+                    imagesUrlList = new ArrayList<>();
+
+                    propertiesList2.add(propertyView2);
 
                 }
-
-                imagesUrlList = new ArrayList<>();
-
-                propertiesList2.add(propertyView2);
-
             }
             responseInfo.setPropertiesList(propertiesList2);
             SearchResponce searchResponce = new SearchResponce();
             searchResponce.setResponseInfo(responseInfo);
 
-            ResponseMessage responseMessage = new ResponseMessage();
-            responseMessage.setSuccessful(true);
-            responseMessage.setError("");
-            searchResponce.setResponseMessage(responseMessage);
+            searchResponce.setSuccessful(true);
+            searchResponce.setError("");
 
             return searchResponce;
 
         } catch (Exception e) {
             SearchResponce searchResponce = new SearchResponce();
-            ResponseMessage responseMessage = new ResponseMessage();
-            responseMessage.setSuccessful(false);
-            responseMessage.setError(e.getMessage());
-            searchResponce.setResponseMessage(responseMessage);
+            searchResponce.setSuccessful(false);
+            searchResponce.setError(e.getMessage());
             return searchResponce;
         }
 
@@ -884,6 +876,7 @@ public class PropertyServieceImp implements PropertyService {
                 // here i setPropertyView with genral data without address and image
                 PropertyView propertyView = new PropertyView();
                 PropertyView propertyView2 = setPropertyView(propertyView, property);
+                if (!(propertyView2.equals(new PropertyView() ))) {
 
                 // here i setPropertyView with address
                 propertyView2.setAddress(setAddresses(property));
@@ -905,24 +898,20 @@ public class PropertyServieceImp implements PropertyService {
 
                 propertiesList2.add(propertyView2);
 
-            }
+            }}
             responseInfo.setPropertiesList(propertiesList2);
             SearchResponce searchResponce = new SearchResponce();
             searchResponce.setResponseInfo(responseInfo);
 
-            ResponseMessage responseMessage = new ResponseMessage();
-            responseMessage.setSuccessful(true);
-            responseMessage.setError("");
-            searchResponce.setResponseMessage(responseMessage);
+            searchResponce.setSuccessful(true);
+            searchResponce.setError("");
 
             return searchResponce;
 
         } catch (Exception e) {
             SearchResponce searchResponce = new SearchResponce();
-            ResponseMessage responseMessage = new ResponseMessage();
-            responseMessage.setSuccessful(false);
-            responseMessage.setError(e.getMessage());
-            searchResponce.setResponseMessage(responseMessage);
+            searchResponce.setSuccessful(false);
+            searchResponce.setError(e.getMessage());
             return searchResponce;
         }
 
@@ -1057,13 +1046,11 @@ public class PropertyServieceImp implements PropertyService {
             Long id = Long.parseLong(deletePropertyRequest.getPropertyId());
             List<UserFav> userFavorites = user.getUserPropertyFavList();
 
-
             for (int i = 0; i < userFavorites.size(); i++) {
                 if (userFavorites.get(i).getProperty().getPropertyId().equals(id)) {
                     userFavRepo.deleteByPropertyId(id);
                 }
             }
-            
 
             ResponseMessage responseMessage = new ResponseMessage();
 
