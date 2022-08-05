@@ -31,7 +31,6 @@ public class PropertyInfo {
     private Float space;
     private Float price;
     @JsonFormat(pattern = "yyyy-MM-dd")
-
     private Date dateAdded;
     private String  category;
     private Long  userId;

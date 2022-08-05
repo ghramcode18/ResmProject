@@ -1,5 +1,8 @@
 package The.Geeks.ResmProject.controller;
 
+import java.io.UnsupportedEncodingException;
+
+import javax.validation.Valid;
 
 import java.util.List;
 
@@ -9,10 +12,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import The.Geeks.ResmProject.domain.UserFav;
 import The.Geeks.ResmProject.payload.request.AddPropertyToFavoriteListRequest;
+import The.Geeks.ResmProject.payload.request.ProfileEditRequest;
+
 import The.Geeks.ResmProject.payload.request.SingUpRequest;
 import The.Geeks.ResmProject.service.UserServiceImpl;
 
@@ -35,6 +43,26 @@ public class UserController {
     public String verifyUser(@PathVariable Long id) throws Exception {
         return userServiceImp.verify(id);
     }
+
+    @RequestMapping(value = "/editProfile", method = RequestMethod.POST, consumes = { "multipart/form-data" })
+    @ResponseBody
+    public Object editProperty(
+            @RequestPart(value = "files",required = false) MultipartFile[] files ,
+            @RequestPart("profileEditRequest") @Valid ProfileEditRequest profileEditRequest)
+            throws UnsupportedEncodingException, Exception {
+                
+        return userServiceImp.profileEdit(files, profileEditRequest);
+
+    }
+
+    @RequestMapping(value = "/viewHomePage", method = RequestMethod.POST)
+    public Object viewHomePage(
+            @RequestBody String token) throws Exception {
+
+        return userServiceImp.viewProfile(token);
+
+    }
+
 
     @RequestMapping(value = "/addPropertyToFavoriteList", method = RequestMethod.POST)
     public Object addPropertyToFavoriteList(

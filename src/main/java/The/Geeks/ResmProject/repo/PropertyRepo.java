@@ -6,14 +6,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
 import The.Geeks.ResmProject.domain.Property;
 
 @Repository
-public interface PropertyRepo extends JpaRepository<Property, Long> {
+public interface PropertyRepo extends PagingAndSortingRepository<Property, Long> {
     List<Property> findByPrice(Float price);
     
     Property findByPropertyId(long id);
@@ -34,6 +36,9 @@ public interface PropertyRepo extends JpaRepository<Property, Long> {
     @Query(value = "select *  FROM properties p inner JOIN properties_category PIM"+
     " ON p.property_categoryid= PIM.property_category_id WHERE p.property_categoryid=?1", nativeQuery = true)
     List<Property> findByPropertyCategoryId(Long id);
+
+    @Query(value =  "SELECT * FROM properties  WHERE userid = ?1",nativeQuery = true)
+    List<Property> findByUserId(Long id);
 
     void save(Optional<Property> newProperty);
 
