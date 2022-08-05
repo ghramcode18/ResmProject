@@ -1,7 +1,6 @@
 package The.Geeks.ResmProject.controller;
 
 import java.io.UnsupportedEncodingException;
-import java.util.List;
 
 import javax.validation.Valid;
 
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import The.Geeks.ResmProject.domain.Property;
 import The.Geeks.ResmProject.message.ResponseMessage;
 import The.Geeks.ResmProject.model.propertyRequestModel;
 import The.Geeks.ResmProject.payload.request.search.SearchDateAddedRequest;
@@ -25,11 +23,12 @@ import The.Geeks.ResmProject.payload.request.search.SearchPropertyCategoryReques
 import The.Geeks.ResmProject.payload.request.search.SearchSpaceRequest;
 import The.Geeks.ResmProject.payload.request.search.SearchUserRequest;
 import The.Geeks.ResmProject.payload.response.SearchResponce;
+import The.Geeks.ResmProject.payload.response.ViewHomePage;
 import The.Geeks.ResmProject.payload.request.DeletePropertyFromFvaoriteLsitRequest;
 import The.Geeks.ResmProject.payload.request.DeletePropertyRequest;
+import The.Geeks.ResmProject.payload.request.HomePageReqest;
 import The.Geeks.ResmProject.payload.request.PropertyRequest;
 import The.Geeks.ResmProject.service.PropertyServieceImp;
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -38,7 +37,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/v1")
-@Slf4j
 public class ProportyController {
 
     /*
@@ -143,6 +141,17 @@ public class ProportyController {
 
                 return proertyserviceImp.deletePropertyFromFavaoriteList(deletePropertyRequest);
 
-            }
+        }
+
+        @PostMapping("/viewHomePage")
+        public ViewHomePage viewHomePage(
+            @RequestBody HomePageReqest homePageReqest) 
+            throws UnsupportedEncodingException {
+
+        return proertyserviceImp.viewHomePage(homePageReqest);
+
+    }
+
+        
 
 }

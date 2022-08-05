@@ -1,7 +1,5 @@
 package The.Geeks.ResmProject.payload.response;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import The.Geeks.ResmProject.message.ResponseMessage;
 import lombok.AllArgsConstructor;
 import lombok.Data;
