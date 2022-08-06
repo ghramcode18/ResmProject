@@ -120,8 +120,7 @@ public class PropertyServieceImp implements PropertyService {
     @Autowired
     UserFavRepo userFavRepo;
 
-    Pageable pageable = 
-    PageRequest.of(0, 3, Sort.by("propertyId"));
+    Pageable pageable = PageRequest.of(0, 3, Sort.by("propertyId"));
 
     @Override
     public ResponseEntity<ResponseMessage> addProperty(
@@ -129,7 +128,6 @@ public class PropertyServieceImp implements PropertyService {
             @RequestPart("propertyRequest") PropertyRequest propertyRequest)
             throws UnsupportedEncodingException, Exception {
 
-                
         Message message = new Message();
         try {
 
@@ -139,65 +137,75 @@ public class PropertyServieceImp implements PropertyService {
             User user = userRepository.findByUsername(
                     dtoken.getSub())
                     .orElseThrow(() -> new RuntimeException("Error: user is not found."));
-                    List<String >Roles = new ArrayList<String>();
-                    Roles.add("USER_ROLE");
-                    Roles.add("ROLE_MANAGER");
+            List<String> Roles = new ArrayList<String>();
+            List<String> Roles2 = new ArrayList<String>();
+            Roles2.add("ROLE_USER");
+            Roles2.add("ROLE_MANAGER");
 
-                if(dtoken.getRoles().equals(Roles))
-                {
-            // here set property to db
-            Property newProperty = setProperty(propertyRequest);
+            Roles.add("ROLE_USER");
 
-            // here set user to property
-            newProperty.setUser(user);
+            if (dtoken.getRoles().equals(Roles) || dtoken.getRoles().equals(Roles2)) {
+                // here set property to db
+                Property newProperty = setProperty(propertyRequest);
 
-            Optional<PropertyStatus> propertyStatus = propertyStatusRepo
-                    .findById((long) 1);
-            newProperty.setPropertyStatus(propertyStatus.get());
+                // here set user to property
+                newProperty.setUser(user);
 
-            // here i am trying setAddress to property
-            newProperty.getPropertyStatus();
-            Country country = new Country();
-            country = countryRepo.findByName(
-                    propertyRequest.getPropertyInfo()
-                            .getAddress().getRegion().getCity().getCountry().getName());
+                Optional<PropertyStatus> propertyStatus = propertyStatusRepo
+                        .findById((long) 1);
+                newProperty.setPropertyStatus(propertyStatus.get());
 
-            City city = new City();
-            city = cityRepo.findByName(propertyRequest.getPropertyInfo()
-                    .getAddress().getRegion().getCity().getName());
+                // here i am trying setAddress to property
+                newProperty.getPropertyStatus();
+                Country country = new Country();
+                country = countryRepo.findByName(
+                        propertyRequest.getPropertyInfo()
+                                .getAddress().getRegion().getCity().getCountry().getName());
 
-            Region region = new Region();
-            region = regionRepo.findByName(propertyRequest.getPropertyInfo()
-                    .getAddress().getRegion().getName());
+                City city = new City();
+                city = cityRepo.findByName(propertyRequest.getPropertyInfo()
+                        .getAddress().getRegion().getCity().getName());
 
-            address address = propertyRequest.getPropertyInfo().getAddress();
-            Address newAddress = addressRepository.findByRegionName(address.getRegion().name);
-            newAddress.setLattitude(address.getLattitude());
-            newAddress.setLongitutde(address.getLongitutde());
-            newAddress.setAddressDescription(address.getAddressDescription());
-            city.setCountry(country);
-            region.setCity(city);
-            newAddress.setRegion(region);
+                Region region = new Region();
+                region = regionRepo.findByName(propertyRequest.getPropertyInfo()
+                        .getAddress().getRegion().getName());
 
-            newProperty.setAddress(newAddress);
+                address address = propertyRequest.getPropertyInfo().getAddress();
+                Address newAddress = addressRepository.findByRegionName(address.getRegion().name);
+                newAddress.setLattitude(address.getLattitude());
+                newAddress.setLongitutde(address.getLongitutde());
+                newAddress.setAddressDescription(address.getAddressDescription());
+                city.setCountry(country);
+                region.setCity(city);
+                newAddress.setRegion(region);
 
-            // here saving properties in db
+                newProperty.setAddress(newAddress);
 
-            propertyRepo.save(newProperty);
+                // here saving properties in db
 
-            // here i am trying upload images to local file system and save url in db
-            List<Image> images = setImages(files, propertyRequest);
+                propertyRepo.save(newProperty);
 
-            // here i set imageStatus and set propertyImage
-            PropertyImage propertyImage = setPropertyImage(images, newProperty);
-                }
-            ResponseMessage responseMessage = new ResponseMessage();
+                // here i am trying upload images to local file system and save url in db
+                List<Image> images = setImages(files, propertyRequest);
 
-            responseMessage.setSuccessful(true);
-            responseMessage.setError("");
-                
-            return ResponseEntity.ok(responseMessage);
-                
+                // here i set imageStatus and set propertyImage
+                PropertyImage propertyImage = setPropertyImage(images, newProperty);
+
+                ResponseMessage responseMessage = new ResponseMessage();
+
+                responseMessage.setSuccessful(true);
+                responseMessage.setError("");
+
+                return ResponseEntity.ok(responseMessage);
+            } else {
+                ResponseMessage responseMessage = new ResponseMessage();
+
+                responseMessage.setSuccessful(false);
+                responseMessage.setError("you dont have role; please verify you account and try again");
+                return ResponseEntity.ok(responseMessage);
+
+            }
+
         } catch (Exception e) {
             ResponseMessage responseMessage = new ResponseMessage();
             responseMessage.setSuccessful(false);
@@ -376,8 +384,6 @@ public class PropertyServieceImp implements PropertyService {
         Long PropertyIdInt = Long.parseLong(propertyRequest.getPropertyId());
         newProperty = propertyRepo.findByPropertyId((Long) PropertyIdInt);
 
-        System.out.println("helo ghram here3");
-
         newProperty.setDateAdded(propertyRequest.getNewPropertyInfo().getDateAdded());
         newProperty.setDescription(propertyRequest.getNewPropertyInfo().getDescription());
         newProperty.setNumBathrooms(propertyRequest.getNewPropertyInfo().getNumBathrooms());
@@ -385,9 +391,6 @@ public class PropertyServieceImp implements PropertyService {
         newProperty.setNumStoreys(propertyRequest.getNewPropertyInfo().getNumStoreys());
         newProperty.setPrice(propertyRequest.getNewPropertyInfo().getPrice());
         newProperty.setSpace(propertyRequest.getNewPropertyInfo().getSpace());
-
-        System.out.println("helo ghram here4");
-
         PropertyCategory propertyCategory = propertyCategoryRepo
                 .findByCategory(propertyRequest.getNewPropertyInfo().getCategory());
         newProperty.setPropertyCategory(propertyCategory);
@@ -954,53 +957,80 @@ public class PropertyServieceImp implements PropertyService {
             User user = userRepository.findByUsername(
                     dtoken.getSub())
                     .orElseThrow(() -> new RuntimeException("Error: user is not found."));
-            // here set property to db
+            List<String> Roles = new ArrayList<String>();
+            List<String> Roles2 = new ArrayList<String>();
+            Roles2.add("ROLE_USER");
+            Roles2.add("ROLE_MANAGER");
 
-            Property newProperty = editProperty(propertyRequestModel);
+            Roles.add("ROLE_USER");
 
-            // here set user to property
-            newProperty.setUser(user);
+            if (dtoken.getRoles().equals(Roles) || dtoken.getRoles().equals(Roles2)) {
+                // here set property to db
+                Long PropertyIdInt = Long.parseLong(propertyRequestModel.getPropertyId());
+                Property Property = propertyRepo.findByPropertyId((Long) PropertyIdInt);
+                if (user.getUserId() == Property.getUser().getUserId()) {
+                
+                Property newProperty = editProperty(propertyRequestModel);
+                
 
-            Country country = new Country();
-            country = countryRepo.findByName(
-                    propertyRequestModel.getNewPropertyInfo()
-                            .getAddress().getRegion().getCity().getCountry().getName());
+                // here set user to property
+                newProperty.setUser(user);
 
-            City city = new City();
-            city = cityRepo.findByName(propertyRequestModel.getNewPropertyInfo()
-                    .getAddress().getRegion().getCity().getName());
+                Country country = new Country();
+                country = countryRepo.findByName(
+                        propertyRequestModel.getNewPropertyInfo()
+                                .getAddress().getRegion().getCity().getCountry().getName());
 
-            Region region = new Region();
-            region = regionRepo.findByName(propertyRequestModel.getNewPropertyInfo()
-                    .getAddress().getRegion().getName());
+                City city = new City();
+                city = cityRepo.findByName(propertyRequestModel.getNewPropertyInfo()
+                        .getAddress().getRegion().getCity().getName());
 
-            address address = propertyRequestModel.getNewPropertyInfo().getAddress();
-            Address newAddress = addressRepository.findByRegionName(address.getRegion().name);
-            newAddress.setLattitude(address.getLattitude());
-            newAddress.setLongitutde(address.getLongitutde());
-            newAddress.setAddressDescription(address.getAddressDescription());
-            city.setCountry(country);
-            region.setCity(city);
-            newAddress.setRegion(region);
+                Region region = new Region();
+                region = regionRepo.findByName(propertyRequestModel.getNewPropertyInfo()
+                        .getAddress().getRegion().getName());
 
-            newProperty.setAddress(newAddress);
+                address address = propertyRequestModel.getNewPropertyInfo().getAddress();
+                Address newAddress = addressRepository.findByRegionName(address.getRegion().name);
+                newAddress.setLattitude(address.getLattitude());
+                newAddress.setLongitutde(address.getLongitutde());
+                newAddress.setAddressDescription(address.getAddressDescription());
+                city.setCountry(country);
+                region.setCity(city);
+                newAddress.setRegion(region);
 
-            // here saving properties in db
-            propertyRepo.save(newProperty);
+                newProperty.setAddress(newAddress);
 
-            // here i am trying upload images to local file system and save url in db
-            List<Image> images = setImagesforEdit(files, propertyRequestModel);
+                // here saving properties in db
+                propertyRepo.save(newProperty);
 
-            // here i set imageStatus and set propertyImage
-            PropertyImage propertyImage = setPropertyImage(images, newProperty);
+                // here i am trying upload images to local file system and save url in db
+                List<Image> images = setImagesforEdit(files, propertyRequestModel);
 
-            ResponseMessage responseMessage = new ResponseMessage();
+                // here i set imageStatus and set propertyImage
+                PropertyImage propertyImage = setPropertyImage(images, newProperty);
+                }else{
+                    ResponseMessage responseMessage = new ResponseMessage();
 
-            responseMessage.setSuccessful(true);
-            responseMessage.setError("");
+                    responseMessage.setSuccessful(false);
+                    responseMessage.setError("you dont have permssion for this action");
+                    return ResponseEntity.ok(responseMessage);
 
-            return ResponseEntity.ok(responseMessage);
+                }
+                ResponseMessage responseMessage = new ResponseMessage();
 
+                responseMessage.setSuccessful(true);
+                responseMessage.setError("");
+
+                return ResponseEntity.ok(responseMessage);
+
+            } else {
+                ResponseMessage responseMessage = new ResponseMessage();
+
+                responseMessage.setSuccessful(false);
+                responseMessage.setError("you dont have role; please verify you account and try again");
+                return ResponseEntity.ok(responseMessage);
+
+            }
         } catch (Exception e) {
             ResponseMessage responseMessage = new ResponseMessage();
             responseMessage.setSuccessful(false);
@@ -1106,7 +1136,7 @@ public class PropertyServieceImp implements PropertyService {
 
     private Page<PropertyView> setPropertyToPropertyView(Page<Property> ppage) {
         List<PropertyView> propertyViews = new ArrayList<PropertyView>();
-        for(int i = 0 ; i < ppage.getContent().size() ; i++){
+        for (int i = 0; i < ppage.getContent().size(); i++) {
             PropertyView propertyView = new PropertyView();
             propertyView.setPropertyId(ppage.getContent().get(i).getPropertyId());
             propertyView.setDescription(ppage.getContent().get(i).getDescription());
@@ -1119,15 +1149,13 @@ public class PropertyServieceImp implements PropertyService {
             propertyView.setAddress(setAddress(ppage.getContent().get(i).getAddress()));
 
             propertyViews.add(propertyView);
-    }
-    final Page<PropertyView> page = new PageImpl<PropertyView>(propertyViews);
-    return page;
         }
-        
-    
+        final Page<PropertyView> page = new PageImpl<PropertyView>(propertyViews);
+        return page;
+    }
 
     @Override
-    public ViewHomePage viewHomePage(HomePageReqest homePageReqest) throws UnsupportedEncodingException{
+    public ViewHomePage viewHomePage(HomePageReqest homePageReqest) throws UnsupportedEncodingException {
         try {
             DecodeToken dtoken = decodeToken(homePageReqest.getToken());
 
@@ -1136,7 +1164,7 @@ public class PropertyServieceImp implements PropertyService {
                     .orElseThrow(() -> new RuntimeException("Error: user is not found."));
 
             ViewHomePage viewHomePage = new ViewHomePage();
-            Page<PropertyView> propertyView =setPropertyToPropertyView(propertyRepo.findAll(pageable));
+            Page<PropertyView> propertyView = setPropertyToPropertyView(propertyRepo.findAll(pageable));
             viewHomePage.getHomePageInfo().setPropertyView(propertyView);
             ResponseMessage responseMessage = new ResponseMessage();
             responseMessage.setSuccessful(true);
