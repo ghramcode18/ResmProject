@@ -29,5 +29,6 @@ public class ProfilePropertyView {
     Date dateAdded;
     String category;
     address address;
+    String status;  
     List<String> imagesUrlList = new ArrayList<String>();
 }
