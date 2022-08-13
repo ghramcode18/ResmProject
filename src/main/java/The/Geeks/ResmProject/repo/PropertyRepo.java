@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
@@ -34,6 +33,9 @@ public interface PropertyRepo extends PagingAndSortingRepository<Property, Long>
 
     @Query(value =  "SELECT * FROM properties  WHERE userid = ?1",nativeQuery = true)
     List<Property> findByUserId(Long id);
+
+    @Query(value =  "SELECT userID FROM properties WHERE `property_id`= ?1",nativeQuery = true)
+    Long findByProId(Long propertyId);
 
     void save(Optional<Property> newProperty);
 

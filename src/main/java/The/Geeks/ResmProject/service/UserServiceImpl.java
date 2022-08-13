@@ -13,7 +13,6 @@ import java.util.Optional;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.http.ResponseEntity;
@@ -44,9 +43,11 @@ import The.Geeks.ResmProject.message.ResponseMessage;
 import The.Geeks.ResmProject.payload.request.AddPropertyToFavoriteListRequest;
 import The.Geeks.ResmProject.payload.request.ProfileEditRequest;
 import The.Geeks.ResmProject.payload.request.SingUpRequest;
+import The.Geeks.ResmProject.payload.response.AllUserInfo;
 import The.Geeks.ResmProject.payload.response.ProfilePropertyView;
 import The.Geeks.ResmProject.payload.response.PropertyView;
 import The.Geeks.ResmProject.payload.response.ResponseInfo;
+import The.Geeks.ResmProject.payload.response.ViewAllUser;
 import The.Geeks.ResmProject.payload.response.ViewProfile;
 import The.Geeks.ResmProject.payload.response.ViewPropertyFavoriteListResponse;
 import The.Geeks.ResmProject.payload.response.address;
@@ -86,8 +87,6 @@ public class UserServiceImpl implements UserService {
     private final PropertyRepo propertyRepo;
     private final RoleRepo roleRepo;
     private final MailService mailService;
-
-    Pageable pageable = PageRequest.of(0, 10, Sort.by("propertyId").descending());
 
     @Override
     public ResponseEntity<ResponseMessage> addPropertyToFavoriteList(
@@ -139,7 +138,6 @@ public class UserServiceImpl implements UserService {
     public ViewPropertyFavoriteListResponse viewPropertyFavoriteList(String token) {
 
         try {
-
             // here decode token and checkIfUserExist in db
             DecodeToken dtoken = decodeToken(token);
 
@@ -505,7 +503,6 @@ public class UserServiceImpl implements UserService {
             viewProfile.getProfileInfo().setLastName(user.getLastName());
             viewProfile.getProfileInfo().setAddress(setAddress(user.getAddress()));
             viewProfile.getProfileInfo().setPropertiesList(setProperty(propertyRepo.findByUserId(user.getUserId())));
-
             viewProfile.setSuccessful(true);
             viewProfile.setError("");
             return viewProfile;
@@ -534,6 +531,39 @@ public class UserServiceImpl implements UserService {
         Page<UserFav> pagedResult = userFavRepo.findAll(paging);
 
         return pagedResult.toList();
+    }
+
+    @Override
+    public ViewAllUser viewAllUsers(String token) throws UnsupportedEncodingException, Exception {
+        try {
+            DecodeToken dtoken = decodeToken(token);
+            User user = userRepo.findByUsername(
+                    dtoken.getSub())
+                    .orElseThrow(() -> new RuntimeException("Error: user is not found."));
+
+                    ViewAllUser viewAllUser = new ViewAllUser();
+                    List<AllUserInfo> allUsersInfo = new ArrayList<AllUserInfo>();
+                    for(int i =0 ; i < userRepo.findAll().size(); i++ )
+                    {
+                        AllUserInfo allUserInfo = new AllUserInfo();
+                        allUserInfo.setFirstName(userRepo.findAll().get(i).getFirstName());
+                        allUserInfo.setLastName(userRepo.findAll().get(i).getLastName());
+                        allUserInfo.setUsername(userRepo.findAll().get(i).getUsername());
+                        allUserInfo.setImagesURL(imageRepo.findByUserId(userRepo.findAll().get(i).getUserId()));
+                        allUsersInfo.add(allUserInfo);
+                    }
+                    viewAllUser.setAllUserInfo(allUsersInfo);
+                    viewAllUser.getResponseMessage().setSuccessful(true);
+                    viewAllUser.getResponseMessage().setError("");
+                    return viewAllUser;
+
+        } catch (Exception e) {
+            ViewAllUser viewAllUser = new ViewAllUser();
+            viewAllUser.getResponseMessage().setSuccessful(false);
+            viewAllUser.getResponseMessage().setError(e.getMessage());
+            return viewAllUser;
+
+        }
     }
 
 }

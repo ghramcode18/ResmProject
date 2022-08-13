@@ -14,6 +14,7 @@ import The.Geeks.ResmProject.message.ResponseMessage;
 import The.Geeks.ResmProject.payload.request.AddPropertyToFavoriteListRequest;
 import The.Geeks.ResmProject.payload.request.ProfileEditRequest;
 import The.Geeks.ResmProject.payload.request.SingUpRequest;
+import The.Geeks.ResmProject.payload.response.ViewAllUser;
 import The.Geeks.ResmProject.payload.response.ViewProfile;
 import The.Geeks.ResmProject.payload.response.ViewPropertyFavoriteListResponse;
 import java.util.List;
@@ -30,7 +31,9 @@ public interface UserService {
             @RequestPart("profileEditRequest") ProfileEditRequest profileEditRequest)
             throws UnsupportedEncodingException, Exception;
 
-    ViewProfile viewProfile(String token);
+    ViewProfile viewProfile(String token) throws UnsupportedEncodingException, Exception;
+
+    ViewAllUser viewAllUsers(String token)throws UnsupportedEncodingException, Exception;
 
     public ResponseEntity<ResponseMessage> addPropertyToFavoriteList(
             AddPropertyToFavoriteListRequest addPropertyToFavoriteListRequest);

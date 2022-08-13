@@ -120,8 +120,11 @@ public class PropertyServieceImp implements PropertyService {
     @Autowired
     UserFavRepo userFavRepo;
 
-    Pageable pageable = 
-    PageRequest.of(0, 3, Sort.by("propertyId"));
+    Pageable sort(int X,int Y){
+        Pageable pageable = 
+        PageRequest.of(X, Y, Sort.by("propertyStatus"));
+        return pageable;
+    }
 
     @Override
     public ResponseEntity<ResponseMessage> addProperty(
@@ -129,7 +132,6 @@ public class PropertyServieceImp implements PropertyService {
             @RequestPart("propertyRequest") PropertyRequest propertyRequest)
             throws UnsupportedEncodingException, Exception {
 
-        Message message = new Message();
         try {
 
             // here decode token and checkIfUserExist in db
@@ -243,7 +245,6 @@ public class PropertyServieceImp implements PropertyService {
     }
 
     private String userDirectory = "src/main/resources/static";
-
     // method to store images in file system
     public ResponseEntity uploadToLocalFileSystem(@RequestParam("file") MultipartFile file) {
         String fileName = StringUtils.cleanPath(userDirectory + "/" + file.getOriginalFilename());
@@ -395,7 +396,6 @@ public class PropertyServieceImp implements PropertyService {
     @Override
     public SearchResponce searchPrice(SearchPriceRequest searchPriceRequest) throws UnsupportedEncodingException {
 
-        Message message = new Message();
         try {
 
             // here decode token and checkIfUserExist in db
@@ -487,7 +487,6 @@ public class PropertyServieceImp implements PropertyService {
     public SearchResponce searchSpace(@RequestBody SearchSpaceRequest searchSpaceRequest)
             throws UnsupportedEncodingException {
 
-        Message message = new Message();
         try {
 
             // here decode token and checkIfUserExist in db
@@ -560,7 +559,6 @@ public class PropertyServieceImp implements PropertyService {
     public SearchResponce searchNumRooms(@RequestBody SearchNumRoomsRequest searchNumRoomsRequest)
             throws UnsupportedEncodingException {
 
-        Message message = new Message();
         try {
 
             // here decode token and checkIfUserExist in db
@@ -631,7 +629,6 @@ public class PropertyServieceImp implements PropertyService {
     public SearchResponce searchNumStoreys(@RequestBody SearchNumStoreysRequest searchnumStoreysRequest)
             throws UnsupportedEncodingException {
 
-        Message message = new Message();
         try {
 
             // here decode token and checkIfUserExist in db
@@ -701,7 +698,6 @@ public class PropertyServieceImp implements PropertyService {
     public SearchResponce searchNumBathrooms(@RequestBody SearchNumBathroomsRequest searchNumBathroomsRequest)
             throws UnsupportedEncodingException {
 
-        Message message = new Message();
         try {
 
             // here decode token and checkIfUserExist in db
@@ -772,7 +768,6 @@ public class PropertyServieceImp implements PropertyService {
             @RequestBody SearchDateAddedRequest searchDateAddedRequest)
             throws UnsupportedEncodingException {
 
-        Message message = new Message();
         try {
 
             // here decode token and checkIfUserExist in db
@@ -853,7 +848,6 @@ public class PropertyServieceImp implements PropertyService {
             @RequestBody SearchPropertyCategoryRequest searchPropertyCategoryRequest)
             throws UnsupportedEncodingException {
 
-        Message message = new Message();
         try {
 
             // here decode token and checkIfUserExist in db
@@ -937,7 +931,6 @@ public class PropertyServieceImp implements PropertyService {
             @RequestPart("propertyRequestModel") propertyRequestModel propertyRequestModel)
             throws UnsupportedEncodingException, Exception {
 
-        Message message = new Message();
         try {
 
             // here decode token and checkIfUserExist in db
@@ -1014,20 +1007,34 @@ public class PropertyServieceImp implements PropertyService {
             User user = userRepository.findByUsername(
                     dtoken.getSub())
                     .orElseThrow(() -> new RuntimeException("Error: user is not found."));
-
+            
             Long id = Long.parseLong(deletePropertyRequest.getPropertyToDeleteId());
-            Property property = propertyRepo.findByPropertyId(id);
-            Optional<PropertyStatus> propertyStatus = propertyStatusRepo
-                    .findById((long) 0);
 
-            property.setPropertyStatus(propertyStatus.get());
-            propertyRepo.save(property);
-            ResponseMessage responseMessage = new ResponseMessage();
+            List<String> Role1 = new ArrayList<String>();
+            Role1.add("ROLE_USER");
+            List<String> Role2 = new ArrayList<String>();
+            Role2.add("ROLE_USER");
+            Role2.add("ROLE_MANAGER");
+    
+            if(dtoken.getRoles().equals(Role1)  && (dtoken.getSub()).equals(userRepository.findById(propertyRepo.findByProId(id)).get().getUsername()) || dtoken.getRoles().equals(Role2) ) {
+                Property property = propertyRepo.findByPropertyId(id);
+                Optional<PropertyStatus> propertyStatus = propertyStatusRepo
+                        .findById((long) 0);
+                property.setPropertyStatus(propertyStatus.get());
+                propertyRepo.save(property);
+                ResponseMessage responseMessage = new ResponseMessage();
+                responseMessage.setSuccessful(true);
+                responseMessage.setError("");
 
-            responseMessage.setSuccessful(true);
-            responseMessage.setError("");
-
-            return ResponseEntity.ok(responseMessage);
+                return ResponseEntity.ok(responseMessage);
+            }
+            else {
+                ResponseMessage responseMessage = new ResponseMessage();
+                responseMessage.setSuccessful(false);
+                responseMessage.setError("SORRY ,YOU DO NOT HAVE THE VALIDITY TO DELETE THIS PROPERTY....");
+                return ResponseEntity.ok(responseMessage);
+            }
+            
 
         } catch (Exception e) {
             ResponseMessage responseMessage = new ResponseMessage();
@@ -1036,13 +1043,12 @@ public class PropertyServieceImp implements PropertyService {
             return ResponseEntity.ok(responseMessage);
 
         }
-
     }
 
     public ResponseEntity<ResponseMessage> deletePropertyFromFavaoriteList(
             @RequestBody DeletePropertyFromFvaoriteLsitRequest deletePropertyRequest)
             throws UnsupportedEncodingException {
-        Message message = new Message();
+
         try {
             // here decode token and checkIfUserExist in db
             DecodeToken dtoken = decodeToken(deletePropertyRequest.getToken());
@@ -1104,13 +1110,17 @@ public class PropertyServieceImp implements PropertyService {
             propertyView.setDescription(ppage.getContent().get(i).getDescription());
             propertyView.setNumBathrooms(ppage.getContent().get(i).getNumBathrooms());
             propertyView.setNumRooms(ppage.getContent().get(i).getNumRooms());
+            propertyView.setNumStoreys(ppage.getContent().get(i).getNumStoreys());
             propertyView.setPrice(ppage.getContent().get(i).getPrice());
             propertyView.setSpace(ppage.getContent().get(i).getSpace());
             propertyView.setCategory(ppage.getContent().get(i).getPropertyCategory().getCategory());
             propertyView.setDateAdded(ppage.getContent().get(i).getDateAdded());
             propertyView.setAddress(setAddress(ppage.getContent().get(i).getAddress()));
+            propertyView.setImagesUrlList(imageRepo.findByImagePropertyId(ppage.getContent().get(i).getPropertyId()));
+            if (ppage.getContent().get(i).getPropertyStatus().getStatus().equals("EXIST")) {
 
-            propertyViews.add(propertyView);
+                propertyViews.add(propertyView);
+            }
     }
     final Page<PropertyView> page = new PageImpl<PropertyView>(propertyViews);
     return page;
@@ -1128,7 +1138,7 @@ public class PropertyServieceImp implements PropertyService {
                     .orElseThrow(() -> new RuntimeException("Error: user is not found."));
 
             ViewHomePage viewHomePage = new ViewHomePage();
-            Page<PropertyView> propertyView =setPropertyToPropertyView(propertyRepo.findAll(pageable));
+            Page<PropertyView> propertyView =setPropertyToPropertyView(propertyRepo.findAll(sort(homePageReqest.getPagintion().getStartInd(),homePageReqest.getPagintion().getEndInd())));
             viewHomePage.getHomePageInfo().setPropertyView(propertyView);
             ResponseMessage responseMessage = new ResponseMessage();
             responseMessage.setSuccessful(true);

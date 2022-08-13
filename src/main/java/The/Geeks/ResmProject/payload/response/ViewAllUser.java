@@ -1,9 +1,13 @@
-package The.Geeks.ResmProject.payload.request;
+package The.Geeks.ResmProject.payload.response;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import The.Geeks.ResmProject.message.ResponseMessage;
+
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,9 +18,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @Setter
 @Getter
-@Builder
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
-public class HomePageReqest {
-    private String token;
-    private Pagintion pagintion;
+public class ViewAllUser {
+    ResponseMessage responseMessage = new ResponseMessage();
+    List<AllUserInfo> allUserInfo = new ArrayList<AllUserInfo>();
 }

@@ -63,6 +63,14 @@ public class UserController {
 
     }
 
+    @RequestMapping(value = "/viewAllUsers", method = RequestMethod.POST)
+    public Object viewAllUsers(
+            @RequestBody String token) throws Exception {
+
+        return userServiceImp.viewAllUsers(token);
+
+    }
+
 
     @RequestMapping(value = "/addPropertyToFavoriteList", method = RequestMethod.POST)
     public Object addPropertyToFavoriteList(
